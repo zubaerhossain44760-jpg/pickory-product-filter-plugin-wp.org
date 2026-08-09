@@ -1,0 +1,45 @@
+# Build artifacts
+dist-production/
+build/
+dist/
+
+# Dependencies
+node_modules/
+vendor/
+
+# IDE
+.idea/
+.cursor/
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+build_log.txt
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Audit & Code Quality Reports
+*audit*.md
+*report*.md
+*.sarif.json
+.qodana/
+phpcs*.txt
+phpstan-output.txt
+
+# Compiled Translations
+*.mo
+
+# Temporary & Local Notes
+checklist
+*todo*
+

@@ -1,0 +1,66 @@
+/**
+ * Type: Search List
+ */
+@use 'variables' as *;
+
+.ppfx-type-search-list {
+    .ppfx-search-list-container {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .ppfx-inner-scroll-area {
+        padding-right: 4px;
+        scrollbar-width: thin;
+        scrollbar-color: $border-color transparent;
+
+        /* Custom scrollbar for better look */
+        &::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: $border-color;
+            border-radius: 10px;
+        }
+    }
+
+    .ppfx-search-box-wrap {
+        position: relative;
+        
+        .ppfx-search-box-input {
+            width: 100%;
+            padding: 10px 36px 10px 12px;
+            border: 1px solid $border-color;
+            border-radius: $border-radius-md;
+            font-size: 13px;
+            color: $text-color;
+            outline: none;
+            transition: border-color $transition-speed, box-shadow $transition-speed;
+
+            &:focus-visible {
+                border-color: $primary-color;
+                box-shadow: 0 0 0 3px rgba(var(--ppfx-primary-rgb), 0.08);
+            }
+        }
+
+        .ppfx-search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+    }
+
+    .ppfx-items-list {
+        padding-right: 4px;
+    }
+}

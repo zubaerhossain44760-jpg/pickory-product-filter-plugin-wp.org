@@ -1,0 +1,70 @@
+# Version control
+.git/
+.gitignore
+.gitattributes
+
+# Development docs
+.distignore
+PROJECT_TREE.md
+
+# Dependencies
+node_modules/
+vendor/
+
+# Source / build tooling
+scripts/
+package.json
+package-lock.json
+composer.json
+composer.lock
+vite.config.js
+eslint.config.js
+eslint.config.mjs
+.eslintrc.json
+.stylelintrc.json
+phpcs.xml
+phpcs.xml.dist
+phpcs-*.txt
+phpstan.neon
+phpstan-bootstrap.php
+phpunit.xml.dist
+
+# Tests and reports
+tests/
+*.test.js
+*.spec.js
+plugin reports/
+build-log.txt
+build_err.txt
+vulnerability01.txt
+final audit
+checklist
+wp-org-readiness-report.md
+audit report.md
+qodana.sarif.json
+qodana.yaml
+
+# IDE / editor / AI state
+.idea/
+.vscode/
+.claude/
+.junie/
+.gemini/
+.antigravity/
+antigravity/
+.cursor/
+
+# Build / release artifacts
+dist-production/
+*.map
+*.zip
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+debug.log
+php_errors.log

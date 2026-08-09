@@ -1,0 +1,117 @@
+/**
+ * Pickory Product Filter - Mobile Drawer
+ *
+ * The 768px breakpoint is applied by JS via window.matchMedia(). JS adds/removes:
+ *
+ *   .ppfx-mobile-drawer-view on <html>                 (shows toggle button)
+ *   .ppfx-drawer-mode  on .ppfx-filter-container  (enables drawer layout)
+ *   .ppfx-open         on .ppfx-filter-container  (slides the drawer in)
+ *   .ppfx-visible      on .ppfx-filter-backdrop   (shows the overlay)
+ *   .ppfx-drawer-open  on <body>                 (locks page scroll)
+ *
+ * All visibility is controlled via CSS classes - NO inline styles.
+ */
+@use 'variables' as *;
+
+// ============================================================
+// Toggle button
+// Default: hidden. Shown via .ppfx-mobile-drawer-view class on <html>
+// ============================================================
+
+.ppfx-mobile-toggle-slot {
+    display: none;
+}
+
+html.ppfx-mobile-drawer-view .ppfx-mobile-toggle-slot {
+    display: flex;
+    align-items: center;
+    min-height: 36px;
+}
+
+html.ppfx-mobile-drawer-view .ppfx-mobile-toggle {
+    display: inline-flex;
+}
+
+.ppfx-mobile-toggle {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    padding: 10px 0;
+    margin: -10px 0;
+    background: transparent;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: $text-color;
+    white-space: nowrap;
+    transition: background $transition-speed, border-color $transition-speed,
+        box-shadow $transition-speed;
+
+    svg {
+        flex-shrink: 0;
+        color: $text-color-sec;
+    }
+
+    &:hover {
+        background: $secondary-color;
+        border-color: $primary-color;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    &:focus-visible {
+        outline: 2px solid $primary-color;
+        outline-offset: 2px;
+    }
+}
+
+// ============================================================
+// Backdrop - fixed overlay behind the open drawer.
+// Always in the DOM when drawer is enabled; JS toggles .ppfx-visible.
+// ============================================================
+
+.ppfx-filter-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 99998;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+
+    &.ppfx-visible {
+        visibility: visible;
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+// ============================================================
+// Filter container - drawer layout.
+// Only applied when JS adds .ppfx-drawer-mode.
+// ============================================================
+
+.ppfx-filter-container.ppfx-primary-filter.ppfx-drawer-mode {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 99999;
+    width: 300px;
+    max-width: 85vw;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    border-radius: 0 $border-radius-lg $border-radius-lg 0;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+
+    &.ppfx-open {
+        transform: translateX(0);
+    }
+}
+
+body.ppfx-drawer-open {
+    overflow: hidden;
+}

@@ -1,0 +1,101 @@
+/**
+ * Type: Checkbox & Radio
+ */
+@use 'variables' as *;
+
+// ── Shared layout for item label / count ─────────────────────────────────────
+%ppfx-item-label-base {
+    .ppfx-item-label {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        gap: 5px;
+        align-items: center;
+    }
+
+    .ppfx-item-count {
+        color: $text-color;
+        opacity: 0.7;
+        font-size: 12px;
+        transition: color $transition-speed, opacity $transition-speed;
+    }
+}
+
+// ── Checkbox ─────────────────────────────────────────────────────────────────
+.ppfx-type-checkbox,
+.ppfx-type-search-list {
+    @extend %ppfx-item-label-base;
+
+    .ppfx-items-list {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+    }
+
+    .ppfx-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 6px;
+        margin: 0;
+        cursor: pointer;
+        font-size: 14px;
+        color: $text-color;
+        border-radius: $border-radius-md;
+        transition: color $transition-speed, background-color $transition-speed;
+        width: auto;
+
+        &:hover {
+            color: $primary-color;
+            background-color: $secondary-color;
+        }
+
+        input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            margin: 0;
+            accent-color: $primary-color;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+    }
+}
+
+// ── Radio ─────────────────────────────────────────────────────────────────────
+.ppfx-type-radio {
+    @extend %ppfx-item-label-base;
+
+    .ppfx-items-list {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+    }
+
+    .ppfx-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 6px;
+        margin: 0;
+        cursor: pointer;
+        font-size: 14px;
+        color: $text-color;
+        border-radius: $border-radius-md;
+        transition: color $transition-speed, background-color $transition-speed;
+        width: auto;
+
+        &:hover {
+            color: $primary-color;
+            background-color: $secondary-color;
+        }
+
+        input[type="radio"] {
+            width: 16px;
+            height: 16px;
+            margin: 0;
+            accent-color: $primary-color;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+    }
+}

@@ -1,0 +1,27 @@
+parameters:
+  level: 5
+  paths:
+    - includes/
+    - pickory-product-filter.php
+
+  bootstrapFiles:
+    - phpstan-bootstrap.php
+    - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
+    - vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php
+
+  # PPFX_VITE_DEV and PPFX_VITE_SERVER are set by wp-config.php at runtime and can
+  # be any value, so treat them as dynamic to avoid false "always false" errors.
+  dynamicConstantNames:
+    - PPFX_VITE_DEV
+    - PPFX_VITE_SERVER
+
+  # PHPDoc types (e.g. from WooCommerce stubs) are treated as hints, not
+  # guarantees. This suppresses false-positive "always true/false" errors that
+  # arise when stub PHPDocs claim a narrower type than the runtime can guarantee.
+  treatPhpDocTypesAsCertain: false
+
+  ignoreErrors:
+    -
+      message: '#Path in require_once\(\) .*wp-admin/includes/upgrade\.php.* is not a file or it does not exist\.#'
+      path: includes/class-ppfx-index.php
+

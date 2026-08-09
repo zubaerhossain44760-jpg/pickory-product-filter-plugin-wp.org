@@ -1,0 +1,28 @@
+/**
+ * Type: Dropdown
+ */
+@use 'variables' as *;
+
+.ppfx-type-dropdown {
+    .ppfx-dropdown-wrap {
+        width: 100%;
+    }
+
+    .ppfx-dropdown-input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid $border-color;
+        border-radius: $border-radius-md;
+        font-size: 14px;
+        color: $text-color;
+        background-color: #fff;
+        cursor: pointer;
+        outline: none;
+        transition: border-color $transition-speed;
+
+        &:focus-visible {
+            border-color: $primary-color;
+            box-shadow: 0 0 0 2px rgba(var(--ppfx-primary-rgb), 0.1);
+        }
+    }
+}

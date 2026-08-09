@@ -1,0 +1,108 @@
+/**
+ * Type: Slider (Price Range)
+ */
+@use 'variables' as *;
+
+.ppfx-type-slider {
+    .ppfx-price-group {
+        padding: 5px 2px;
+    }
+
+    .ppfx-price-slider {
+        position: relative;
+        height: 36px;
+        display: flex;
+        align-items: center;
+    }
+
+    .ppfx-price-track-bg {
+        position: absolute;
+        width: 100%;
+        height: 5px;
+        background: $secondary-color;
+        border-radius: 10px;
+        z-index: 1;
+    }
+
+    .ppfx-price-track-fill {
+        position: absolute;
+        height: 100%;
+        background: $primary-color;
+        border-radius: 10px;
+        z-index: 2;
+    }
+
+    input[type="range"] {
+        position: absolute;
+        width: 100%;
+        height: 5px;
+        margin: 0;
+        padding: 0;
+        border: none;
+        appearance: none;
+        /* stylelint-disable-next-line property-no-vendor-prefix */
+        -webkit-appearance: none;
+        background: transparent;
+        pointer-events: none;
+        z-index: 3;
+        outline: none;
+        box-sizing: border-box;
+
+        &:focus-visible {
+            outline: 2px solid $primary-color;
+            outline-offset: 4px;
+            border-radius: 10px;
+        }
+
+        /* Webkit Thumbs */
+        &::-webkit-slider-thumb {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid $primary-color;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            cursor: pointer;
+            pointer-events: auto;
+            transition: transform 0.1s;
+
+            &:hover {
+                transform: scale(1.15);
+            }
+        }
+
+        /* Moz Thumbs */
+        &::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid $primary-color;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            cursor: pointer;
+            pointer-events: auto;
+            transition: transform 0.1s;
+
+            &:hover {
+                transform: scale(1.15);
+            }
+        }
+    }
+
+    .ppfx-price-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        color: $text-color-sec;
+
+        span {
+            font-weight: 400;
+        }
+
+        span b {
+            font-weight: 500;
+            color: $text-color;
+        }
+    }
+}

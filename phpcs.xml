@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<ruleset name="PickoryProductFilter">
+    <description>Pickory Product Filter custom PHPCS ruleset.</description>
+
+    <!-- Scan these paths -->
+    <file>includes/</file>
+    <file>pickory-product-filter.php</file>
+
+    <!-- Show colors, show sniff names, and progress -->
+    <arg name="colors"/>
+    <arg value="sp"/>
+
+    <!-- Use WordPress as the base standard -->
+    <rule ref="WordPress">
+        <exclude name="WordPress.Files.FileName"/>
+    </rule>
+
+    <rule ref="WordPress.Security.EscapeOutput"/>
+    <rule ref="WordPress.Security.NonceVerification"/>
+    <rule ref="WordPress.DB.PreparedSQL"/>
+
+    <!-- Exclude specific rules for product query builder file -->
+    <!-- SQL identifiers (table names, aliases) cannot be parameterized -->
+    <rule ref="WordPress.DB.PreparedSQL.InterpolatedNotPrepared">
+        <exclude-pattern>*/class-ppfx-product-query-builder\.php</exclude-pattern>
+    </rule>
+    <rule ref="WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare">
+        <exclude-pattern>*/class-ppfx-product-query-builder\.php</exclude-pattern>
+    </rule>
+</ruleset>

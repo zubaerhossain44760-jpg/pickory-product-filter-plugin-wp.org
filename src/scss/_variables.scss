@@ -1,0 +1,52 @@
+@use 'sass:color';
+
+// ========================================
+// Design Tokens — Raw Fallbacks
+// ========================================
+$raw-primary: #378ADD;
+$raw-primary-rgb: 55, 138, 221;
+$raw-secondary: #E6F1FB;
+$raw-secondary-rgb: 230, 241, 251;
+$raw-text: #111827;
+$raw-text-sec: #4b5563;
+$raw-border: #e5e7eb;
+$raw-star: #EF9F27;
+$raw-danger: #e24b4a;
+
+// Layout & Radius
+$border-radius-lg: 12px;
+$border-radius-md: 8px;
+$transition-speed: 0.10s;
+
+// ========================================
+// Runtime-overridable Custom Properties
+// ========================================
+:root {
+    --ppfx-primary-color: #{$raw-primary};
+    --ppfx-primary-rgb: #{$raw-primary-rgb};
+    --ppfx-secondary-color: #{$raw-secondary};
+    --ppfx-secondary-rgb: #{$raw-secondary-rgb};
+    --ppfx-text-color: #{$raw-text};
+    --ppfx-text-color-secondary: #{$raw-text-sec};
+    --ppfx-border-color: #{$raw-border};
+    --ppfx-star-color: #{$raw-star};
+    --ppfx-danger-color: #{$raw-danger};
+}
+
+// ========================================
+// SCSS Variables (var(--token, fallback))
+// ========================================
+$primary-color: var(--ppfx-primary-color, #{$raw-primary});
+$secondary-color: var(--ppfx-secondary-color, #{$raw-secondary});
+$text-color: var(--ppfx-text-color, #{$raw-text});
+$text-color-sec: var(--ppfx-text-color-secondary, #{$raw-text-sec});
+$border-color: var(--ppfx-border-color, #{$raw-border});
+$star-color: var(--ppfx-star-color, #{$raw-star});
+$danger-color: var(--ppfx-danger-color, #{$raw-danger});
+
+// ========================================
+// Utility Classes
+// ========================================
+.ppfx-hidden {
+    display: none !important;
+}
