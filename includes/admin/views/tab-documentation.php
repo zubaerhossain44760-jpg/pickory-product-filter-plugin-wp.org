@@ -117,7 +117,12 @@ $sections = array(
 					<p><?php esc_html_e( 'You can place multiple filter instances on the same page (e.g. a sidebar filter and a mobile drawer filter) using the instance_id attribute. If omitted, the plugin automatically generates a safe, unique fallback identifier:', 'pickory-product-filter' ); ?></p>
 					<code class="ppfx-doc-code"><?php echo '[pickory_product_filter instance_id="sidebar"]'; ?></code>
 					<code class="ppfx-doc-code"><?php echo '[pickory_product_filter instance_id="mobile-drawer"]'; ?></code>
-					<p class="ppfx-doc-note"><?php esc_html_e( 'Both instances stay in sync — selecting a filter in one automatically reflects in the other.', 'pickory-product-filter' ); ?></p>
+					<p class="ppfx-doc-note"><?php esc_html_e( 'Both instances stay in sync — selecting a filter in one automatically reflects in the other.', 'pickory-product-filter' ); ?></p>
+
+					<h4><?php esc_html_e( 'Important Note on Product Attributes', 'pickory-product-filter' ); ?></h4>
+					<p class="ppfx-doc-note">
+						<?php esc_html_e( 'To enable filtering by a WooCommerce product attribute (e.g. Color, Size), you must go to WooCommerce &rarr; Products &rarr; Attributes &rarr; Edit &rarr; check the "Enable Archives" option for that attribute.', 'pickory-product-filter' ); ?>
+					</p>
 				<?php elseif ( 'filter-sections-reference' === $section['id'] ) : ?>
 				<p><?php esc_html_e( 'The Filter Sections tab (Pickory Product Filter → Filter Sections) lists every filter that can appear on the frontend. Each row is a section you can configure independently. Drag rows to reorder, toggle sections on or off, and configure how each one is displayed.', 'pickory-product-filter' ); ?></p>
 
