@@ -181,15 +181,9 @@ class PPFX_Product_Query_Builder {
 		$use_index_tables = self::index_tables_available();
 		$orderby          = $this->get_param( 'orderby' );
 
-		// Separation of filtering and sorting: use custom index tables for building the WHERE clause,
-		// but delegate the ORDER BY clause (sorting) to WooCommerce native price logic.
+		// Separation of filtering and sorting: use custom index tables for building the WHERE clause.
+		// Price sorting is also handled via the index table for optimal performance.
 		$use_index_price_sort_override = false;
-		if (
-			$use_index_tables &&
-			in_array( $orderby, array( 'price', 'price-desc' ), true )
-		) {
-			$use_index_price_sort_override = true;
-		}
 
 		$args = $this->build_query_args( $use_index_tables, $use_index_price_sort_override );
 
