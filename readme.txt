@@ -141,7 +141,7 @@ Pickory respects your WooCommerce inventory settings. If "Hide out of stock item
 
 = Is there a rate limit on filter requests? =
 
-Yes. The plugin includes built-in rate limiting (100 requests per minute per IP) to prevent abuse. You can enable/disable this in the Advanced tab.
+Yes. The plugin includes built-in rate limiting (80 requests per minute per IP) to prevent abuse. You can enable/disable this in the Advanced tab.
 
 = What happens on plugin deactivation? =
 

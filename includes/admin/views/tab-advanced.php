@@ -64,7 +64,7 @@ $options = get_option( 'ppfx_settings', array() );
 						<label>
 							<input type="checkbox" name="ppfx_settings[rate_limiting_enabled]" value="yes"
 								<?php checked( ! isset( $options['rate_limiting_enabled'] ) || 'no' !== $options['rate_limiting_enabled'] ); ?>>
-							<?php esc_html_e( 'Enable API rate limiting (100 requests per minute) on the products filtering REST endpoint to prevent scraping and abuse.', 'pickory-product-filter' ); ?>
+							<?php esc_html_e( 'Enable API rate limiting (80 requests per minute) on the products filtering REST endpoint to prevent scraping and abuse.', 'pickory-product-filter' ); ?>
 						</label>
 					</td>
 				</tr>

@@ -438,7 +438,7 @@ class PPFX_Products_Controller {
 	 */
 	public static function get_products( WP_REST_Request $request ) {
 		// Rate limit (enable/disable logic lives inside is_rate_limited()).
-		if ( PPFX_Rate_Limiter::is_rate_limited( 'ppfx_rate', 100 ) ) {
+		if ( PPFX_Rate_Limiter::is_rate_limited( 'ppfx_rate', 80 ) ) {
 			return new WP_Error(
 				'ppfx_rate_limited',
 				__(

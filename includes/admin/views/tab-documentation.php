@@ -370,7 +370,7 @@ $sections = array(
 							</tr>
 							<tr>
 								<td><strong><?php esc_html_e( 'Rate Limiting', 'pickory-product-filter' ); ?></strong></td>
-								<td><?php esc_html_e( 'Caps filter AJAX requests at 100 per minute per IP address to protect the server from abuse or bot traffic. Logged-in users with object cache disabled bypass the limit automatically.', 'pickory-product-filter' ); ?></td>
+								<td><?php esc_html_e( 'Caps filter AJAX requests at 80 per minute per IP address to protect the server from abuse or bot traffic. Logged-in users with object cache disabled bypass the limit automatically.', 'pickory-product-filter' ); ?></td>
 								<td><?php esc_html_e( 'Enabled', 'pickory-product-filter' ); ?></td>
 							</tr>
 						</tbody>
@@ -548,7 +548,7 @@ $sections = array(
 					<li><?php esc_html_e( 'Multi-currency support — price slider automatically adjusts to the active currency', 'pickory-product-filter' ); ?></li>
 					<li><?php esc_html_e( 'HPOS (High-Performance Order Storage) compatibility', 'pickory-product-filter' ); ?></li>
 					<li><?php esc_html_e( 'Object cache integration for faster repeat queries on logged-out users', 'pickory-product-filter' ); ?></li>
-					<li><?php esc_html_e( 'Built-in rate limiting (default: 100 requests/min per IP)', 'pickory-product-filter' ); ?></li>
+					<li><?php esc_html_e( 'Built-in rate limiting (default: 80 requests/min per IP)', 'pickory-product-filter' ); ?></li>
 					<li><?php esc_html_e( 'Shortcode [pickory_product_filter] and Gutenberg block support', 'pickory-product-filter' ); ?></li>
 					<li><?php esc_html_e( 'Template override system — copy templates to yourtheme/pickory-product-filter/', 'pickory-product-filter' ); ?></li>
 					<li><?php esc_html_e( 'Developer hooks (filters & actions) for customization', 'pickory-product-filter' ); ?></li>

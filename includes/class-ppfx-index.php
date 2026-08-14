@@ -87,11 +87,22 @@ class PPFX_Index {
 	}
 
 	/**
+	 * Cached result of table availability check.
+	 *
+	 * @var bool|null
+	 */
+	private static ?bool $tables_exist = null;
+
+	/**
 	 * Verifies if both custom index tables actually exist in the database.
 	 *
 	 * @return bool True if both tables exist, false otherwise.
 	 */
 	public static function index_tables_available(): bool {
+		if ( null !== self::$tables_exist ) {
+			return self::$tables_exist;
+		}
+
 		global $wpdb;
 
 		$index_table = self::get_table_name();
@@ -103,7 +114,8 @@ class PPFX_Index {
         // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$term_exists = $wpdb->get_var( "SHOW TABLES LIKE '{$term_table}'" );
 
-		return ( ! empty( $index_exists ) && ! empty( $term_exists ) );
+		self::$tables_exist = ( ! empty( $index_exists ) && ! empty( $term_exists ) );
+		return self::$tables_exist;
 	}
 
 	/**

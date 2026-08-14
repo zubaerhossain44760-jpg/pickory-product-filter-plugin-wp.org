@@ -77,6 +77,33 @@ $is_primary = empty( trim( $extra_class ?? '' ) ) && empty( $requested_sections 
 		<?php endif; ?>
 
 		<?php
+		// Pre-fetch taxonomy terms in a single batched query for all enabled term-based sections
+		$needed_taxonomies = array();
+		foreach ( $sections as $key => $config ) {
+			if ( empty( $config['enabled'] ) ) {
+				continue;
+			}
+			$type = $config['type'] ?? 'checkbox';
+			if ( ! in_array( $type, array( 'slider', 'star-rating', 'toggle' ), true ) ) {
+				$needed_taxonomies[] = ( 'category' === $key ) ? 'product_cat' : $key;
+			}
+		}
+
+		$prefetched_terms = array();
+		if ( ! empty( $needed_taxonomies ) ) {
+			$all_terms = get_terms(
+				array(
+					'taxonomy'   => array_unique( $needed_taxonomies ),
+					'hide_empty' => true,
+				)
+			);
+			if ( ! is_wp_error( $all_terms ) && is_array( $all_terms ) ) {
+				foreach ( $all_terms as $term ) {
+					$prefetched_terms[ $term->taxonomy ][] = $term;
+				}
+			}
+		}
+
 		foreach ( $sections as $key => $config ) :
 			if ( empty( $config['enabled'] ) ) {
 				continue;
@@ -90,15 +117,10 @@ $is_primary = empty( trim( $extra_class ?? '' ) ) && empty( $requested_sections 
 
 			// Get terms if the section type requires them
 			$terms = array();
-			if ( ! in_array( $type, array( 'slider', 'star-rating', 'toggle' ) ) ) {
+			if ( ! in_array( $type, array( 'slider', 'star-rating', 'toggle' ), true ) ) {
 				$taxonomy = ( $key === 'category' ) ? 'product_cat' : $key;
-				$terms    = get_terms(
-					array(
-						'taxonomy'   => $taxonomy,
-						'hide_empty' => true,
-					)
-				);
-				if ( is_wp_error( $terms ) || empty( $terms ) ) {
+				$terms    = $prefetched_terms[ $taxonomy ] ?? array();
+				if ( empty( $terms ) ) {
 					continue;
 				}
 			}
