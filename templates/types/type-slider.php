@@ -75,7 +75,9 @@ if ( null !== $min && null !== $max && $min < $max ) :
 		$val         = wc_format_decimal( (float) $requested_max, $decimals );
 		$current_max = max( $min, min( $val, $max ) ); // Clamp between min and max
 	}
-	$step = wc_format_decimal( $decimals > 0 ? 1 / ( 10 ** $decimals ) : 1, $decimals );
+	$default_step = $decimals > 0 ? 1 / ( 10 ** $decimals ) : 1;
+	$step         = isset( $config['step'] ) ? (float) $config['step'] : $default_step;
+	$step         = $step > 0 ? wc_format_decimal( $step, $decimals ) : wc_format_decimal( $default_step, $decimals );
 	// Get price format - use WooCommerce's get_woocommerce_price_format() if available,
 	// otherwise use a sensible fallback.
 	$price_format_string = function_exists( 'get_woocommerce_price_format' )
@@ -94,11 +96,11 @@ if ( null !== $min && null !== $max && $min < $max ) :
 	);
 
 	if ( 1 === (int) (float) $step ) {
-		$min_display = wc_price( (float) $min, array( 'decimals' => 0 ) );
-		$max_display = wc_price( (float) $max, array( 'decimals' => 0 ) );
+		$min_display = wc_price( (float) $current_min, array( 'decimals' => 0 ) );
+		$max_display = wc_price( (float) $current_max, array( 'decimals' => 0 ) );
 	} else {
-		$min_display = wc_price( $min );
-		$max_display = wc_price( $max );
+		$min_display = wc_price( $current_min );
+		$max_display = wc_price( $current_max );
 	}
 	?>
 <div class="ppfx-price-group" data-min="<?php echo esc_attr( $min ); ?>" data-max="<?php echo esc_attr( $max ); ?>" data-currency="<?php echo esc_attr( $currency_symbol ); ?>" data-price-format="<?php echo esc_attr( $price_format ); ?>">

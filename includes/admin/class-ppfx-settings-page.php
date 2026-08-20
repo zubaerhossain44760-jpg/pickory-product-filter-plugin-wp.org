@@ -69,6 +69,7 @@ class PPFX_Settings_Page {
 				'order'   => 2,
 				'type'    => 'slider',
 				'label'   => '',
+				'step'    => 1,
 			),
 			'rating'      => array(
 				'enabled' => false,

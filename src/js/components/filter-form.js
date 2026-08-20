@@ -220,7 +220,10 @@ export const initFilterForm = (
 
       if (requestId !== activeRequestId) return;
 
-      if (data && data.success && data.fragments) {
+      if (!data || !data.success || !data.fragments) {
+        hasError = true;
+        errorMessage = data?.message || 'UnexpectedResponse';
+      } else if (data && data.success && data.fragments) {
         const allowedFragmentSelectors = new Set([
           '.ppfx-products-wrapper',
           '.woocommerce-result-count',
@@ -394,25 +397,24 @@ export const initFilterForm = (
     }
 
     const params = getParams();
-    preloaderStartTime = Date.now();
-
-    const liveContainer = getLiveProductsContainer();
-    if (liveContainer) {
-      liveContainer.classList.add("ppfx-loading");
-      debugLog('[PPFX] Grid overlay ADDED', Date.now());
-      liveContainer.setAttribute("aria-busy", "true");
-    }
-    formElement.classList.add("ppfx-loading");
-    debugLog('[PPFX] Filter overlay ADDED', Date.now());
 
     clearTimeout(filterTimeout);
 
     let delay = 0;
     if (inputType === 'slider' || inputType === 'text') {
-      delay = 300; // reduced from 500ms for more responsive slider/text inputs
+      delay = 300;
     }
 
     const triggerFetch = () => {
+      preloaderStartTime = Date.now();
+      const liveContainer = getLiveProductsContainer();
+      if (liveContainer) {
+        liveContainer.classList.add("ppfx-loading");
+        debugLog('[PPFX] Grid overlay ADDED', Date.now());
+        liveContainer.setAttribute("aria-busy", "true");
+      }
+      formElement.classList.add("ppfx-loading");
+      debugLog('[PPFX] Filter overlay ADDED', Date.now());
       void executeFilterChange(params, formElement, onAfterUpdate, inputType);
     };
 
