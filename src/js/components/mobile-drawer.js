@@ -1,166 +1,227 @@
-export const initMobileDrawer = (filterContainer, mobileToggle, backdrop, filterForm) => {
-  if (!mobileToggle || !filterContainer) return;
+export const initMobileDrawer = (
+  filterContainer,
+  mobileToggle,
+  backdrop,
+  filterForm,
+) => {
+  if (!mobileToggle || !filterContainer) return null;
+  if (!window.ppfxFilterData?.mobileDrawer) return null;
 
+  // Set initial ARIA accessibility attributes
+  mobileToggle.setAttribute("aria-expanded", "false");
   if (filterForm?.id) {
-      mobileToggle.setAttribute('aria-controls', filterForm.id);
+    mobileToggle.setAttribute("aria-controls", filterForm.id);
   }
 
   const rememberHome = (node) => ({
-      parent: node.parentNode,
-      next: node.nextSibling,
+    parent: node.parentNode,
+    next: node.nextSibling,
   });
 
   const restoreNode = (node, home) => {
-      if (!node || !home.parent) return;
+    if (!node || !home?.parent) return;
 
-      if (home.next && home.next.parentNode === home.parent) {
-          home.parent.insertBefore(node, home.next);
-      } else {
-          home.parent.appendChild(node);
-      }
+    if (home.next && home.next.parentNode === home.parent) {
+      home.parent.insertBefore(node, home.next);
+    } else {
+      home.parent.appendChild(node);
+    }
   };
+
+  // In dom_inject mode, the toggle button lives inside a slot div rendered by
+  // filter-layout.php. We move the slot as a whole unit rather than just the
+  // button, so the slot is also tracked as a "home".
+  const toggleSlot =
+    mobileToggle.closest("[data-ppfx-mobile-toggle-slot]") || null;
 
   const homes = {
-      filterContainer: rememberHome(filterContainer),
-      mobileToggle: rememberHome(mobileToggle),
-      backdrop: backdrop ? rememberHome(backdrop) : null,
+    filterContainer: rememberHome(filterContainer),
+    mobileToggle: toggleSlot ? null : rememberHome(mobileToggle),
+    toggleSlot: toggleSlot ? rememberHome(toggleSlot) : null,
+    backdrop: backdrop ? rememberHome(backdrop) : null,
   };
-  const breakpoint = 768;
+
+  const breakpoint = window.ppfxFilterData?.mobileDrawerBreakpoint ?? 768;
   const mq = window.matchMedia(`(max-width: ${breakpoint}px)`);
+  const drawerMode = window.ppfxFilterData?.mobileDrawerMode ?? "dom_inject";
+  const isSimpleToggle = drawerMode === "simple_toggle";
 
   // ----------------------------------------------------------------
   // Drawer open / close helpers
   // ----------------------------------------------------------------
 
   const closeDrawer = () => {
-      filterContainer.classList.remove('ppfx-open');
-      backdrop?.classList.remove('ppfx-visible');
-      document.body.classList.remove('ppfx-drawer-open');
-      mobileToggle.setAttribute('aria-expanded', 'false');
+    filterContainer.classList.remove("ppfx-open");
+    backdrop?.classList.remove("ppfx-visible");
+    document.body.classList.remove("ppfx-drawer-open");
+    mobileToggle.setAttribute("aria-expanded", "false");
   };
 
   const openDrawer = () => {
-      // Close any other open drawers
-      document.querySelectorAll('.ppfx-filter-container.ppfx-open').forEach(openContainer => {
-          if (openContainer !== filterContainer) {
-              openContainer.classList.remove('ppfx-open');
-          }
+    document
+      .querySelectorAll(".ppfx-filter-container.ppfx-open")
+      .forEach((openContainer) => {
+        if (openContainer !== filterContainer) {
+          openContainer.classList.remove("ppfx-open");
+        }
       });
-      filterContainer.classList.add('ppfx-open');
-      backdrop?.classList.add('ppfx-visible');
-      document.body.classList.add('ppfx-drawer-open');
-      mobileToggle.setAttribute('aria-expanded', 'true');
+    filterContainer.classList.add("ppfx-open");
+    backdrop?.classList.add("ppfx-visible");
+    document.body.classList.add("ppfx-drawer-open");
+    mobileToggle.setAttribute("aria-expanded", "true");
 
-      // Shift focus into the drawer
-      const firstFocusable = filterContainer.querySelector(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      );
-      if (firstFocusable) firstFocusable.focus();
+    // Shift focus into the filter panel
+    const firstFocusable = filterContainer.querySelector(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+    );
+    if (firstFocusable) firstFocusable.focus();
   };
 
-  const findMobileToggleTarget = () => {
-      const slot = document.querySelector('[data-ppfx-mobile-toggle-slot]');
-      if (slot) {
-          return { node: slot, mode: 'append' };
-      }
+  const findToolbarTarget = () => {
+    const toolbar = document.querySelector(
+      ".rocket-shop-toolbar, .storefront-sorting, .woocommerce-shop-toolbar, .woocommerce-products-toolbar, .shop-toolbar, .products-toolbar, .catalog-toolbar",
+    );
+    if (toolbar) return { node: toolbar, mode: "before" };
 
-      const toolbar = document.querySelector(
-          '.rocket-shop-toolbar, .storefront-sorting, .woocommerce-shop-toolbar, .woocommerce-products-toolbar, .shop-toolbar, .products-toolbar, .catalog-toolbar'
-      );
-      if (toolbar) return { node: toolbar, mode: 'before' };
+    const toolbarItem = document.querySelector(
+      ".woocommerce-result-count, .woocommerce-ordering",
+    );
+    if (
+      toolbarItem?.parentElement &&
+      toolbarItem.parentElement !== document.body
+    ) {
+      return { node: toolbarItem.parentElement, mode: "before" };
+    }
 
-      const toolbarItem = document.querySelector('.woocommerce-result-count, .woocommerce-ordering');
-      if (toolbarItem?.parentElement && toolbarItem.parentElement !== document.body) {
-          return { node: toolbarItem.parentElement, mode: 'before' };
-      }
-
-      const products = document.querySelector('.ppfx-products-wrapper, .products');
-      return products ? { node: products, mode: 'before' } : null;
+    const products = document.querySelector(
+      ".ppfx-products-wrapper, .products",
+    );
+    return products ? { node: products, mode: "before" } : null;
   };
 
   const moveToMobileLayer = () => {
-      const toggleTarget = findMobileToggleTarget();
-      if (toggleTarget?.mode === 'append') {
-          toggleTarget.node.appendChild(mobileToggle);
-      } else if (toggleTarget?.node?.parentNode) {
-          toggleTarget.node.parentNode.insertBefore(mobileToggle, toggleTarget.node);
-      }
+    // The node to place above the products: the slot div if present, else the bare button.
+    const toggleNode = toggleSlot || mobileToggle;
 
-      if (backdrop) {
-          document.body.appendChild(backdrop);
-      }
-      document.body.appendChild(filterContainer);
+    const target = findToolbarTarget();
+    if (target?.mode === "before" && target?.node?.parentNode) {
+      target.node.parentNode.insertBefore(toggleNode, target.node);
+    } else if (target?.node) {
+      target.node.appendChild(toggleNode);
+    }
+
+    if (backdrop) {
+      document.body.appendChild(backdrop);
+    }
+    document.body.appendChild(filterContainer);
   };
 
   const restoreDesktopLayer = () => {
+    // Restore the slot (or bare toggle) to its original position.
+    if (toggleSlot && homes.toggleSlot) {
+      restoreNode(toggleSlot, homes.toggleSlot);
+    } else if (homes.mobileToggle) {
       restoreNode(mobileToggle, homes.mobileToggle);
-      if (backdrop && homes.backdrop) {
-          restoreNode(backdrop, homes.backdrop);
-      }
-      restoreNode(filterContainer, homes.filterContainer);
+    }
+    if (backdrop && homes.backdrop) {
+      restoreNode(backdrop, homes.backdrop);
+    }
+    restoreNode(filterContainer, homes.filterContainer);
   };
 
   // ----------------------------------------------------------------
-  // Breakpoint management - add/remove .ppfx-drawer-mode and
-  // show/hide the toggle button based on the current viewport width.
+  // Breakpoint management
   // ----------------------------------------------------------------
 
   const applyBreakpoint = (e) => {
-      const isMobile = e.matches;
+    const isMobile = e.matches;
+    document.documentElement.classList.toggle(
+      "ppfx-mobile-drawer-view",
+      isMobile,
+    );
 
-      // Toggle mobile drawer mode via CSS class
-      document.documentElement.classList.toggle('ppfx-mobile-drawer-view', isMobile);
-
-      if (isMobile) {
-          // Keep the trigger in normal page flow above the product toolbar,
-          // while the drawer panel itself escapes theme sidebar clipping.
-          moveToMobileLayer();
-          filterContainer.classList.add('ppfx-drawer-mode');
+    if (isMobile) {
+      if (isSimpleToggle) {
+        filterContainer.classList.add("ppfx-simple-toggle-mode");
       } else {
-          // Leave drawer mode: close any open drawer and restore inline layout.
-          closeDrawer();
-          filterContainer.classList.remove('ppfx-drawer-mode');
-          restoreDesktopLayer();
+        moveToMobileLayer();
+        filterContainer.classList.add("ppfx-drawer-mode");
       }
+    } else {
+      closeDrawer();
+      if (isSimpleToggle) {
+        filterContainer.classList.remove("ppfx-simple-toggle-mode");
+      } else {
+        filterContainer.classList.remove("ppfx-drawer-mode");
+        restoreDesktopLayer();
+      }
+    }
   };
 
-  // Run immediately on init, then listen for viewport changes.
   applyBreakpoint(mq);
-  mq.addEventListener('change', applyBreakpoint);
+  if (mq.addEventListener) {
+    mq.addEventListener("change", applyBreakpoint);
+  } else if (mq.addListener) {
+    mq.addListener(applyBreakpoint);
+  }
+
+  const handleToolbarInserted = () => {
+    if (mq.matches && !isSimpleToggle) {
+      moveToMobileLayer();
+    }
+  };
+  document.body.addEventListener(
+    "ppfx:toolbar_inserted",
+    handleToolbarInserted,
+  );
 
   // ----------------------------------------------------------------
-  // Event listeners
+  // Named Event Handlers (Allows proper cleanup in destroy)
   // ----------------------------------------------------------------
 
   const handleKeydown = (e) => {
-      if (e.key === 'Escape' && filterContainer.classList.contains('ppfx-open')) {
-          closeDrawer();
-          mobileToggle.focus();
-      }
-  };
-
-  mobileToggle.addEventListener('click', () => {
-      if (filterContainer.classList.contains('ppfx-open')) {
-          closeDrawer();
-          mobileToggle.focus();
-      } else {
-          openDrawer();
-      }
-  });
-
-  backdrop?.addEventListener('click', () => {
+    if (e.key === "Escape" && filterContainer.classList.contains("ppfx-open")) {
       closeDrawer();
       mobileToggle.focus();
-  });
+    }
+  };
 
-  document.addEventListener('keydown', handleKeydown);
+  const handleToggleClick = () => {
+    if (filterContainer.classList.contains("ppfx-open")) {
+      closeDrawer();
+      mobileToggle.focus();
+    } else {
+      openDrawer();
+    }
+  };
+
+  const handleBackdropClick = () => {
+    closeDrawer();
+    mobileToggle.focus();
+  };
+
+  mobileToggle.addEventListener("click", handleToggleClick);
+  backdrop?.addEventListener("click", handleBackdropClick);
+  document.addEventListener("keydown", handleKeydown);
 
   return {
-      closeDrawer,
-      openDrawer,
-      destroy: () => {
-          document.removeEventListener('keydown', handleKeydown);
-          mq.removeEventListener('change', applyBreakpoint);
-      },
+    closeDrawer,
+    openDrawer,
+    destroy: () => {
+      document.removeEventListener("keydown", handleKeydown);
+      mobileToggle.removeEventListener("click", handleToggleClick);
+      backdrop?.removeEventListener("click", handleBackdropClick);
+
+      if (mq.removeEventListener) {
+        mq.removeEventListener("change", applyBreakpoint);
+      } else if (mq.removeListener) {
+        mq.removeListener(applyBreakpoint);
+      }
+
+      document.body.removeEventListener(
+        "ppfx:toolbar_inserted",
+        handleToolbarInserted,
+      );
+    },
   };
 };

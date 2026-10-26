@@ -1,158 +1,224 @@
-/**
- * Pickory Product Filter — Main Layout Shell
- * Handles the container, section headers, mobile drawer, and loading states.
- */
-@use 'variables' as *;
-
-.ppfx-filter-container {
-    background: #fff;
-    border: 0.5px solid $border-color;
-    padding: 1rem;
-
-    border-radius: $border-radius-lg;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-    width: 100%;
-    max-width: 100%;
-
-    .ppfx-panel-title {
-        font-size: 16px;
-        font-weight: 500;
-        color: $text-color;
-        margin: 0 0 8px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        .ppfx-reset-btn {
-            font-size: 12px;
-            font-weight: 400;
-            color: $text-color-sec;
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: $border-radius-md;
-            border: 0.5px solid $border-color;
-            background: transparent;
-            transition: color $transition-speed, border-color $transition-speed;
-
-            &:hover {
-                color: $danger-color;
-                border-color: $danger-color;
-            }
-        }
-    }
-
-    .ppfx-section-label {
-        font-size: 1rem;
-        line-height: 1.4;
-        text-transform: uppercase;
-        letter-spacing: 0.7px;
-        font-weight: 600;
-        color: $text-color-sec;
-        margin-bottom: 10px;
-        margin-top: 0;
-        display: block;
-    }
-
-    // -- Count badge — single source of truth for ALL filter types -----------
-    // Wrappers (.ppfx-swatch-wrap, .ppfx-btn-wrap) add position:relative;
-    // this rule does the rest — defined once, applied everywhere.
-    .ppfx-count-badge {
-        position: absolute;
-        top: -2px;
-        right: -2px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 16px;
-        height: 16px;
-        padding: 0 4px;
-        border-radius: 999px;
-        background: $secondary-color;
-        color: $text-color-sec;
-        font-size: 9px;
-        font-weight: 700;
-        line-height: 1;
-        pointer-events: none;
-        z-index: 2;
-        border: 1.5px solid #fff;
-        white-space: nowrap;
-    }
-
-    .ppfx-filter-section {
-        margin-bottom: 16px;
-
-        &:last-child {
-            margin-bottom: 0;
-        }
-    }
-
-    .ppfx-filter-btn {
-        padding: 4px 12px;
-        border: none;
-        border-radius: $border-radius-md;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: background $transition-speed, color $transition-speed, filter $transition-speed, transform $transition-speed, box-shadow $transition-speed;
-        font-weight: 500;
-        background: $primary-color;
-        color: #fff;
-        height: 28px;
-        white-space: nowrap;
-
-        &:hover {
-            filter: brightness(1.08);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(var(--ppfx-primary-rgb), 0.2);
-        }
-
-        &:active {
-            transform: translateY(0);
-            filter: brightness(0.95);
-        }
-    }
-}
-
-// ========================================
-// Loading state
-// ========================================
-
-.ppfx-products-wrapper.ppfx-loading {
-    position: relative;
-    pointer-events: none;
-
-    >* {
-        opacity: 0.3;
-        transition: opacity 0.15s ease 0.1s; /* 0.1s delay on fade-in */
-    }
-
-    &::after {
-        content: '';
-        position: absolute;
-        top: 200px;
-
-        /* Position spinner towards the top of product list */
-        left: 50%;
-        width: 40px;
-        height: 40px;
-        margin: -20px 0 0 -20px;
-        border: 3px solid $secondary-color;
-        border-top-color: $primary-color;
-        border-radius: 50%;
-        animation: ppfx-spin 0.8s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-        z-index: 10000;
-    }
-}
-
-// Filter panel loading state — prevents double-interactions while a request
-// is in flight and gives the user a visual cue that the panel is busy.
-[data-ppfx-filter-form].ppfx-loading {
-    pointer-events: none;
-    opacity: 0.6;
-    transition: opacity $transition-speed;
-}
-
-@keyframes ppfx-spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
+/**
+ * Pickory Product Filter - Main Layout Shell
+ * Handles the container, section headers, mobile drawer, and loading states.
+ */
+@use "variables" as *;
+
+.ppfx-filter-container {
+  background: v("container-bg", $container-bg);
+  border: 0.5px solid v("border-color", $border-color);
+  padding: v("container-padding", $container-padding);
+  border-radius: v("container-border-radius", $container-border-radius);
+  box-shadow: v("container-box-shadow", $container-box-shadow);
+  width: 100%;
+  max-width: 100%;
+
+  // Generic custom scrollbar for all scrollable areas in the filter (including the panel itself in drawer mode)
+  &,
+  *,
+  &.ppfx-detached,
+  &.ppfx-detached * {
+    scrollbar-width: thin;
+    scrollbar-color: #a0aab4 transparent;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #a0aab4;
+      border-radius: 10px;
+    }
+  }
+
+  .ppfx-panel-title {
+    font-size: v("panel-title-font-size", $panel-title-font-size);
+    font-weight: v("panel-title-font-weight", $panel-title-font-weight);
+    color: v("panel-title-color", $panel-title-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .ppfx-reset-btn {
+      font-size: 12px;
+      font-weight: 400;
+      color: v("text-color", $text-color);
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 8px;
+      border: 0.5px solid v("text-color", $text-color);
+      background: transparent;
+      transition:
+        color $transition-speed,
+        border-color $transition-speed;
+
+      &:hover {
+        color: $danger-color;
+        border-color: $danger-color;
+      }
+    }
+  }
+
+  .ppfx-section-label {
+    font-size: v("section-label-font-size", $section-label-font-size);
+    line-height: 1.4;
+    font-weight: v("section-label-font-weight", $section-label-font-weight);
+    color: v("label-color", $label-color);
+    margin-block: 4px;
+    display: block;
+  }
+
+  // Count badge - single source of truth for ALL filter types.
+  // The button elements (.ppfx-grid-btn, .ppfx-swatch-item) carry
+  // position:relative directly, replacing the old .ppfx-btn-wrap /
+  // .ppfx-swatch-wrap wrapper spans that have been removed.
+  .ppfx-count-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    opacity: 0.8;
+    border-radius: 999px;
+    background: v("btn-grid-bg", $btn-grid-bg);
+    color: v("text-color", $text-color);
+    font-size: 9px;
+    font-weight: 600;
+    line-height: 1;
+    pointer-events: none;
+    z-index: 2;
+    border: 1.5px solid v("text-color", $text-color);
+    white-space: nowrap;
+  }
+
+  .ppfx-filter-section {
+    margin-bottom: 16px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &.ppfx-type-checkbox,
+    &.ppfx-type-radio,
+    &.ppfx-type-search-list {
+      .ppfx-filter-group {
+        margin-inline: -8px;
+      }
+    }
+  }
+
+  // Collapsible (See More / See Less)
+  // Smooth height animation: JS reads scrollHeight and sets max-height before
+  // each transition so the browser always interpolates between two px values.
+  .ppfx-scrollable-container {
+    transition: max-height 0.3s ease;
+  }
+
+  .ppfx-see-more-btn {
+    display: block;
+    margin-left: auto;
+    margin-right: 0;
+    padding: 2px 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: v("primary-color", $primary-color);
+    text-decoration: none;
+    transition:
+      color $transition-speed,
+      opacity $transition-speed;
+
+    &:hover {
+      opacity: 0.75;
+    }
+
+    &:focus-visible {
+      outline: 2px solid v("primary-color", $primary-color);
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+  }
+
+  .ppfx-filter-btn {
+    padding: 4px 12px;
+    border: none;
+    border-radius: v("apply-btn-border-radius", $apply-btn-border-radius);
+    font-size: v("apply-btn-font-size", $apply-btn-font-size);
+    cursor: pointer;
+    transition:
+      background $transition-speed,
+      color $transition-speed,
+      filter $transition-speed,
+      transform $transition-speed,
+      box-shadow $transition-speed;
+    font-weight: 500;
+    background: v("apply-btn-bg", $apply-btn-bg);
+    color: v("apply-btn-text-color", $apply-btn-text-color);
+    white-space: nowrap;
+
+    &:hover {
+      background: v("apply-btn-hover-bg", $apply-btn-hover-bg);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgb(var(--ppfx-primary-rgb), 0.2);
+    }
+
+    &:active {
+      transform: translateY(0);
+      filter: brightness(0.95);
+    }
+  }
+}
+
+// ========================================
+// Loading state
+// ========================================
+
+.ppfx-products-wrapper.ppfx-loading {
+  position: relative;
+  pointer-events: none;
+
+  > * {
+    opacity: 0.3;
+    transition: opacity 0.15s ease 0.1s;
+  }
+
+  &::before {
+    content: "";
+    position: sticky;
+    top: 50vh;
+    display: block;
+    width: 40px;
+    height: 40px;
+    margin: 0 auto -40px;
+    border: 3px solid v("hover-bg-color", $hover-bg-color);
+    border-top-color: v("primary-color", $primary-color);
+    border-radius: 50%;
+    animation: ppfx-spin 0.8s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    z-index: 10000;
+  }
+}
+
+// Filter panel loading state - prevents double-interactions while a request
+// is in flight and gives the user a visual cue that the panel is busy.
+[data-ppfx-filter-form].ppfx-loading {
+  pointer-events: none;
+  opacity: 0.6;
+  transition: opacity $transition-speed;
+}
+
+@keyframes ppfx-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

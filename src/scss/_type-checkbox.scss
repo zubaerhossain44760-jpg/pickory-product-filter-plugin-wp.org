@@ -1,101 +1,132 @@
 /**
  * Type: Checkbox & Radio
  */
-@use 'variables' as *;
+@use "variables" as *;
 
 // ── Shared layout for item label / count ─────────────────────────────────────
 %ppfx-item-label-base {
-    .ppfx-item-label {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-        gap: 5px;
-        align-items: center;
-    }
+  .ppfx-item-label {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 5px;
+    align-items: center;
+  }
 
-    .ppfx-item-count {
-        color: $text-color;
-        opacity: 0.7;
-        font-size: 12px;
-        transition: color $transition-speed, opacity $transition-speed;
+  .ppfx-item-count {
+    color: v("text-color", $text-color);
+    opacity: 0.7;
+    transition:
+      color $transition-speed,
+      opacity $transition-speed;
+
+    &:hover {
+      color: v("hover-color", $hover-color);
+      opacity: 1;
     }
+  }
 }
 
 // ── Checkbox ─────────────────────────────────────────────────────────────────
 .ppfx-type-checkbox,
 .ppfx-type-search-list {
-    @extend %ppfx-item-label-base;
+  @extend %ppfx-item-label-base;
 
-    .ppfx-items-list {
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
+  .ppfx-items-list {
+    display: flex;
+    flex-flow: v("checkbox-layout", $checkbox-layout) wrap;
+  }
+
+  .ppfx-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: v("checkbox-item-padding", $checkbox-item-padding);
+    margin: 0;
+    cursor: pointer;
+    font-size: v("checkbox-font-size", $checkbox-font-size);
+    color: v("text-color", $text-color);
+    border-radius: v(
+      "checkbox-item-border-radius",
+      $checkbox-item-border-radius
+    );
+    transition:
+      color $transition-speed,
+      background-color $transition-speed;
+
+    // In horizontal mode items should be auto-width, not stretch full row
+    width: auto;
+
+    &:hover {
+      color: v("hover-color", $hover-color);
+      background-color: v("hover-bg-color", $hover-bg-color);
+
+      .ppfx-item-count {
+        color: v("hover-color", $hover-color);
+        opacity: 1;
+      }
     }
 
-    .ppfx-item {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 4px 6px;
-        margin: 0;
-        cursor: pointer;
-        font-size: 14px;
-        color: $text-color;
-        border-radius: $border-radius-md;
-        transition: color $transition-speed, background-color $transition-speed;
-        width: auto;
-
-        &:hover {
-            color: $primary-color;
-            background-color: $secondary-color;
-        }
-
-        input[type="checkbox"] {
-            width: 16px;
-            height: 16px;
-            margin: 0;
-            accent-color: $primary-color;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
+    input[type="checkbox"] {
+      width: v("checkbox-size", $checkbox-size);
+      height: v("checkbox-size", $checkbox-size);
+      margin: 0;
+      accent-color: v("primary-color", $primary-color);
+      cursor: pointer;
+      flex-shrink: 0;
     }
+
+    .ppfx-item-count {
+      font-size: v("checkbox-font-size", $checkbox-font-size);
+    }
+  }
 }
 
 // ── Radio ─────────────────────────────────────────────────────────────────────
 .ppfx-type-radio {
-    @extend %ppfx-item-label-base;
+  @extend %ppfx-item-label-base;
 
-    .ppfx-items-list {
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
+  .ppfx-items-list {
+    display: flex;
+    flex-flow: v("radio-layout", $radio-layout) wrap;
+  }
+
+  .ppfx-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: v("radio-item-padding", $radio-item-padding);
+    margin: 0;
+    cursor: pointer;
+    font-size: v("radio-font-size", $radio-font-size);
+    color: v("text-color", $text-color);
+    border-radius: v("radio-item-border-radius", $radio-item-border-radius);
+    transition:
+      color $transition-speed,
+      background-color $transition-speed;
+    width: auto;
+
+    &:hover {
+      color: v("hover-color", $hover-color);
+      background-color: v("hover-bg-color", $hover-bg-color);
+
+      .ppfx-item-count {
+        color: v("hover-color", $hover-color);
+        opacity: 1;
+      }
     }
 
-    .ppfx-item {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 4px 6px;
-        margin: 0;
-        cursor: pointer;
-        font-size: 14px;
-        color: $text-color;
-        border-radius: $border-radius-md;
-        transition: color $transition-speed, background-color $transition-speed;
-        width: auto;
-
-        &:hover {
-            color: $primary-color;
-            background-color: $secondary-color;
-        }
-
-        input[type="radio"] {
-            width: 16px;
-            height: 16px;
-            margin: 0;
-            accent-color: $primary-color;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
+    input[type="radio"] {
+      width: v("radio-size", $radio-size);
+      height: v("radio-size", $radio-size);
+      margin: 0;
+      accent-color: v("primary-color", $primary-color);
+      cursor: pointer;
+      flex-shrink: 0;
     }
+
+    .ppfx-item-count {
+      font-size: v("radio-font-size", $radio-font-size);
+    }
+  }
 }

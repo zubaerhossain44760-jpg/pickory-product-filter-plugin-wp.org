@@ -10,10 +10,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Registers the pickory/product-filter Gutenberg block.
+ * Handles Gutenberg block registration and server rendering for the filter block.
  */
 class PPFX_Block {
 
+	/**
+	 * Shortcode handler instance.
+	 *
+	 * @var PPFX_Shortcode|null
+	 */
+	private static $shortcode = null;
 
 	/**
 	 * Register WordPress hooks.
@@ -22,6 +28,7 @@ class PPFX_Block {
 	 */
 	public function init() {
 		add_action( 'init', array( $this, 'register_block' ) );
+		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_assets' ) );
 	}
 
 	/**
@@ -43,32 +50,23 @@ class PPFX_Block {
 				'editor_script'   => 'ppfx-block-editor',
 			)
 		);
-
-		// Register the editor script so WP can find it for the block.
-		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_assets' ) );
 	}
 
 	/**
-	 * Enqueue the block editor script from the Vite manifest.
+	 * Enqueue editor assets using the Vite asset loader.
 	 *
 	 * @return void
 	 */
 	public function enqueue_block_editor_assets() {
-		$manifest_path = PPFX_PLUGIN_DIR . 'build/.vite/manifest.json';
-		if ( file_exists( $manifest_path ) ) {
-            // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- reading local manifest file, not a remote URL.
-			$manifest = json_decode( file_get_contents( $manifest_path ), true );
-			if ( isset( $manifest['src/js/block-editor.js'] ) ) {
-				$js_file = $manifest['src/js/block-editor.js']['file'];
-				wp_enqueue_script(
-					'ppfx-block-editor',
-					PPFX_PLUGIN_URL . 'build/' . $js_file,
-					array( 'wp-blocks', 'wp-element', 'wp-block-editor' ),
-					PPFX_VERSION,
-					true
-				);
-			}
+		if ( ! class_exists( 'PPFX_Assets' ) ) {
+			return;
 		}
+
+		PPFX_Assets::get_instance()->enqueue_vite_asset(
+			'src/js/admin/block-editor.js',
+			'src/js/admin/block-editor.js',
+			array( 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-i18n' )
+		);
 	}
 
 	/**
@@ -78,8 +76,28 @@ class PPFX_Block {
 	 * @return string
 	 */
 	public function render( $attributes ) {
-		$class     = $attributes['className'] ?? '';
-		$shortcode = new PPFX_Shortcode();
-		return $shortcode->render_shortcode( array( 'class' => $class ) );
+		if ( ! class_exists( 'PPFX_Assets' ) || ! class_exists( 'PPFX_Shortcode' ) ) {
+			return '';
+		}
+
+		PPFX_Assets::enqueue_frontend_assets();
+
+		if ( null === self::$shortcode ) {
+			self::$shortcode = new PPFX_Shortcode();
+		}
+
+		// Sanitize class names to prevent attribute breakout/XSS.
+		$raw_class  = $attributes['className'] ?? '';
+		$classes    = array_map( 'sanitize_html_class', explode( ' ', $raw_class ) );
+		$safe_class = implode( ' ', array_filter( $classes ) );
+
+		$content = self::$shortcode->render_shortcode( array( 'class' => $safe_class ) );
+
+		// Wrap with standard Gutenberg block wrapper attributes.
+		return sprintf(
+			'<div %1$s>%2$s</div>',
+			get_block_wrapper_attributes(),
+			$content
+		);
 	}
 }

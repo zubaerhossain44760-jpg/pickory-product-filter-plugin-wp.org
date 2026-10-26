@@ -1,69 +1,89 @@
 /**
  * Type: Star Rating
  */
-@use 'variables' as *;
+@use "variables" as *;
 
 .ppfx-type-star-rating {
-    .ppfx-star-rating-list {
-        display: flex;
-        flex-direction: column;
+  .ppfx-star-rating-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ppfx-stars {
+    color: v("star-color", $star-color);
+    letter-spacing: 1px;
+    font-size: 14px;
+    transition: color $transition-speed;
+  }
+
+  .ppfx-star-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 12px;
+    border: 1px solid transparent;
+    border-radius: v("star-row-border-radius", $star-row-border-radius);
+    cursor: pointer;
+    transition:
+      background $transition-speed,
+      color $transition-speed,
+      filter $transition-speed;
+    color: v("text-color", $text-color);
+    outline: none;
+
+    // Reset default button styles
+    appearance: none;
+    background: none;
+    box-shadow: none;
+    font: inherit;
+    text-align: left;
+
+    &:hover {
+      color: v("hover-color", $hover-color);
+      background: v("hover-bg-color", $hover-bg-color);
+
+      .ppfx-rating-text,
+      .ppfx-empty-stars {
+        color: v("hover-color", $hover-color);
+      }
     }
 
-    .ppfx-stars {
-        color: $star-color;
-        letter-spacing: 1px;
-        font-size: 14px;
-        transition: color $transition-speed;
+    &:focus-visible {
+      outline: 2px solid v("primary-color", $primary-color);
+      outline-offset: 2px;
     }
 
-    .ppfx-star-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-        padding: 6px 12px;
-        border: 1px solid transparent;
-        border-radius: $border-radius-md;
-        cursor: pointer;
-        transition: background $transition-speed, color $transition-speed, filter $transition-speed;
-        color: $text-color-sec;
-        outline: none;
+    &.is-active {
+      background: v("active-bg-color", $active-bg-color);
+      border-color: v("active-bg-color", $active-bg-color);
+      color: v("active-color", $active-color);
 
-        // Reset default button styles
-        appearance: none;
-        background: none;
-        box-shadow: none;
-        font: inherit;
-        text-align: left;
+      .ppfx-rating-text {
+        color: v("active-color", $active-color);
+      }
 
-        &:hover {
-            background: rgba(var(--ppfx-secondary-rgb), 0.4);
-        }
-
-        &:focus-visible {
-            outline: 2px solid $primary-color;
-            outline-offset: 2px;
-        }
-
-        &.is-active {
-            background: $secondary-color;
-            border-color: $secondary-color;
-            color: $primary-color;
-
-            .ppfx-stars {
-                color: $star-color;
-            }
-        }
+      .ppfx-stars {
+        color: v("star-color", $star-color);
+      }
     }
+  }
 
-    .ppfx-empty-stars {
-        color: $border-color;
-        letter-spacing: 1px;
-        font-size: 14px;
-        margin-left: -4px;
-    }
+  .ppfx-empty-stars {
+    color: v("text-color", $text-color);
+    letter-spacing: 1px;
+    font-size: 14px;
+    margin-left: -4px;
+    transition: color $transition-speed;
 
-    .ppfx-rating-text {
-        font-size: 13px;
+    &:hover {
+      color: v("hover-color", $hover-color);
     }
+  }
+
+  .ppfx-rating-text {
+    font-size: 13px;
+    margin-left: auto;
+    color: inherit;
+    transition: color $transition-speed;
+  }
 }

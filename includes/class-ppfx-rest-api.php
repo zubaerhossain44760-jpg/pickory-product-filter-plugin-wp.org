@@ -12,6 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Require necessary service and rest classes.
 require_once PPFX_PLUGIN_DIR . 'includes/services/class-ppfx-rate-limiter.php';
 require_once PPFX_PLUGIN_DIR . 'includes/services/class-ppfx-product-query-builder.php';
+require_once PPFX_PLUGIN_DIR . 'includes/rest/class-ppfx-fragment-renderer.php';
 require_once PPFX_PLUGIN_DIR . 'includes/rest/class-ppfx-products-controller.php';
 
 /**

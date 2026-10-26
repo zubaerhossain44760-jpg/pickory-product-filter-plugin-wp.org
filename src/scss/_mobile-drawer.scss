@@ -11,7 +11,7 @@
  *
  * All visibility is controlled via CSS classes - NO inline styles.
  */
-@use 'variables' as *;
+@use "variables" as *;
 
 // ============================================================
 // Toggle button
@@ -19,50 +19,55 @@
 // ============================================================
 
 .ppfx-mobile-toggle-slot {
-    display: none;
+  display: none;
 }
 
 html.ppfx-mobile-drawer-view .ppfx-mobile-toggle-slot {
-    display: flex;
-    align-items: center;
-    min-height: 36px;
+  display: flex;
+  align-items: center;
+  min-height: 36px;
 }
 
 html.ppfx-mobile-drawer-view .ppfx-mobile-toggle {
-    display: inline-flex;
+  display: inline-flex;
 }
 
 .ppfx-mobile-toggle {
-    display: none;
-    align-items: center;
-    gap: 6px;
-    border: none;
-    padding: 10px 0;
-    margin: -10px 0;
-    background: transparent;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    color: $text-color;
-    white-space: nowrap;
-    transition: background $transition-speed, border-color $transition-speed,
-        box-shadow $transition-speed;
+  display: none;
+  align-items: center;
+  gap: 6px;
+  border-style: solid;
+  border-color: v("drawer-toggle-border-color", $drawer-toggle-border-color);
+  border-width: v("drawer-toggle-border-width", $drawer-toggle-border-width);
+  border-radius: v("drawer-toggle-border-radius", $drawer-toggle-border-radius);
+  padding: 6px 12px; // Better touch target for mobile screens
+  background: transparent;
+  cursor: pointer;
+  font-size: v("drawer-toggle-size", $drawer-toggle-size);
+  font-weight: 500;
+  color: v("drawer-toggle-color", $drawer-toggle-color);
+  white-space: nowrap;
+  transition:
+    background $transition-speed,
+    border-color $transition-speed,
+    box-shadow $transition-speed;
 
-    svg {
-        flex-shrink: 0;
-        color: $text-color-sec;
-    }
+  svg {
+    flex-shrink: 0;
+    width: 1.1em;
+    height: 1.1em;
+    color: v("drawer-toggle-color", $drawer-toggle-color);
+  }
 
-    &:hover {
-        background: $secondary-color;
-        border-color: $primary-color;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
+  &:hover {
+    border-color: v("primary-color", $primary-color);
+    box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
+  }
 
-    &:focus-visible {
-        outline: 2px solid $primary-color;
-        outline-offset: 2px;
-    }
+  &:focus-visible {
+    outline: 2px solid v("primary-color", $primary-color);
+    outline-offset: 2px;
+  }
 }
 
 // ============================================================
@@ -71,20 +76,24 @@ html.ppfx-mobile-drawer-view .ppfx-mobile-toggle {
 // ============================================================
 
 .ppfx-filter-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.45);
-    z-index: 99998;
-    visibility: hidden;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.25s ease, visibility 0.25s ease;
+  position: fixed;
+  inset: 0;
+  backdrop-filter: blur(2px);
+  background: rgb(0 0 0 / 24.7%);
+  z-index: 99998;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  touch-action: none; // Fix: Prevents iOS Safari background scroll bleeding
+  transition:
+    opacity v("drawer-transition-duration", $drawer-transition-duration) ease,
+    visibility v("drawer-transition-duration", $drawer-transition-duration) ease;
 
-    &.ppfx-visible {
-        visibility: visible;
-        opacity: 1;
-        pointer-events: auto;
-    }
+  &.ppfx-visible {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 
 // ============================================================
@@ -92,26 +101,39 @@ html.ppfx-mobile-drawer-view .ppfx-mobile-toggle {
 // Only applied when JS adds .ppfx-drawer-mode.
 // ============================================================
 
-.ppfx-filter-container.ppfx-primary-filter.ppfx-drawer-mode {
+.ppfx-filter-container.ppfx-primary-filter {
+  &.ppfx-drawer-mode,
+  &.ppfx-simple-toggle-mode {
     position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
     z-index: 99999;
-    width: 300px;
-    max-width: 85vw;
+    width: v("drawer-width", $drawer-width);
+    max-width: calc(100vw - 40px); // Fix: Never overflows small phone screens
+    background-color: v(
+      "container-bg",
+      $container-bg
+    ); // Fix: Never see-through
+
     overflow-y: auto;
     overscroll-behavior: contain;
     transform: translateX(-100%);
-    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-    border-radius: 0 $border-radius-lg $border-radius-lg 0;
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+    will-change: transform; // Fix: Hardware GPU acceleration for smooth 60fps sliding
+    transition: transform
+      v("drawer-transition-duration", $drawer-transition-duration)
+      cubic-bezier(0.25, 1, 0.5, 1);
+    box-shadow: 4px 0 24px rgb(0 0 0 / 15%);
+
+    // Safe area padding for modern iPhones (Notch/Home bar)
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
 
     &.ppfx-open {
-        transform: translateX(0);
+      transform: translateX(0);
     }
+  }
 }
 
 body.ppfx-drawer-open {
-    overflow: hidden;
+  overflow: hidden;
 }

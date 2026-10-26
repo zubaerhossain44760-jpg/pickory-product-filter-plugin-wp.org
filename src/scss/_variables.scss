@@ -1,52 +1,125 @@
-@use 'sass:color';
+// ========================================
+// 1. Base Variables (Synced with PHP PPFX_Appearance)
+// ========================================
+
+// ── 1. Global Colors ──
+$primary-color: #378add;
+$border-color: #e5e7eb;
+$text-color: #111827;
+$hover-color: #378add;
+$hover-bg-color: #e6f1fb;
+$active-color: #378add;
+$active-bg-color: #e6f1fb;
+$label-color: #4b5563;
+$danger-color: #e24b4a;
+
+// ── 2. Container Settings ──
+$container-bg: #fff;
+$container-padding: 1rem;
+$container-border-radius: 12px;
+$container-box-shadow: 0 4px 20px rgb(0 0 0 / 4%);
+
+// ── 3. Panel Title Typography ──
+$panel-title-color: #111827;
+$panel-title-font-size: 16px;
+$panel-title-font-weight: 500;
+
+// ── 4. Section Label Typography ──
+$section-label-font-size: 1rem;
+$section-label-font-weight: 600;
+
+// ── Checkbox ──
+$checkbox-layout: column; /* PHP maps 'vertical' to flex-direction 'column' */
+$checkbox-font-size: 14px;
+$checkbox-size: 16px;
+$checkbox-item-padding: 4px 0;
+$checkbox-item-border-radius: 8px;
+
+// ── Radio ──
+$radio-layout: column; /* PHP maps 'vertical' to flex-direction 'column' */
+$radio-font-size: 14px;
+$radio-size: 16px;
+$radio-item-padding: 4px 0;
+$radio-item-border-radius: 8px;
+
+// ── Button Grid ──
+$btn-grid-font-size: 12px;
+$btn-grid-font-weight: 500;
+$btn-grid-bg: #fff;
+$btn-grid-border-radius: 8px;
+
+// ── Dropdown ──
+$dropdown-font-size: 14px;
+$dropdown-bg: #fff;
+$dropdown-border-color: #e5e7eb;
+$dropdown-border-radius: 8px;
+
+// ── Search List ──
+$search-list-layout: column;
+$search-list-font-size: 13px;
+$search-list-border-color: #e5e7eb;
+$search-list-border-radius: 8px;
+
+// ── Slider ──
+$slider-color: #378add;
+$slider-track-bg: #e5e7eb; // PHP returns '', SCSS fallback provided
+$slider-track-thickness: 5px;
+$slider-track-border-radius: 10px;
+$slider-thumb-size: 18px;
+$slider-thumb-bg: #fff;
+$slider-thumb-border-color: #378add; // PHP returns '', SCSS fallback provided
+$slider-thumb-border-radius: 50%;
+$slider-thumb-border-width: 2px;
+$slider-label-color: #111827; // PHP returns '', SCSS fallback provided
+
+// ── Star Rating ──
+$star-color: #f59e0b;
+$star-row-border-radius: 8px;
+
+// ── Color Swatch ──
+$color-swatch-size: 40px;
+$color-swatch-border-radius: 50%;
+
+// ── Image Swatch ──
+$image-swatch-size: 40px;
+$image-swatch-border-radius: 6px;
+
+// ── Toggle ──
+$toggle-knob-color: #fff;
+$toggle-label-font-size: 14px;
+$toggle-surface: #fff;
+
+// ── Filter / Apply Button ──
+$apply-btn-bg: #378add;
+$apply-btn-text-color: #fff;
+$apply-btn-hover-bg: #2563eb;
+$apply-btn-font-size: 1rem;
+$apply-btn-border-radius: 8px;
+
+// ── Drawer (Mobile) ──
+$drawer-width: 350px;
+$drawer-toggle-size: 14px;
+$drawer-toggle-color: #111827;
+$drawer-toggle-border-color: #111827;
+$drawer-toggle-border-width: 1px;
+$drawer-toggle-border-radius: 8px;
+$drawer-transition-duration: 0.3s;
 
 // ========================================
-// Design Tokens — Raw Fallbacks
+// 2. Dynamic Variable Helper Function
 // ========================================
-$raw-primary: #378ADD;
-$raw-primary-rgb: 55, 138, 221;
-$raw-secondary: #E6F1FB;
-$raw-secondary-rgb: 230, 241, 251;
-$raw-text: #111827;
-$raw-text-sec: #4b5563;
-$raw-border: #e5e7eb;
-$raw-star: #EF9F27;
-$raw-danger: #e24b4a;
+@function v($var-name, $fallback) {
+  @return var(--ppfx-#{$var-name}, $fallback);
+}
 
-// Layout & Radius
-$border-radius-lg: 12px;
+// ========================================
+// 3. Utility Variables (for SCSS-only fallbacks)
+// ========================================
 $border-radius-md: 8px;
-$transition-speed: 0.10s;
+$border-radius-lg: 12px;
+$transition-speed: 0.15s;
 
-// ========================================
-// Runtime-overridable Custom Properties
-// ========================================
-:root {
-    --ppfx-primary-color: #{$raw-primary};
-    --ppfx-primary-rgb: #{$raw-primary-rgb};
-    --ppfx-secondary-color: #{$raw-secondary};
-    --ppfx-secondary-rgb: #{$raw-secondary-rgb};
-    --ppfx-text-color: #{$raw-text};
-    --ppfx-text-color-secondary: #{$raw-text-sec};
-    --ppfx-border-color: #{$raw-border};
-    --ppfx-star-color: #{$raw-star};
-    --ppfx-danger-color: #{$raw-danger};
-}
-
-// ========================================
-// SCSS Variables (var(--token, fallback))
-// ========================================
-$primary-color: var(--ppfx-primary-color, #{$raw-primary});
-$secondary-color: var(--ppfx-secondary-color, #{$raw-secondary});
-$text-color: var(--ppfx-text-color, #{$raw-text});
-$text-color-sec: var(--ppfx-text-color-secondary, #{$raw-text-sec});
-$border-color: var(--ppfx-border-color, #{$raw-border});
-$star-color: var(--ppfx-star-color, #{$raw-star});
-$danger-color: var(--ppfx-danger-color, #{$raw-danger});
-
-// ========================================
-// Utility Classes
-// ========================================
-.ppfx-hidden {
-    display: none !important;
-}
+// ── Raw Color Variables (for legacy fallbacks) ──
+$raw-primary: #378add;
+$raw-primary-rgb: 55, 138, 221;
+$raw-text: #111827;

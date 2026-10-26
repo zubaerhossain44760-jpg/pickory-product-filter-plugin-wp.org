@@ -12,7 +12,10 @@ import { toInternalParams } from "./url";
  */
 export function ppfxMd5(input) {
   function md5cycle(x, k) {
-    var a = x[0], b = x[1], c = x[2], d = x[3];
+    var a = x[0],
+      b = x[1],
+      c = x[2],
+      d = x[3];
 
     a = ff(a, b, c, d, k[0], 7, -680876936);
     d = ff(d, a, b, c, k[1], 12, -389564586);
@@ -94,11 +97,11 @@ export function ppfxMd5(input) {
   }
 
   function ff(a, b, c, d, x, s, t) {
-    return cmn((b & c) | ((~b) & d), a, b, x, s, t);
+    return cmn((b & c) | (~b & d), a, b, x, s, t);
   }
 
   function gg(a, b, c, d, x, s, t) {
-    return cmn((b & d) | (c & (~d)), a, b, x, s, t);
+    return cmn((b & d) | (c & ~d), a, b, x, s, t);
   }
 
   function hh(a, b, c, d, x, s, t) {
@@ -106,7 +109,7 @@ export function ppfxMd5(input) {
   }
 
   function ii(a, b, c, d, x, s, t) {
-    return cmn(c ^ (b | (~d)), a, b, x, s, t);
+    return cmn(c ^ (b | ~d), a, b, x, s, t);
   }
 
   function md51(s) {
@@ -135,22 +138,27 @@ export function ppfxMd5(input) {
     var md5blks = [],
       i;
     for (i = 0; i < 64; i += 4) {
-      md5blks[i >> 2] = s.charCodeAt(i) + (s.charCodeAt(i + 1) << 8) + (s.charCodeAt(i + 2) << 16) + (s.charCodeAt(i + 3) << 24);
+      md5blks[i >> 2] =
+        s.charCodeAt(i) +
+        (s.charCodeAt(i + 1) << 8) +
+        (s.charCodeAt(i + 2) << 16) +
+        (s.charCodeAt(i + 3) << 24);
     }
     return md5blks;
   }
 
   function add32(a, b) {
-    return (a + b) & 0xFFFFFFFF;
+    return (a + b) & 0xffffffff;
   }
 
   function hex(x) {
-    var hex_chr = '0123456789abcdef'.split('');
+    var hex_chr = "0123456789abcdef".split("");
     function rhex(n) {
-      var s = '',
+      var s = "",
         j = 0;
       for (; j < 4; j++)
-        s += hex_chr[(n >> (j * 8 + 4)) & 0x0F] + hex_chr[(n >> (j * 8)) & 0x0F];
+        s +=
+          hex_chr[(n >> (j * 8 + 4)) & 0x0f] + hex_chr[(n >> (j * 8)) & 0x0f];
       return s;
     }
     for (var i = 0; i < x.length; i++) x[i] = rhex(x[i]);
@@ -158,7 +166,7 @@ export function ppfxMd5(input) {
 
   var state = md51(input);
   hex(state);
-  return state.join('');
+  return state.join("");
 }
 
 /**
@@ -173,7 +181,15 @@ export function ppfxMd5(input) {
  */
 export function ppfxGenerateHash(params) {
   const internalParams = toInternalParams(params);
-  const excluded = ["post_type", "paged", "page", "s", "orderby", "order"];
+  const excluded = [
+    "post_type",
+    "paged",
+    "page",
+    "s",
+    "orderby",
+    "order",
+    "instance_id",
+  ];
   const obj = {};
 
   for (const [key, value] of Object.entries(internalParams)) {

@@ -24,11 +24,9 @@ export default defineConfig({
     rollupOptions: {
       input: {
         app: resolve(__dirname, "src/js/app.js"),
-        blockEditor: resolve(__dirname, "src/js/block-editor.js"),
+        blockEditor: resolve(__dirname, "src/js/admin/block-editor.js"),
         ppfxAdmin: resolve(__dirname, "src/js/admin/ppfx-admin.js"),
-        ppfxTermMeta: resolve(__dirname, "src/js/admin/ppfx-term-meta.js"),
         ppfxAdminCss: resolve(__dirname, "src/css/ppfx-admin.css"),
-        ppfxTermMetaCss: resolve(__dirname, "src/css/ppfx-term-meta.css"),
       },
       output: {
         entryFileNames: "js/[name]-[hash].js",

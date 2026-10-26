@@ -1,10 +1,14 @@
 import { fetchProducts } from "../api";
-import { updateUrl, cssEscape } from "../utils/url";
+import {
+  cssEscape,
+  PPFX_URL_State,
+  toPublicParams,
+  serializeArrayValues,
+  deserializeArrayValues,
+} from "../utils/url";
 import { runCompatBridge } from "../utils/compat-bridge";
-import { ppfxGenerateHash } from "../utils/hash";
 import {
   RESERVED_FILTER_KEYS,
-  filterFormInstances,
   registerGlobalInstance,
   unregisterGlobalInstance,
   syncAllUIs,
@@ -16,7 +20,7 @@ import {
  * Check if price filter values are at their default bounds.
  *
  * @param {HTMLElement} formElement - The filter form element.
- * @param {object} [params] - Optional params object to check (if checking state values).
+ * @param {object} [params] - Optional params object to check.
  * @returns {boolean} True if price is at default bounds.
  */
 const isPriceAtDefaultBounds = (formElement, params = null) => {
@@ -33,15 +37,11 @@ const isPriceAtDefaultBounds = (formElement, params = null) => {
   let currentMin, currentMax;
 
   if (params) {
-    // Checking params object (from state)
     currentMin = Number.parseFloat(params.min_price ?? minBound);
     currentMax = Number.parseFloat(params.max_price ?? maxBound);
-
-    // Clamp invalid values to bounds
     if (!Number.isFinite(currentMin)) currentMin = minBound;
     if (!Number.isFinite(currentMax)) currentMax = maxBound;
   } else {
-    // Checking DOM input values
     const minInput = formElement.querySelector('input[name="min_price"]');
     const maxInput = formElement.querySelector('input[name="max_price"]');
     if (!minInput || !maxInput) return false;
@@ -57,14 +57,7 @@ export const initFilterForm = (
   productsContainer,
   options = {},
 ) => {
-  // Shared global state
-  window.ppfxGlobalState = window.ppfxGlobalState || {
-    filters: {},
-    sort: { orderby: "", order: "" },
-    paged: 1,
-  };
-
-  const { onAfterUpdate = () => { }, isAutoFilter = false } = options;
+  const { onAfterUpdate = () => {}, isAutoFilter = false } = options;
   const productsSelector = ".ppfx-products-wrapper";
   const instanceId = formElement.dataset.ppfxInstance;
   const targetSelector = formElement.dataset.ppfxTarget;
@@ -73,22 +66,22 @@ export const initFilterForm = (
   let filterTimeout;
   let currentAbortController = null;
   let activeRequestId = 0;
-  let preloaderStartTime = 0;
 
   const root = formElement.closest(".ppfx-filter-root") || formElement;
-
-  // Debug logger - only active when debug mode is enabled
-  const debugLog = (...args) => {
-    if (window.ppfxFilterData?.debug) {
-      console.log(...args);
-    }
-  };
+  const isPrimary =
+    formElement.closest(".ppfx-primary-filter") !== null ||
+    root === document.querySelector(".ppfx-filter-root");
+  const domAbortController = new AbortController();
+  const { signal } = domAbortController;
 
   /**
    * Resolves the target product container for this specific filter instance.
    */
   const getLiveProductsContainer = () => {
-    if (currentProductsContainer && document.body.contains(currentProductsContainer)) {
+    if (
+      currentProductsContainer &&
+      document.body.contains(currentProductsContainer)
+    ) {
       return currentProductsContainer;
     }
 
@@ -97,7 +90,9 @@ export const initFilterForm = (
       container = document.querySelector(targetSelector);
     }
     if (!container && instanceId) {
-      container = document.querySelector(`.ppfx-products-wrapper[data-ppfx-instance='${cssEscape(instanceId)}']`);
+      container = document.querySelector(
+        `.ppfx-products-wrapper[data-ppfx-instance='${cssEscape(instanceId)}']`,
+      );
     }
     if (!container) {
       container =
@@ -110,31 +105,40 @@ export const initFilterForm = (
     return container;
   };
 
-  /**
-   * hasChipsApplied — checks if the chips UI has any active filter chips.
-   */
+  /** Resolves the before-loop fragment immediately preceding this product loop. */
+  const getLiveToolbar = () => {
+    const container = getLiveProductsContainer();
+    let sibling = container?.previousElementSibling;
+
+    while (sibling) {
+      if (sibling.matches("[data-ppfx-loop-toolbar]")) {
+        return sibling;
+      }
+      sibling = sibling.previousElementSibling;
+    }
+
+    return document.querySelector("[data-ppfx-loop-toolbar]");
+  };
+
   const hasChipsApplied = () => {
-    const chipsContainer = root.querySelector("[data-ppfx-active-filters]");
+    let chipsContainer = root.querySelector("[data-ppfx-active-filters]");
+    const detachedWrap = document.querySelector('[data-ppfx-chips-for="*"]');
+    if (detachedWrap) {
+      chipsContainer = detachedWrap.querySelector("[data-ppfx-active-filters]");
+    }
     return chipsContainer && chipsContainer.children.length > 0;
   };
 
-  /**
-   * Check if URL contains any PPFX filter parameters.
-   * Detects ppfx_*, filter_*, and known filter keys.
-   */
   const urlHasPpfxFilters = () => {
     const params = new URLSearchParams(window.location.search);
-    return Array.from(params.keys()).some((key) =>
-      key.startsWith('ppfx_') ||
-      key.startsWith('filter_') ||
-      (window.ppfxFilterData?.filterKeys || []).includes(key)
+    return Array.from(params.keys()).some(
+      (key) =>
+        key.startsWith("ppfx_") ||
+        key.startsWith("filter_") ||
+        (window.ppfxFilterData?.filterKeys || []).includes(key),
     );
   };
 
-  /**
-   * hasActiveSelections — checks the DOM directly to see if the user has
-   * engaged any filter widget.
-   */
   const hasActiveSelections = () => {
     if (
       formElement.querySelector(
@@ -158,7 +162,6 @@ export const initFilterForm = (
       return true;
     }
 
-    // Check price filter
     if (!isPriceAtDefaultBounds(formElement)) {
       return true;
     }
@@ -167,76 +170,101 @@ export const initFilterForm = (
   };
 
   /**
-   * getParams — assembles the API request params from window.ppfxGlobalState.
+   * Reads canonical state and strips default prices before API requests.
    */
-  const getParams = () => {
-    const params = {};
-
-    Object.assign(params, window.ppfxGlobalState.filters);
-
-    // Remove price params if they're at default bounds
-    if (isPriceAtDefaultBounds(formElement, params)) {
-      delete params.min_price;
-      delete params.max_price;
-    }
-
-    if (window.ppfxGlobalState.sort.orderby) {
-      params.orderby = window.ppfxGlobalState.sort.orderby;
-    }
-    if (window.ppfxGlobalState.sort.order) {
-      params.order = window.ppfxGlobalState.sort.order;
-    }
-
-    if (window.ppfxGlobalState.paged > 1) {
-      params.page = String(window.ppfxGlobalState.paged);
-    }
-
+  const getCleanRequestParams = (canonicalParams = null) => {
+    const params = {
+      ...(canonicalParams || PPFX_URL_State.getCanonicalState()),
+    };
     return params;
   };
 
-  const executeFilterChange = async (params, formElement, onAfterUpdate, inputType = "default") => {
+  /**
+   * Executes the API fetch with AbortController to prevent network race conditions.
+   *
+   * @param {object} params - Filter and sort parameters.
+   * @param {string} [source="filter"] - Triggering interaction source.
+   */
+  const executeFilterChange = async (params, source = "filter") => {
     const requestId = ++activeRequestId;
     let hasError = false;
     let errorMessage = null;
 
-    // CRITICAL: Update URL BEFORE fetch to prevent race conditions
-    // This ensures rapid clicks don't lose state
-    if (inputType !== "popstate") {
-      updateUrl(params, true);
-    }
-
+    // Cancel in-flight request
     if (currentAbortController) {
       currentAbortController.abort();
     }
     currentAbortController = new AbortController();
 
     try {
-      const requestParams = { ...params };
+      const publicParams = toPublicParams(params);
+      const requestParams = { ...publicParams };
+
+      // Preserve archive taxonomy context (e.g. category, product_tag) if not explicitly overridden by user.
+      const currentContext = window.ppfxFilterData?.currentContext;
+      if (currentContext && typeof currentContext === "object") {
+        const publicContext = toPublicParams(currentContext);
+        for (const [contextKey, contextVal] of Object.entries(publicContext)) {
+          if (
+            contextKey === "__proto__" ||
+            contextKey === "constructor" ||
+            contextKey === "prototype"
+          ) {
+            continue;
+          }
+          if (
+            contextVal !== undefined &&
+            contextVal !== null &&
+            contextVal !== "" &&
+            (requestParams[contextKey] === undefined ||
+              requestParams[contextKey] === null ||
+              requestParams[contextKey] === "")
+          ) {
+            requestParams[contextKey] = contextVal;
+          }
+        }
+      }
+
       if (instanceId) {
         requestParams.instance_id = instanceId;
       }
+      requestParams.toolbar_missing = getLiveToolbar() ? "0" : "1";
 
-      const data = await fetchProducts(requestParams, currentAbortController.signal);
+      const data = await fetchProducts(
+        requestParams,
+        currentAbortController.signal,
+      );
 
       if (requestId !== activeRequestId) return;
 
       if (!data || !data.success || !data.fragments) {
         hasError = true;
-        errorMessage = data?.message || 'UnexpectedResponse';
+        errorMessage = data?.message || "UnexpectedResponse";
       } else if (data && data.success && data.fragments) {
         const allowedFragmentSelectors = new Set([
-          '.ppfx-products-wrapper',
-          '.woocommerce-result-count',
-          '.woocommerce-ordering',
-          '.woocommerce-pagination',
+          ".ppfx-loop-toolbar",
+          ".ppfx-products-wrapper",
+          ".woocommerce-result-count",
+          ".woocommerce-pagination",
         ]);
+
+        let toolbarInserted = false;
 
         for (const [selector, html] of Object.entries(data.fragments)) {
           if (!allowedFragmentSelectors.has(selector)) {
             continue;
           }
 
-          if (selector === productsSelector) {
+          if (selector === ".ppfx-loop-toolbar") {
+            const targetToolbar = getLiveToolbar();
+            if (!targetToolbar) {
+              const liveContainer = getLiveProductsContainer();
+              if (liveContainer && html.trim()) {
+                liveContainer.insertAdjacentHTML("beforebegin", html.trim());
+                toolbarInserted = true;
+              }
+            }
+          } else if (selector === productsSelector) {
             const targetLiveContainer = getLiveProductsContainer();
             if (!targetLiveContainer) {
               continue;
@@ -244,7 +272,7 @@ export const initFilterForm = (
 
             const tempDiv = document.createElement("div");
             tempDiv.innerHTML = html.trim();
-            let newElement = tempDiv.querySelector('.ppfx-products-wrapper');
+            let newElement = tempDiv.querySelector(".ppfx-products-wrapper");
 
             if (!newElement) {
               newElement = document.createElement("div");
@@ -272,17 +300,16 @@ export const initFilterForm = (
                 target = liveContainer.parentElement?.querySelector(selector);
               }
             }
-            if (!target && filterFormInstances.size === 1) {
+            if (!target) {
               target = document.querySelector(selector);
             }
             if (target) {
-              if (selector === ".woocommerce-ordering") {
+              if (selector === ".woocommerce-pagination") {
                 const normalizedHtml = html.trim();
-                target.innerHTML = normalizedHtml;
-                target.style.display = normalizedHtml ? "" : "none";
-              } else if (selector === ".woocommerce-pagination") {
-                const normalizedHtml = html.trim();
-                if (normalizedHtml && !normalizedHtml.includes('style="display:none"')) {
+                if (
+                  normalizedHtml &&
+                  !normalizedHtml.includes('style="display:none"')
+                ) {
                   target.outerHTML = normalizedHtml;
                 } else {
                   target.style.display = "none";
@@ -291,7 +318,6 @@ export const initFilterForm = (
                 target.innerHTML = html;
               }
             } else if (selector === ".woocommerce-pagination" && html.trim()) {
-              // Scoped Fallback: Only reconstruct if the missing fragment is pagination.
               const liveContainer = getLiveProductsContainer();
               if (liveContainer) {
                 const fragmentWrapper = document.createElement("div");
@@ -308,16 +334,35 @@ export const initFilterForm = (
           }
         }
 
+        if (typeof data.loop?.has_results === "boolean") {
+          const toolbar = getLiveToolbar();
+          if (toolbar) {
+            toolbar.hidden = !data.loop.has_results;
+          }
+        }
+
         runCompatBridge();
         triggerWooCommerceEvents();
-
-        // CRITICAL: URL already updated above, now just sync other instances
         syncAllUIs();
+
+        if (typeof jQuery !== "undefined" && jQuery(document.body).trigger) {
+          jQuery(document.body).trigger("wc-enhanced-select-init");
+        }
 
         const eventDetail = {
           timestamp: Date.now(),
           container: getLiveProductsContainer(),
+          source,
         };
+
+        if (toolbarInserted) {
+          document.body.dispatchEvent(
+            new CustomEvent("ppfx:toolbar_inserted", {
+              bubbles: true,
+              detail: eventDetail,
+            }),
+          );
+        }
 
         document.body.dispatchEvent(
           new CustomEvent("ppfx_products_rendered", {
@@ -339,83 +384,58 @@ export const initFilterForm = (
       }
 
       if (requestId !== activeRequestId) return;
-
-      // Store error info for finally block
       hasError = true;
       errorMessage = err.message;
     } finally {
-      // Unified cleanup with minimum preloader duration
       if (requestId === activeRequestId) {
-        const elapsedTime = Date.now() - preloaderStartTime;
-        const minimumDuration = 600; // ms - reduced from 1000ms for snappier UX
-        const remainingDelay = Math.max(0, minimumDuration - elapsedTime);
-
-        setTimeout(() => {
-          if (requestId === activeRequestId) {
-            debugLog('[PPFX] Removing overlays after delay', Date.now(), 'remainingDelay was:', remainingDelay);
-
-            const cleanupContainer = getLiveProductsContainer();
-            if (cleanupContainer) {
-              cleanupContainer.classList.remove(
-                "ppfx-loading",
-                "ppfx-initial-load",
-              );
-              debugLog('[PPFX] Grid overlay REMOVED', Date.now());
-              cleanupContainer.setAttribute("aria-busy", "false");
-
-              // Add error class if request failed
-              if (hasError) {
-                cleanupContainer.classList.add("ppfx-error");
-              }
-            }
-            document.documentElement.classList.remove("ppfx-has-url-filters");
-            formElement.classList.remove("ppfx-loading");
-            debugLog('[PPFX] Filter overlay REMOVED', Date.now());
-
-            // Dispatch error event if needed
-            if (hasError) {
-              document.body.dispatchEvent(
-                new CustomEvent("ppfx:filter_error", {
-                  detail: { error: errorMessage },
-                }),
-              );
-            }
-
-            onAfterUpdate(params);
+        const cleanupContainer = getLiveProductsContainer();
+        if (cleanupContainer) {
+          cleanupContainer.classList.remove(
+            "ppfx-loading",
+            "ppfx-initial-load",
+          );
+          cleanupContainer.setAttribute("aria-busy", "false");
+          if (hasError) {
+            cleanupContainer.classList.add("ppfx-error");
           }
-        }, remainingDelay);
+        }
+        document.documentElement.classList.remove("ppfx-has-url-filters");
+        formElement.classList.remove("ppfx-loading");
+
+        if (hasError) {
+          document.body.dispatchEvent(
+            new CustomEvent("ppfx:filter_error", {
+              detail: { error: errorMessage },
+            }),
+          );
+        }
+
+        onAfterUpdate(params);
       }
     }
   };
 
   /**
-   * handleFilterChange — entry point for all filter/sort/page changes.
+   * Called whenever URL state changes (unidirectional subscriber).
    */
-  const handleFilterChange = (resetPage = false, inputType = "default") => {
-    if (resetPage) {
-      window.ppfxGlobalState.paged = 1;
-    }
-
-    const params = getParams();
-
+  const onUrlStateChange = (params, source = "default") => {
     clearTimeout(filterTimeout);
 
-    let delay = 0;
-    if (inputType === 'slider' || inputType === 'text') {
-      delay = 300;
-    }
+    const cleanParams = getCleanRequestParams(params);
+
+    const delay =
+      source === "slider" || source === "text"
+        ? (window.ppfxFilterData?.debounceDelay ?? 300)
+        : 0;
 
     const triggerFetch = () => {
-      preloaderStartTime = Date.now();
       const liveContainer = getLiveProductsContainer();
       if (liveContainer) {
         liveContainer.classList.add("ppfx-loading");
-        debugLog('[PPFX] Grid overlay ADDED', Date.now());
         liveContainer.setAttribute("aria-busy", "true");
       }
       formElement.classList.add("ppfx-loading");
-      debugLog('[PPFX] Filter overlay ADDED', Date.now());
-      void executeFilterChange(params, formElement, onAfterUpdate, inputType);
+      void executeFilterChange(cleanParams, source);
     };
 
     if (delay === 0) {
@@ -425,33 +445,81 @@ export const initFilterForm = (
     }
   };
 
-  const toggleFilterValue = (name, value, isChecked) => {
-    if (name === '__proto__' || name === 'constructor' || name === 'prototype') return;
+  /**
+   * Helper to commit a state transition via the URL State Manager.
+   */
+  const commitFilterUpdate = (modifierFn, options = {}) => {
+    const { resetPage = true, pushHistory = true, source = "user" } = options;
+    const current = PPFX_URL_State.getCanonicalState();
+    const next = { ...current };
+
+    if (resetPage) {
+      delete next.page;
+      delete next.paged;
+    }
+
+    modifierFn(next);
+
+    if (
+      isAutoFilter ||
+      source === "submit" ||
+      source === "pagination" ||
+      source === "sort" ||
+      source === "reset"
+    ) {
+      PPFX_URL_State.setCanonicalState(next, { pushHistory, source });
+    }
+  };
+
+  // --- STATE MUTATION HELPERS ---
+
+  const toggleMultiValue = (name, value, isChecked) => {
+    if (name === "__proto__" || name === "constructor" || name === "prototype")
+      return;
     if (RESERVED_FILTER_KEYS.has(name)) return;
-    let current = window.ppfxGlobalState.filters[name] ? window.ppfxGlobalState.filters[name].split(",") : [];
-    if (isChecked) {
-      if (!current.includes(value)) current.push(value);
-    } else {
-      current = current.filter(v => v !== value);
-    }
-    if (current.length > 0) {
-      window.ppfxGlobalState.filters[name] = current.join(",");
-    } else {
-      delete window.ppfxGlobalState.filters[name];
-    }
+
+    commitFilterUpdate(
+      (state) => {
+        const list = deserializeArrayValues(state[name]);
+        const nextList = isChecked
+          ? Array.from(new Set([...list, value]))
+          : list.filter((v) => v !== value);
+
+        if (nextList.length > 0) {
+          state[name] = serializeArrayValues(nextList);
+        } else {
+          delete state[name];
+        }
+      },
+      { resetPage: true, pushHistory: true, source: "toggle_multivalue" },
+    );
   };
 
-  const updateFilterState = (key, value) => {
-    if (key === '__proto__' || key === 'constructor' || key === 'prototype') return;
-    if (RESERVED_FILTER_KEYS.has(key)) return;
-    if (value === undefined || value === null || value === "" || value === "0") {
-      delete window.ppfxGlobalState.filters[key];
-    } else {
-      window.ppfxGlobalState.filters[key] = value;
-    }
+  const setSingleValue = (name, value, options = {}) => {
+    if (name === "__proto__" || name === "constructor" || name === "prototype")
+      return;
+    if (RESERVED_FILTER_KEYS.has(name)) return;
+
+    const { pushHistory = true, source = "set_value" } = options;
+
+    commitFilterUpdate(
+      (state) => {
+        if (
+          value === undefined ||
+          value === null ||
+          value === "" ||
+          value === "0"
+        ) {
+          delete state[name];
+        } else {
+          state[name] = String(value);
+        }
+      },
+      { resetPage: true, pushHistory, source },
+    );
   };
 
-  const updatePriceState = () => {
+  const updatePriceState = (pushHistory = false) => {
     const minInput = formElement.querySelector('input[name="min_price"]');
     const maxInput = formElement.querySelector('input[name="max_price"]');
 
@@ -459,211 +527,309 @@ export const initFilterForm = (
       const minVal = minInput.value;
       const maxVal = maxInput.value;
 
-      if (minVal && Number(minVal) !== Number(minInput.min)) {
-        updateFilterState("min_price", minVal);
-      } else {
-        updateFilterState("min_price", "");
-      }
+      commitFilterUpdate(
+        (state) => {
+          if (minVal) {
+            state.min_price = minVal;
+          } else {
+            delete state.min_price;
+          }
 
-      if (maxVal && Number(maxVal) !== Number(maxInput.max)) {
-        updateFilterState("max_price", maxVal);
-      } else {
-        updateFilterState("max_price", "");
+          if (maxVal) {
+            state.max_price = maxVal;
+          } else {
+            delete state.max_price;
+          }
+        },
+        {
+          resetPage: true,
+          pushHistory,
+          source: pushHistory ? "slider_commit" : "slider",
+        },
+      );
+    }
+  };
+
+  // --- FORM STATE SERIALIZER (for manual filter submission) ---
+
+  const serializeFormState = () => {
+    const state = {};
+
+    // 1. Checkboxes and Radios
+    formElement
+      .querySelectorAll(
+        'input[type="checkbox"]:checked, input[type="radio"]:checked',
+      )
+      .forEach((input) => {
+        const name = input.name;
+        if (!name || name.startsWith("__")) return;
+        if (input.type === "checkbox") {
+          const list = state[name] ? state[name].split(",") : [];
+          if (!list.includes(input.value)) list.push(input.value);
+          state[name] = list.join(",");
+        } else {
+          state[name] = input.value;
+        }
+      });
+
+    // 2. Selects (except orderby)
+    formElement
+      .querySelectorAll('select:not([name="orderby"])')
+      .forEach((select) => {
+        if (select.name && select.value) {
+          state[select.name] = select.value;
+        }
+      });
+
+    // 3. Hidden inputs (swatches, button grid, star ratings, toggle switches)
+    formElement
+      .querySelectorAll(
+        ".ppfx-grid-hidden-input, .ppfx-swatch-hidden-input, .ppfx-rating-input, .ppfx-toggle-input",
+      )
+      .forEach((input) => {
+        if (input.name && input.value) {
+          state[input.name] = input.value;
+        }
+      });
+
+    // 4. Price slider inputs
+    const minInput = formElement.querySelector('input[name="min_price"]');
+    const maxInput = formElement.querySelector('input[name="max_price"]');
+    if (minInput && maxInput) {
+      const minBound = Number.parseFloat(minInput.min || minInput.dataset.min);
+      const maxBound = Number.parseFloat(maxInput.max || maxInput.dataset.max);
+      const minVal = Number.parseFloat(minInput.value);
+      const maxVal = Number.parseFloat(maxInput.value);
+
+      if (
+        Number.isFinite(minVal) &&
+        Number.isFinite(minBound) &&
+        minVal !== minBound
+      ) {
+        state.min_price = String(minVal);
+      }
+      if (
+        Number.isFinite(maxVal) &&
+        Number.isFinite(maxBound) &&
+        maxVal !== maxBound
+      ) {
+        state.max_price = String(maxVal);
       }
     }
+
+    // 5. Preserve existing sort/orderby from URL state
+    const current = PPFX_URL_State.getCanonicalState();
+    if (current.orderby) state.orderby = current.orderby;
+    if (current.order) state.order = current.order;
+
+    return state;
   };
 
   // --- NON-NATIVE INPUT HANDLERS ---
 
   // 1. Button Grid (Multi-select)
-  formElement.addEventListener("click", (e) => {
-    const btn = e.target.closest(".ppfx-grid-btn");
-    if (!btn) return;
-    if (btn.closest(".ppfx-swatch-list")) return;
+  formElement.addEventListener(
+    "click",
+    (e) => {
+      const btn = e.target.closest(".ppfx-grid-btn");
+      if (!btn || btn.closest(".ppfx-swatch-list")) return;
 
-    const grid = btn.closest(".ppfx-button-grid");
-    if (!grid) return;
+      const grid = btn.closest(".ppfx-button-grid");
+      if (!grid) return;
 
-    const hiddenInput = grid.querySelector(".ppfx-grid-hidden-input");
-    if (!hiddenInput) return;
+      const hiddenInput = grid.querySelector(".ppfx-grid-hidden-input");
+      if (!hiddenInput) return;
 
-    const name = hiddenInput.name;
-    const val = btn.dataset.value;
-    const isNowActive = !btn.classList.contains("is-active");
+      const name = hiddenInput.name;
+      const val = btn.dataset.value;
+      const isNowActive = !btn.classList.contains("is-active");
 
-    toggleFilterValue(name, val, isNowActive);
-
-    // Sync UI immediately to prevent visual drift during fast clicking
-    syncAllUIs();
-
-    if (isAutoFilter) {
-      handleFilterChange(true, "checkbox");
-    }
-  });
+      toggleMultiValue(name, val, isNowActive);
+    },
+    { signal },
+  );
 
   // 2. Toggle Switch (Binary)
-  formElement.addEventListener("click", (e) => {
-    const toggle = e.target.closest(".ppfx-frontend-toggle");
-    if (!toggle) return;
+  formElement.addEventListener(
+    "click",
+    (e) => {
+      const toggle = e.target.closest(".ppfx-frontend-toggle");
+      if (!toggle) return;
 
-    const row = toggle.closest(".ppfx-toggle-row");
-    if (!row) return;
-    const input = row.querySelector(".ppfx-toggle-input");
-    if (!input) return;
+      const row = toggle.closest(".ppfx-toggle-row");
+      if (!row) return;
+      const input = row.querySelector(".ppfx-toggle-input");
+      if (!input) return;
 
-    const name = input.name;
-    const isNowActive = !toggle.classList.contains("is-active");
+      const name = input.name;
+      const isNowActive = !toggle.classList.contains("is-active");
 
-    updateFilterState(name, isNowActive ? "1" : "0");
+      setSingleValue(name, isNowActive ? "1" : "");
+    },
+    { signal },
+  );
 
-    // Sync UI immediately to prevent visual drift
-    syncAllUIs();
+  // 2b. Keyboard accessibility for custom toggle switch (Space / Enter)
+  formElement.addEventListener(
+    "keydown",
+    (e) => {
+      if (e.key !== " " && e.key !== "Enter") return;
+      const toggle = e.target.closest(".ppfx-frontend-toggle");
+      if (!toggle) return;
 
-    if (isAutoFilter) {
-      handleFilterChange(true, "checkbox");
-    }
-  });
+      e.preventDefault();
+      toggle.click();
+    },
+    { signal },
+  );
 
   // 3. Star Rating (Single Select)
-  formElement.addEventListener("click", (e) => {
-    const row = e.target.closest(".ppfx-star-row");
-    if (!row) return;
+  formElement.addEventListener(
+    "click",
+    (e) => {
+      const row = e.target.closest(".ppfx-star-row");
+      if (!row) return;
 
-    const list = row.closest(".ppfx-star-rating-list");
-    if (!list) return;
-    const input = list.querySelector(".ppfx-rating-input");
-    if (!input) return;
+      const list = row.closest(".ppfx-star-rating-list");
+      if (!list) return;
+      const input = list.querySelector(".ppfx-rating-input");
+      if (!input) return;
 
-    const name = input.name;
-    const ratingVal = row.dataset.rating;
-    const isNowActive = !row.classList.contains("is-active");
+      const name = input.name;
+      const ratingVal = row.dataset.rating;
+      const isNowActive = !row.classList.contains("is-active");
 
-    updateFilterState(name, isNowActive ? ratingVal : "");
-
-    // Sync UI immediately to prevent visual drift
-    syncAllUIs();
-
-    if (isAutoFilter) {
-      handleFilterChange(true, "checkbox");
-    }
-  });
+      setSingleValue(name, isNowActive ? ratingVal : "");
+    },
+    { signal },
+  );
 
   // 4. Swatches (Multi-select)
-  formElement.addEventListener("click", (e) => {
-    const target =
-      e.target.closest(".ppfx-swatch-item") ||
-      e.target.closest(".ppfx-swatch-list .ppfx-grid-btn");
-    if (!target) return;
+  formElement.addEventListener(
+    "click",
+    (e) => {
+      const target =
+        e.target.closest(".ppfx-swatch-item") ||
+        e.target.closest(".ppfx-swatch-list .ppfx-grid-btn");
+      if (!target) return;
 
-    const list = target.closest(".ppfx-swatch-list");
-    if (!list) return;
-    const hiddenInput = list.querySelector(".ppfx-swatch-hidden-input");
-    if (!hiddenInput) return;
+      const list = target.closest(".ppfx-swatch-list");
+      if (!list) return;
+      const hiddenInput = list.querySelector(".ppfx-swatch-hidden-input");
+      if (!hiddenInput) return;
 
-    const name = hiddenInput.name;
-    const val = target.dataset.value;
-    const isNowActive = !target.classList.contains("is-active");
+      const name = hiddenInput.name;
+      const val = target.dataset.value;
+      const isNowActive = !target.classList.contains("is-active");
 
-    toggleFilterValue(name, val, isNowActive);
+      toggleMultiValue(name, val, isNowActive);
+    },
+    { signal },
+  );
 
-    // Sync UI immediately to prevent visual drift
-    syncAllUIs();
+  // Radio uncheck toggle
+  formElement.addEventListener(
+    "click",
+    (e) => {
+      const target = e.target;
+      if (target.type !== "radio") return;
 
-    if (isAutoFilter) {
-      handleFilterChange(true, "checkbox");
-    }
-  });
-
-  // 5. Radio button deselect toggle
-  formElement.addEventListener("click", (e) => {
-    const target = e.target;
-    if (target.type !== "radio") return;
-
-    if (target.dataset.wasChecked === "true") {
-      target.checked = false;
-      target.dataset.wasChecked = "false";
-      updateFilterState(target.name, "");
-      syncAllUIs();
-      if (isAutoFilter) {
-        handleFilterChange(true, "checkbox");
+      if (target.dataset.wasChecked === "true") {
+        target.checked = false;
+        target.dataset.wasChecked = "false";
+        setSingleValue(target.name, "");
+        return;
       }
-      return;
-    }
-    target.dataset.wasChecked = "true";
+      target.dataset.wasChecked = "true";
 
-    // Reset wasChecked on all other radios with same name
-    formElement
-      .querySelectorAll(`input[type="radio"][name="${target.name}"]`)
-      .forEach((r) => {
-        if (r !== target) r.dataset.wasChecked = "false";
-      });
-  });
+      formElement
+        .querySelectorAll(`input[type="radio"][name="${target.name}"]`)
+        .forEach((r) => {
+          if (r !== target) r.dataset.wasChecked = "false";
+        });
+    },
+    { signal },
+  );
 
   // --- NATIVE INPUT HANDLERS ---
 
-  formElement.addEventListener("change", (e) => {
-    const target = e.target;
-    if (target.type === "checkbox") {
-      toggleFilterValue(target.name, target.value, target.checked);
-      // Sync UI immediately for native inputs
-      syncAllUIs();
-      if (isAutoFilter) {
-        handleFilterChange(true, "checkbox");
+  formElement.addEventListener(
+    "change",
+    (e) => {
+      const target = e.target;
+      if (target.type === "checkbox") {
+        toggleMultiValue(target.name, target.value, target.checked);
+      } else if (target.type === "radio") {
+        setSingleValue(target.name, target.checked ? target.value : "");
+      } else if (target.type === "select-one") {
+        if (target.name === "orderby") return;
+        setSingleValue(target.name, target.value);
       }
-    } else if (target.type === "radio") {
-      if (target.checked) {
-        updateFilterState(target.name, target.value);
-      } else {
-        updateFilterState(target.name, "");
-      }
-      // Sync UI immediately
-      syncAllUIs();
-      if (isAutoFilter) {
-        handleFilterChange(true, "checkbox");
-      }
-    } else if (target.type === "select-one") {
-      if (target.name === "orderby") return; // owned exclusively by the global sort handler
-      updateFilterState(target.name, target.value);
-      // Sync UI immediately
-      syncAllUIs();
-      if (isAutoFilter) {
-        handleFilterChange(true, "checkbox");
-      }
-    }
-  });
+    },
+    { signal },
+  );
 
-  formElement.addEventListener("submit", (e) => {
-    e.preventDefault();
-    updatePriceState();
-    if (!hasActiveSelections() && !urlHasPpfxFilters()) {
-      return;
-    }
-    handleFilterChange(true);
-  });
+  formElement.addEventListener(
+    "submit",
+    (e) => {
+      e.preventDefault();
+      updatePriceState(true);
 
-  // Clear button
-  const resetButton = root.querySelector("[data-ppfx-reset-btn]");
-  if (resetButton) {
-    resetButton.addEventListener("click", () => {
-      if (!hasChipsApplied() && !hasActiveSelections() && !urlHasPpfxFilters()) {
+      const nextParams = isAutoFilter
+        ? getCleanRequestParams()
+        : serializeFormState();
+
+      if (
+        !hasActiveSelections() &&
+        !urlHasPpfxFilters() &&
+        Object.keys(nextParams).length === 0
+      ) {
         return;
       }
 
-      // Reset global state first
-      window.ppfxGlobalState.filters = {};
-      window.ppfxGlobalState.sort = { orderby: "", order: "" };
-      window.ppfxGlobalState.paged = 1;
+      delete nextParams.page;
+      delete nextParams.paged;
 
-      if (window.ppfxFilterData && window.ppfxFilterData.currentContext) {
-        Object.assign(window.ppfxGlobalState.filters, window.ppfxFilterData.currentContext);
-      }
+      PPFX_URL_State.setCanonicalState(nextParams, {
+        pushHistory: true,
+        source: "submit",
+        force: true,
+      });
+    },
+    { signal },
+  );
 
-      syncAllUIs();
-      updateUrl(getParams(), true);
+  // Clear buttons
+  const resetButtons = [];
+  const internalResetBtn = root.querySelector("[data-ppfx-reset-btn]");
+  if (internalResetBtn) resetButtons.push(internalResetBtn);
 
-      handleFilterChange(true, "reset");
-    });
-  }
+  const detachedResetBtn = document.querySelector(
+    '[data-ppfx-chips-for="*"] [data-ppfx-reset-btn]',
+  );
+  if (detachedResetBtn) resetButtons.push(detachedResetBtn);
+
+  resetButtons.forEach((btn) => {
+    btn.addEventListener(
+      "click",
+      () => {
+        if (
+          !hasChipsApplied() &&
+          !hasActiveSelections() &&
+          !urlHasPpfxFilters()
+        ) {
+          return;
+        }
+
+        const emptyState = {};
+        PPFX_URL_State.setCanonicalState(emptyState, {
+          pushHistory: true,
+          source: "reset",
+        });
+      },
+      { signal },
+    );
+  });
 
   // --- PAGINATION INTERCEPT ---
   const onPaginationClick = (e) => {
@@ -680,14 +846,19 @@ export const initFilterForm = (
     }
 
     if (instanceId) {
-      const paginationEl = link.closest('.woocommerce-pagination');
+      const paginationEl = link.closest(".woocommerce-pagination");
       const hasMatchingInstance =
-        paginationEl?.closest(`[data-ppfx-instance='${cssEscape(instanceId)}']`) ||
-        target.closest(`[data-ppfx-instance='${cssEscape(instanceId)}']`)?.parentElement?.contains(paginationEl);
+        paginationEl?.closest(
+          `[data-ppfx-instance='${cssEscape(instanceId)}']`,
+        ) ||
+        target
+          .closest(`[data-ppfx-instance='${cssEscape(instanceId)}']`)
+          ?.parentElement?.contains(paginationEl);
       if (!hasMatchingInstance) {
         const isInsideRoot = rootElement.contains(link);
         const isInsideTarget = target.contains(link);
-        const isSiblingOfTarget = target && target.parentElement && target.parentElement.contains(link);
+        const isSiblingOfTarget =
+          target && target.parentElement && target.parentElement.contains(link);
         if (!isInsideRoot && !isInsideTarget && !isSiblingOfTarget) {
           return false;
         }
@@ -695,7 +866,8 @@ export const initFilterForm = (
     } else {
       const isInsideRoot = rootElement.contains(link);
       const isInsideTarget = target.contains(link);
-      const isSiblingOfTarget = target && target.parentElement && target.parentElement.contains(link);
+      const isSiblingOfTarget =
+        target && target.parentElement && target.parentElement.contains(link);
       if (!isInsideRoot && !isInsideTarget && !isSiblingOfTarget) {
         return false;
       }
@@ -708,16 +880,26 @@ export const initFilterForm = (
 
     const page = parseInt(
       pathMatch?.[1] ||
-      url.searchParams.get("product-page") ||
-      url.searchParams.get("paged") ||
-      url.searchParams.get("page") ||
-      "1",
+        url.searchParams.get("product-page") ||
+        url.searchParams.get("paged") ||
+        url.searchParams.get("page") ||
+        "1",
       10,
     );
 
-    // Consolidate page state
-    window.ppfxGlobalState.paged = Number.isFinite(page) && page > 0 ? page : 1;
-    handleFilterChange(false, "pagination");
+    const validPage = Number.isFinite(page) && page > 0 ? page : 1;
+
+    commitFilterUpdate(
+      (state) => {
+        if (validPage > 1) {
+          state.page = String(validPage);
+        } else {
+          delete state.page;
+        }
+      },
+      { resetPage: false, pushHistory: true, source: "pagination" },
+    );
+
     return true;
   };
 
@@ -738,11 +920,16 @@ export const initFilterForm = (
       const sortEl = e.target;
       const hasMatchingInstance =
         sortEl.closest(`[data-ppfx-instance='${cssEscape(instanceId)}']`) ||
-        target.closest(`[data-ppfx-instance='${cssEscape(instanceId)}']`)?.parentElement?.contains(sortEl);
+        target
+          .closest(`[data-ppfx-instance='${cssEscape(instanceId)}']`)
+          ?.parentElement?.contains(sortEl);
       if (!hasMatchingInstance) {
         const isInsideRoot = rootElement.contains(e.target);
         const isInsideTarget = target.contains(e.target);
-        const isSiblingOfTarget = target && target.parentElement && target.parentElement.contains(e.target);
+        const isSiblingOfTarget =
+          target &&
+          target.parentElement &&
+          target.parentElement.contains(e.target);
         if (!isInsideRoot && !isInsideTarget && !isSiblingOfTarget) {
           return false;
         }
@@ -750,7 +937,10 @@ export const initFilterForm = (
     } else {
       const isInsideRoot = rootElement.contains(e.target);
       const isInsideTarget = target.contains(e.target);
-      const isSiblingOfTarget = target && target.parentElement && target.parentElement.contains(e.target);
+      const isSiblingOfTarget =
+        target &&
+        target.parentElement &&
+        target.parentElement.contains(e.target);
       if (!isInsideRoot && !isInsideTarget && !isSiblingOfTarget) {
         return false;
       }
@@ -760,74 +950,57 @@ export const initFilterForm = (
     e.stopPropagation();
     e.stopImmediatePropagation();
 
-    // Explicit state update
-    window.ppfxGlobalState.sort = { orderby: e.target.value, order: "" };
-    handleFilterChange(true, "sort");
+    const newSort = e.target.value;
+
+    commitFilterUpdate(
+      (state) => {
+        if (newSort) {
+          state.orderby = newSort;
+        } else {
+          delete state.orderby;
+        }
+        delete state.order;
+      },
+      { resetPage: true, pushHistory: true, source: "sort" },
+    );
+
     return true;
   };
 
   const globalInstance = {
     formElement,
     root,
+    isPrimary,
     onPaginationClick,
     onSortChange,
-    handleFilterChange,
+    onUrlStateChange,
   };
   registerGlobalInstance(globalInstance);
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const hasInitialFilters = ppfxGenerateHash(urlParams) !== "";
-
-  // Helper to hydrate history state
-  const hydrateHistoryState = () => {
-    if (typeof window.history.replaceState === 'function') {
-      window.history.replaceState(
-        {
-          filters: { ...window.ppfxGlobalState.filters },
-          ppfx: true
-        },
-        document.title,
-        window.location.href
-      );
-    }
-  };
-
-  if (hasInitialFilters) {
-    const wrapper = document.querySelector(".ppfx-products-wrapper");
-    const serverHash = wrapper ? wrapper.dataset.filterHash : null;
-    const currentHash = ppfxGenerateHash(urlParams);
-
-    if (!serverHash || serverHash !== currentHash) {
-      // SSR doesn't match URL - need to fetch correct products
-      // CRITICAL: Sync controls to URL first, so they reflect what's being fetched
-      syncStateFromUrl();
-      syncAllUIs();
-      // Notify active filters that state has been hydrated
-      document.dispatchEvent(new CustomEvent('ppfx-filters-updated'));
-      handleFilterChange(false, "init");
-    } else {
-      // SSR matches URL - just hydrate controls to match
-      syncStateFromUrl();
-      syncAllUIs();
-      // Notify active filters that state has been hydrated
-      document.dispatchEvent(new CustomEvent('ppfx-filters-updated'));
-      hydrateHistoryState();
-    }
-  } else {
-    // No filters - ensure controls are in default state
-    syncStateFromUrl();
-    syncAllUIs();
-    // Notify active filters that state has been hydrated
-    document.dispatchEvent(new CustomEvent('ppfx-filters-updated'));
-    hydrateHistoryState();
-  }
+  // Initial SSR hydration: synchronize all UI elements (inputs, selects, chips) from canonical URL state
+  // without dispatching an unnecessary network fetch.
+  syncStateFromUrl();
 
   const destroy = () => {
+    domAbortController.abort();
+    if (
+      formElement._ppfxActiveFilters &&
+      typeof formElement._ppfxActiveFilters.destroy === "function"
+    ) {
+      formElement._ppfxActiveFilters.destroy();
+    }
     if (window.__ppfxDrawerInstance) window.__ppfxDrawerInstance.destroy();
     unregisterGlobalInstance(globalInstance);
     currentAbortController?.abort();
     clearTimeout(filterTimeout);
   };
 
-  return { handleFilterChange, destroy, updatePriceState };
+  return {
+    handleFilterChange: (source = "default") => {
+      const current = PPFX_URL_State.getCanonicalState();
+      onUrlStateChange(current, source);
+    },
+    destroy,
+    updatePriceState,
+  };
 };

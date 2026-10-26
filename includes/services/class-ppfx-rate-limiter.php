@@ -20,9 +20,19 @@ class PPFX_Rate_Limiter {
 	 * @return string
 	 */
 	public static function get_client_ip(): string {
+		// Cloudflare provides the connecting client IP in HTTP_CF_CONNECTING_IP.
+		if ( ! empty( $_SERVER['HTTP_CF_CONNECTING_IP'] ) ) {
+			$cf_ip_string = sanitize_text_field( wp_unslash( $_SERVER['HTTP_CF_CONNECTING_IP'] ) );
+			$cf_ips       = explode( ',', $cf_ip_string );
+			$cf_ip        = trim( $cf_ips[0] );
+			if ( filter_var( $cf_ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) ) {
+				return $cf_ip;
+			}
+		}
+
+		// Generic proxy headers require explicit opt-in via PPFX_TRUST_PROXY to prevent spoofing.
 		if ( defined( 'PPFX_TRUST_PROXY' ) && PPFX_TRUST_PROXY ) {
 			$forwarded_headers = array(
-				'HTTP_CF_CONNECTING_IP',
 				'HTTP_X_REAL_IP',
 				'HTTP_X_FORWARDED_FOR',
 			);
@@ -52,8 +62,8 @@ class PPFX_Rate_Limiter {
 	 * @return bool True if rate limited, false otherwise
 	 */
 	public static function is_rate_limited( string $prefix, int $max_hits, int $window_in_seconds = MINUTE_IN_SECONDS ): bool {
-		$options          = get_option( 'ppfx_settings', array() );
-		$is_explicitly_on = isset( $options['rate_limiting_enabled'] ) && 'yes' === $options['rate_limiting_enabled'];
+		$options          = PPFX_Settings_Page::get_settings();
+		$is_explicitly_on = 'yes' === $options['rate_limiting_enabled'];
 
 		// Bypass writing DB transients if external object caching is not present
 		// to protect option table bloat, unless rate limiting is explicitly enabled via settings or filter.

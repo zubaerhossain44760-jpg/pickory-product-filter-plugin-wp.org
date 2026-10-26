@@ -2,9 +2,9 @@
 /**
  * Pickory Product Filter Uninstall
  *
- * Uninstalling Pickory Product Filter deletes user options, transients, and custom tables.
+ * Deletes custom tables, options, transients, and cron hooks.
  *
- * @package pickory-product-filter
+ * @package Pickory_Product_Filter
  */
 
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
@@ -13,26 +13,39 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 global $wpdb;
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Uninstaller table and transient cleanup.
+
+// 1. Drop Custom Tables.
 $table = $wpdb->prefix . 'ppfx_product_index';
-$wpdb->query( "DROP TABLE IF EXISTS {$table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+$wpdb->query( "DROP TABLE IF EXISTS {$table}" );
 
 $term_table = $wpdb->prefix . 'ppfx_product_terms';
-$wpdb->query( "DROP TABLE IF EXISTS {$term_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+$wpdb->query( "DROP TABLE IF EXISTS {$term_table}" );
 
-delete_option( 'ppfx_settings' );
-delete_option( 'ppfx_index_version' );
-delete_option( 'ppfx_tables_created' );
-delete_option( 'ppfx_index_built' );
-delete_option( 'ppfx_query_cache_version' );
+// 2. Delete Options.
+$options_to_delete = array(
+	'ppfx_settings',
+	'ppfx_appearance_settings',
+	'ppfx_index_version',
+	'ppfx_tables_created',
+	'ppfx_index_built',
+	'ppfx_query_cache_version',
+);
 
-// Delete price range cache for all currencies (currency switcher compatibility).
-delete_transient( 'ppfx_price_range' );
-$common_currencies = array( 'USD', 'EUR', 'GBP', 'CAD', 'AUD', 'JPY', 'CNY', 'INR', 'BRL', 'MXN' );
-foreach ( $common_currencies as $currency ) {
-	delete_transient( 'ppfx_price_range_' . $currency );
+foreach ( $options_to_delete as $option ) {
+	delete_option( $option );
 }
 
-$timestamp = wp_next_scheduled( 'ppfx_sync_expired_sales' );
-if ( $timestamp ) {
-	wp_unschedule_event( $timestamp, 'ppfx_sync_expired_sales' );
+// 3. Delete All Plugin Transients.
+$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_ppfx_%' OR option_name LIKE '_transient_timeout_ppfx_%'" );
+
+// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+// 4. Clear Scheduled Cron Events (Using modern wp_clear_scheduled_hook).
+wp_clear_scheduled_hook( 'ppfx_sync_expired_sales' );
+wp_clear_scheduled_hook( 'ppfx_rebuild_index_action' );
+
+// 5. Unschedule Action Scheduler tasks if present.
+if ( function_exists( 'as_unschedule_all_actions' ) ) {
+	as_unschedule_all_actions( 'ppfx_rebuild_index_action' );
 }

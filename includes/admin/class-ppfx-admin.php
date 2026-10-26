@@ -73,9 +73,15 @@ class PPFX_Admin {
 		try {
 			PPFX_Index::create_table();
 			PPFX_Index::create_term_table();
-			PPFX_Index::bulk_sync();
-			wp_safe_redirect( add_query_arg( 'ppfx_index_rebuilt', '1', $redirect_base ) );
+			if ( function_exists( 'as_enqueue_async_action' ) ) {
+				as_enqueue_async_action( 'ppfx_rebuild_index_action' );
+			} elseif ( ! wp_next_scheduled( 'ppfx_rebuild_index_action' ) ) {
+				wp_schedule_single_event( time(), 'ppfx_rebuild_index_action' );
+			}
+			wp_safe_redirect( add_query_arg( 'ppfx_index_queued', '1', $redirect_base ) );
 		} catch ( Throwable $e ) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			error_log( '[PPFX] Rebuild index error: ' . $e->getMessage() );
 			wp_safe_redirect( add_query_arg( 'ppfx_index_error', '1', $redirect_base ) );
 		}
 
@@ -100,6 +106,17 @@ class PPFX_Admin {
 				esc_html__( 'Product index rebuilt successfully!', 'pickory-product-filter' ) .
 				'</strong> ' .
 				esc_html__( 'All published products have been synced into the filter index. Your frontend filters should now return results correctly.', 'pickory-product-filter' ) .
+				'</p></div>'
+			);
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- reading query var after redirect, no state change.
+		if ( isset( $_GET['ppfx_index_queued'] ) && '1' === $_GET['ppfx_index_queued'] ) {
+			echo wp_kses_post(
+				'<div class="notice notice-success is-dismissible"><p><strong>' .
+				esc_html__( 'Product index rebuild queued!', 'pickory-product-filter' ) .
+				'</strong> ' .
+				esc_html__( 'Index rebuild has been queued and will complete in the background. Your frontend filters will update automatically.', 'pickory-product-filter' ) .
 				'</p></div>'
 			);
 		}

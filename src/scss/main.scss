@@ -1,17 +1,27 @@
-@use 'variables' as *;
-@use 'filters';
-@use 'active-filters';
-@use 'mobile-drawer';
+// 1. Configuration & Variables (If main.scss has any direct rules)
+@use "variables" as *;
 
-// Type-specific partials
-@use 'type-checkbox';
-@use 'type-button-grid';
-@use 'type-dropdown';
-@use 'type-search-list';
-@use 'type-toggle';
-@use 'type-slider';
-@use 'type-star-rating';
-@use 'type-swatch';
+// 2. Base & Layout Partials
+@use "filters";
+@use "active-filters";
+@use "mobile-drawer";
 
-// Horizontal layout (import last)
-@use 'horizontal';
+// 3. Type-specific partials
+@use "type-checkbox";
+@use "type-button-grid";
+@use "type-dropdown";
+@use "type-search-list";
+@use "type-toggle";
+@use "type-slider";
+@use "type-star-rating";
+@use "type-swatch";
+
+// 4. Horizontal layout (Must be imported last for CSS cascade overrides)
+@use "horizontal";
+
+// ========================================
+// Global Utilities (Always at root)
+// ========================================
+.ppfx-hidden {
+  display: none !important;
+}

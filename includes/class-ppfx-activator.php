@@ -20,8 +20,8 @@ class PPFX_Activator {
 	 * @return void
 	 */
 	public static function activate() {
-		// Actions to perform on plugin activation (e.g. flush rewrite rules).
-		flush_rewrite_rules();
+		// Soft flush rewrite rules on activation.
+		flush_rewrite_rules( false );
 
 		// Create the flat product index table (idempotent — safe on re-activation).
 		require_once plugin_dir_path( __FILE__ ) . 'class-ppfx-index.php';
@@ -31,9 +31,8 @@ class PPFX_Activator {
 		// Schedule the nightly cron job for expired-sale cleanup.
 		PPFX_Index::schedule_cron();
 
-		// Run the initial bulk sync only if the index has never been built.
-		// Subsequent saves are handled by the woocommerce_product_object_updated_props hook.
-		if ( PPFX_Index::needs_rebuild() ) {
+		// Run the initial bulk sync only if WooCommerce is active and index needs rebuild.
+		if ( class_exists( 'WooCommerce' ) && PPFX_Index::needs_rebuild() ) {
 			if ( function_exists( 'as_enqueue_async_action' ) ) {
 				as_enqueue_async_action( 'ppfx_rebuild_index_action' );
 			} elseif ( ! wp_next_scheduled( 'ppfx_rebuild_index_action' ) ) {

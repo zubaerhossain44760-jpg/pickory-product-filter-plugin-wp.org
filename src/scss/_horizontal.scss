@@ -1,48 +1,48 @@
+/**
+ * Type: Dropdown
+ */
+@use "variables" as *;
+
 .ppfx-horizontal {
-    .ppfx-filter-form {
-        display: flex;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        gap: 16px;
-        align-items: flex-start;
+  border: none;
+  box-shadow: none;
+  padding: 0;
 
-        &::-webkit-scrollbar {
-            height: 4px;
-        }
+  .ppfx-filter-form {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 16px;
+    padding: 10px;
+    align-items: flex-start;
+  }
 
-        &::-webkit-scrollbar-thumb {
-            background-color: #cbd5e1;
-            border-radius: 4px;
-        }
+  .ppfx-panel-title {
+    display: none;
+
+    /* Hide the title in a flattened horizontal layout */
+  }
+
+  .ppfx-active-filters-wrap {
+    flex: 0 0 auto;
+  }
+
+  .ppfx-filter-section {
+    flex: 0 0 220px;
+
+    /* Fixed width to ensure they don't shrink and cause wrapping issues */
+    margin-bottom: 0;
+
+    .ppfx-filter-group {
+      overflow-y: auto;
     }
+  }
 
-    .ppfx-panel-title {
-        display: none;
+  .ppfx-section-label {
+    margin-bottom: 0;
+  }
 
-        /* Hide the title in a flattened horizontal layout */
-    }
-
-    .ppfx-active-filters-wrap {
-        flex: 0 0 auto;
-    }
-
-    .ppfx-filter-section {
-        flex: 0 0 220px;
-
-        /* Fixed width to ensure they don't shrink and cause wrapping issues */
-        margin-bottom: 0;
-
-        .ppfx-filter-group {
-            overflow-y: auto;
-
-        }
-    }
-
-    .ppfx-section-label {
-        margin-bottom: 0;
-    }
-
-    .ppfx-active-filters.ppfx-active {
-        flex-direction: column;
-    }
+  .ppfx-active-filters.ppfx-active {
+    flex-direction: column;
+  }
 }

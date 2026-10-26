@@ -2,25 +2,1309 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Pickory Product Filter 1.0.0\n"
+"Project-Id-Version: Pickory Product Filter 1.0.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pickory-product-filter\n"
-"POT-Creation-Date: 2026-06-17 00:00:00+00:00\n"
+"POT-Creation-Date: 2026-10-26 09:12:11+00:00\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2026-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"X-Generator: WP-CLI 2.10.0\n"
+"X-Generator: Pickory POT Generator 1.0\n"
+"X-Domain: pickory-product-filter\n"
 
-msgid "Filters"
+#: includes/assets/class-ppfx-asset-loader.php:313
+msgid " Stars"
 msgstr ""
 
+#: templates/types/type-star-rating.php:20
+msgid "%d & Up"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:336
+msgid "(empty)"
+msgstr ""
+
+#: includes/admin/views/tab-advanced.php:95
+msgid "(px)"
+msgstr ""
+
+#: templates/types/type-star-rating.php:20
+msgid "5 Stars"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:85
+msgid "A WooCommerce product loop on the shop / archive page (theme requirement)"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:296
+msgid "A single on/off switch. When on, only products currently on sale are shown."
+msgstr ""
+
+#: includes/admin/views/tab-advanced.php:102
+msgid "API Rate Limiting"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:55
+msgid "About"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:571
+msgid "About the Plugin"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:114
+msgid "Above the filter instance, active selections are shown as dismissible chips. Clicking a chip removes that filter instantly. A \"Clear All\" chip resets the entire filter state. Chips render automatically — no extra configuration is needed."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:394
+msgid "Action Required"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:511
+msgid "Actions:"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:113
+msgid "Active Filter Chips"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:529
+msgid "Active filter chips container"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:559
+msgid "Active filter chips with one-click removal"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:401
+msgid "Add /wp-json/pickory-filter/v1/* to the exclusion list of your caching plugin."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:311
+msgid "Add a horizontal filter using the shortcode in a text widget, page content, shortcode block, or hook it to anywhere you want eg. the shop loop start and other locations via your theme functions.php file or a 3rd party snippet plugin."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:406
+msgid "Add the data-ppfx-target attribute to your shortcode pointing to your theme\'s product grid selector, e.g. [pickory_product_filter] and ensure your theme renders a standard WooCommerce product loop."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:308
+msgid "Add the filter to any page, widget, or PHP template using the shortcode:"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:338
+msgid "Additional CSS class(es) appended to the filter container element for custom styling."
+msgstr ""
+
+#: includes/admin/class-ppfx-settings-page.php:59
+msgid "Advanced"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:25
+msgid "Advanced Settings"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:355
+msgid "Advanced settings are located under Pickory Product Filter → Settings → Advanced tab."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:97
+msgid "After first activation, the plugin automatically builds the product index. If filters return no results, visit the Advanced tab and click \"Rebuild Product Index\" to sync the index manually."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:400
+msgid "Aggressively cached REST API responses will serve stale product results to visitors."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:244 includes/admin/views/tab-documentation.php:250 includes/admin/views/tab-documentation.php:256 includes/admin/views/tab-documentation.php:262 includes/admin/views/tab-documentation.php:268
+msgid "All configurable"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:106
+msgid "All filter configuration is controlled from the Filter Settings tab in the plugin settings — the block has no per-block settings."
+msgstr ""
+
+#: includes/admin/class-ppfx-admin.php:108
+msgid "All published products have been synced into the filter index. Your frontend filters should now return results correctly."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:199 includes/admin/views/tab-documentation.php:209 includes/admin/views/tab-documentation.php:224
+msgid "All sections"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:248
+msgid "Allows one selection at a time. Selecting a new option deselects the previous."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:104
+msgid "Alternatively, add a Shortcode block and paste [pickory_product_filter] to use the shortcode directly in your page content."
+msgstr ""
+
+#: includes/admin/class-ppfx-admin.php:130
+msgid "An unexpected error occurred. Please check your PHP error log for details."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:179
+msgid "Any custom taxonomy registered for products"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:192
+msgid "Applies to"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:392
+msgid "Area"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:646
+msgid "Ask questions and share tips."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:319
+msgid "Attribute"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:586
+msgid "Author / Brand"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:367
+msgid "Auto Filter"
+msgstr ""
+
+#: includes/admin/views/tab-advanced.php:50
+msgid "Auto Filter on Change"
+msgstr ""
+
+#: includes/admin/views/tab-advanced.php:56
+msgid "Automatically update products when a filter changes (no button click needed)."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:129
+msgid "Available Filter Sections"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:236
+msgid "Available for"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:610
+msgid "Backend: PHP 8.0+, WordPress REST API, custom flat DB index (wp_ppfx_product_index, wp_ppfx_product_terms)"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:234
+msgid "Behaviour"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:100
+msgid "Block Editor (Gutenberg)"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:120
+msgid "Both instances stay in sync — selecting a filter in one automatically reflects in the other."
+msgstr ""
+
+#: includes/admin/views/tab-advanced.php:82
+msgid "Breakpoint"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:612
+msgid "Build tooling: Vite"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:143 includes/admin/views/tab-documentation.php:149 includes/admin/views/tab-documentation.php:155
+msgid "Built-in"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:564
+msgid "Built-in rate limiting (default: 80 requests/min per IP)"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:382
+msgid "Bulk product imports via CSV or XML"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:253
+msgid "Button / Pill Grid"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:613
+msgid "Caching: WordPress object cache integration with 5-minute query TTL for logged-out users"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:628
+msgid "Can't find the answer in the docs? Our engineering team and community are ready to help."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:373
+msgid "Caps filter AJAX requests at 80 per minute per IP address to protect the server from abuse or bot traffic. Logged-in users with object cache disabled bypass the limit automatically."
+msgstr ""
+
+#: includes/class-ppfx-section-registry.php:224
+msgid "Categories"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:159
+msgid "Category"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:556
+msgid "Category, product tag, and WooCommerce attribute filters"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:50
+msgid "Changelog"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:266
+msgid "Checkbox list with a live search input. Ideal for taxonomies with 20+ terms where scrolling is impractical."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:241
+msgid "Checkboxes"
+msgstr ""
+
+#: includes/admin/class-ppfx-term-meta.php:73 includes/admin/class-ppfx-term-meta.php:111
+msgid "Choose a color for the swatch display."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:272
+msgid "Circular color-dot swatches. Color is set per-term from the attribute term edit screen in WooCommerce."
+msgstr ""
+
+#: templates/filter-layout.php:74
 msgid "Clear all"
 msgstr ""
 
+#: includes/admin/views/tab-documentation.php:103
+msgid "Click the + button and search for \"Pickory Filter\", then add the block."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:190
+msgid "Column"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:482
+msgid "Comma-separated attribute slugs, e.g. filter_pa_color=blue,red"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:452
+msgid "Comma-separated category slugs"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:457
+msgid "Comma-separated tag slugs"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:645
+msgid "Community Forum"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:260
+msgid "Compact native select element. Saves vertical space when the taxonomy has many terms."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:539
+msgid "Complete translation catalog (.pot) generation containing all 317 strings."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:174
+msgid "Configurable (all types including swatches)"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:168 includes/admin/views/tab-documentation.php:180
+msgid "Configurable (no swatches)"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:162
+msgid "Configurable (see Category Types below)"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:214
+msgid "Configurable sections (not fixed types)"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:204
+msgid "Configurable sections only"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:203
+msgid "Controls how the filter options are rendered on the frontend. Fixed sections show a badge and cannot be changed. Configurable sections show a dropdown."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:217 includes/admin/views/tab-filter-sections.php:37
+msgid "Count"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:442
+msgid "Current page number (default: 1)"
+msgstr ""
+
+#: includes/rest/class-ppfx-products-controller.php:25
+msgid "Current page of the product loop."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:177
+msgid "Custom Taxonomies"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:208
+msgid "Custom heading text shown above the filter on the frontend. Leave blank to use the default label (taxonomy name or built-in name)."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:384
+msgid "Database migrations or server transfers"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:320 includes/admin/views/tab-documentation.php:362
+msgid "Default"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:321 includes/admin/views/tab-documentation.php:435
+msgid "Description"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:582
+msgid "Developer"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:567
+msgid "Developer hooks (filters & actions) for customization"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:202 includes/admin/views/tab-documentation.php:233 includes/admin/views/tab-filter-sections.php:33
+msgid "Display Type"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:229
+msgid "Display Types Reference"
+msgstr ""
+
+#: includes/admin/class-ppfx-settings-page.php:60
+msgid "Documentation"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:197
+msgid "Drag Handle"
+msgstr ""
+
+#: includes/admin/views/tab-filter-sections.php:23
+msgid "Drag rows to reorder. Toggle the switch to show or hide a section. Set how each section should be displayed."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:198
+msgid "Drag the ⣿ icon to reorder sections. The order here is the exact order they appear in the frontend filter widget."
+msgstr ""
+
+#: includes/admin/views/tab-filter-sections.php:77
+msgid "Drag to reorder"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:259
+msgid "Dropdown (Single Select)"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:284
+msgid "Dual-thumb range slider. Min/max bounds are calculated automatically from catalog prices. Currency-aware."
+msgstr ""
+
+#: includes/admin/views/tab-advanced.php:108
+msgid "Enable API rate limiting (80 requests per minute) on the products filtering REST endpoint to prevent scraping and abuse."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:222 includes/admin/views/tab-documentation.php:369 includes/admin/views/tab-documentation.php:374
+msgid "Enabled"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:426
+msgid "Endpoint"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:111
+msgid "Every filter selection updates the page URL with query parameters (e.g. ?ppfx_category=shirts&min_price=20). This means filtered views are shareable, bookmarkable, and supported by the browser back/forward buttons — no page reload required."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:186
+msgid "Every row in the Filter Sections tab has the following configurable columns:"
+msgstr ""
+
+#: includes/assets/class-ppfx-asset-loader.php:314 templates/filter-layout.php:85
+msgid "Filter"
+msgstr ""
+
+#: includes/admin/class-ppfx-settings-page.php:58 includes/admin/views/tab-filter-sections.php:20
+msgid "Filter Sections"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:20
+msgid "Filter Sections Reference"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:420
+msgid "Filter counts and results follow WooCommerce\'s catalog visibility rules."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:527
+msgid "Filter form element"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:497
+msgid "Filter instance identifier"
+msgstr ""
+
+#: templates/filter-layout.php:175
+msgid "Filter template for \"%s\" not found."
+msgstr ""
+
+#: templates/types/type-search-list.php:36
+msgid "Filter terms by name"
+msgstr ""
+
+#: templates/filter-layout.php:63 templates/filter-layout.php:73
+msgid "Filters"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:506
+msgid "Filters:"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:514
+msgid "Fired after building WP_Query args; use to modify the query object"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:520
+msgid "Fired after filter results are updated in the DOM"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:521
+msgid "Fired before a filter instance is destroyed (cleanup event)"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:513
+msgid "Fired before building WP_Query args; use to modify request params"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:515
+msgid "Fired when syncing a product to the index; use to modify index row data"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:144
+msgid "Fixed — Slider"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:150
+msgid "Fixed — Star Rating"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:156
+msgid "Fixed — Toggle"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:550
+msgid "Flat product index for fast filtering (no expensive postmeta scans)"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:617
+msgid "For bug reports or feature requests, please contact support at <a href=\"mailto:pickory143@gmail.com\">pickory143@gmail.com</a>."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:509
+msgid "Force rate limiting even without object cache (default: false)"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:602
+msgid "Frontend Asset Size"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:611
+msgid "Frontend: Vanilla JavaScript (ES6 modules), no jQuery dependency"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:593
+msgid "GPL-2.0-or-later"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:636
+msgid "Get priority technical support."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:15
+msgid "Getting Started"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:91
+msgid "Go to Pickory Product Filter → Filter Sections tab and enable the filters you need."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:348
+msgid "Gutenberg Block"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:562
+msgid "HPOS (High-Performance Order Storage) compatibility"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:599
+msgid "HPOS compatible · Tested up to WooCommerce 9.8"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:656
+msgid "Help us improve Pickory."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:557
+msgid "Hierarchical category support (selecting a parent includes child categories)"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:110
+msgid "How Filters Work"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:30
+msgid "How to Use"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:421
+msgid "If \"Hide out of stock items from the catalog\" is enabled in WooCommerce → Settings → Products → Inventory, those products will be excluded from all filter results automatically."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:278
+msgid "Image thumbnail swatches. Image is set per-term from the attribute term edit screen in WooCommerce."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:122
+msgid "Important Note on Product Attributes"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:409
+msgid "Index Rebuild on Large Stores"
+msgstr ""
+
+#: includes/admin/class-ppfx-admin.php:119
+msgid "Index rebuild has been queued and will complete in the background. Your frontend filters will update automatically."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:548
+msgid "Initial Release"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:88
+msgid "Installation Steps"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:414
+msgid "JavaScript Conflicts"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:518
+msgid "JavaScript Events"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:134
+msgid "Key"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:524
+msgid "Key CSS Classes"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:207 includes/admin/views/tab-filter-sections.php:34
+msgid "Label Override"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:590
+msgid "License"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:213
+msgid "Limits the visible height of the option list and adds a scrollbar when the list exceeds that height. Leave empty for no height limit. Useful for taxonomies with many terms."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:526
+msgid "Main filter wrapper"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:535
+msgid "Maintenance & Standards Release"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:543
+msgid "Maintenance Release"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:545
+msgid "Maintenance release."
+msgstr ""
+
+#: templates/types/type-slider.php:123
+msgid "Max"
+msgstr ""
+
+#: includes/admin/views/tab-filter-sections.php:35
+msgid "Max Height"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:212
+msgid "Max Height (px)"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:467 templates/types/type-slider.php:119
+msgid "Maximum price"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:508
+msgid "Maximum products per REST request (default: 100)"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:583
+msgid "Md Zubaer Hossain"
+msgstr ""
+
+#: templates/types/type-slider.php:122
+msgid "Min"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:462 templates/types/type-slider.php:118
+msgid "Minimum price"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:472
+msgid "Minimum star rating (1–5)"
+msgstr ""
+
+#: includes/admin/views/tab-advanced.php:62
+msgid "Mobile Filter Drawer"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:530
+msgid "Mobile drawer toggle button"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:560
+msgid "Mobile-responsive off-canvas drawer with smooth animations"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:561
+msgid "Multi-currency support — price slider automatically adjusts to the active currency"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:235
+msgid "Multi-select"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:116
+msgid "Multiple Filter Instances"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:552
+msgid "Multiple filter display types: checkbox, radio, dropdown, swatch (color/image), button grid, toggle, search list, slider"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:84
+msgid "MySQL 5.7+ or MariaDB 10.3+"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:297
+msgid "N/A"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:627
+msgid "Need Human Assistance?"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:249 includes/admin/views/tab-documentation.php:261 includes/admin/views/tab-documentation.php:291
+msgid "No"
+msgstr ""
+
+#: templates/filter-layout.php:81
 msgid "No active filters"
 msgstr ""
 
-msgid "Filter"
+#: includes/rest/class-ppfx-fragment-renderer.php:84
+msgid "No products found"
 msgstr ""
+
+#: includes/admin/views/tab-documentation.php:563
+msgid "Object cache integration for faster repeat queries on logged-out users"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:153 includes/assets/class-ppfx-asset-loader.php:312 templates/types/type-toggle.php:14
+msgid "On Sale"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:298
+msgid "On Sale only (fixed)"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:555
+msgid "On Sale toggle filter"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:410
+msgid "On stores with 50,000+ products, rebuilding the product index can take several minutes and consumes elevated server resources during the process."
+msgstr ""
+
+#: includes/admin/views/tab-filter-sections.php:40
+msgid "On/Off"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:102
+msgid "Open your shop or any page in the block editor."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:92
+msgid "Open your shop page in the block editor, add the \"Pickory Filter\" block — or paste the [pickory_product_filter] shortcode into any widget or page."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:419
+msgid "Out-of-Stock Products"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:83
+msgid "PHP 8.0+"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:399
+msgid "Page Caching"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:433
+msgid "Parameter"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:477
+msgid "Pass \"1\" to show on-sale products only"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:185
+msgid "Per-Section Settings"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:531
+msgid "Per-section type class, e.g. .ppfx-type-slider"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:587
+msgid "Pickory"
+msgstr ""
+
+#: includes/admin/class-ppfx-admin.php:38 includes/admin/views/tab-documentation.php:579
+msgid "Pickory Product Filter"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:66
+msgid "Pickory Product Filter Documentation"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:77
+msgid "Pickory Product Filter is a fast, AJAX-powered WooCommerce product filter. Before installing, make sure your server meets the following requirements."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:572
+msgid "Pickory Product Filter is an enterprise-grade,Lightweight AJAX-powered WooCommerce product filter built for speed, scalability, and developer flexibility. It replaces slow postmeta queries with a flat, denormalized product index — delivering filter responses nearly +-100–300 ms even on stores with 50,000+ products."
+msgstr ""
+
+#: pickory-product-filter.php:168
+msgid "Pickory Product Filter requires WooCommerce to be installed and activated."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:574
+msgid "Plugin Details"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:578
+msgid "Plugin Name"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:385
+msgid "Plugin updates that change the index schema"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:141
+msgid "Price"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:286
+msgid "Price only (fixed)"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:383
+msgid "Price or stock updates via external tools"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:553
+msgid "Price range slider with dual thumbs"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:304
+msgid "Price, Rating, and On Sale sections have fixed display types that cannot be changed. Swatch types (Color and Image) are only available for WooCommerce product attributes (pa_*). Applying them to categories or custom taxonomies will silently fall back to Button Grid."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:171
+msgid "Product Attributes"
+msgstr ""
+
+#: includes/admin/class-ppfx-admin.php:39 src/js/admin/block-editor.js:7
+msgid "Product Filter"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:165
+msgid "Product Tag"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:274 includes/admin/views/tab-documentation.php:280
+msgid "Product attributes (pa_*) only"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:528
+msgid "Product grid wrapper"
+msgstr ""
+
+#: includes/admin/class-ppfx-admin.php:128
+msgid "Product index rebuild failed."
+msgstr ""
+
+#: includes/admin/class-ppfx-admin.php:117
+msgid "Product index rebuild queued!"
+msgstr ""
+
+#: includes/admin/class-ppfx-admin.php:106
+msgid "Product index rebuilt successfully!"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:447
+msgid "Products per page (default: WooCommerce setting, max: 100)"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:107
+msgid "Publish or update the page."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:429
+msgid "Query Parameters"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:45
+msgid "REST API"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:551
+msgid "REST API-based AJAX filtering with abortable requests"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:247
+msgid "Radio Buttons"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:285
+msgid "Range"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:372
+msgid "Rate Limiting"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:147
+msgid "Rating"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:292
+msgid "Rating only (fixed)"
+msgstr ""
+
+#: includes/admin/views/tab-advanced.php:34
+msgid "Rebuild Product Index"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:379
+msgid "Rebuilding the Product Index"
+msgstr ""
+
+#: includes/admin/class-ppfx-term-meta.php:85 includes/admin/class-ppfx-term-meta.php:128
+msgid "Remove"
+msgstr ""
+
+#: templates/filter-layout.php:76
+msgid "Remove all active filters and reset to default view"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:254
+msgid "Renders each term as a clickable pill button. Good for short labels (sizes, colours)."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:655
+msgid "Report a Bug"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:79
+msgid "Requirements"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:411
+msgid "Run the rebuild during low-traffic hours. Do not close the browser tab until the process completes."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:502
+msgid "Sample Response"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:540
+msgid "Sanitized URL filter parameters and isolated template loop variable scopes."
+msgstr ""
+
+#: includes/admin/views/tab-advanced.php:114 includes/admin/views/tab-filter-sections.php:141
+msgid "Save Settings"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:93
+msgid "Save — your filters are now live on the frontend."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:265
+msgid "Search List"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:349
+msgid "Search for \"Pickory Filter\" in the block inserter (+) and add it to your shop or archive page. The block outputs the same HTML as the shortcode. All display configuration is managed from the Filter Sections tab in the plugin admin — the block itself has no extra options."
+msgstr ""
+
+#: templates/types/type-search-list.php:35
+msgid "Search terms..."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:133 includes/admin/views/tab-filter-sections.php:32
+msgid "Section"
+msgstr ""
+
+#: includes/admin/class-ppfx-admin.php:68
+msgid "Security check failed. Please refresh the page and try again."
+msgstr ""
+
+#: templates/filter-layout.php:190
+msgid "See less"
+msgstr ""
+
+#: templates/filter-layout.php:189 templates/filter-layout.php:193
+msgid "See more"
+msgstr ""
+
+#: templates/types/type-dropdown.php:21
+msgid "Select %s"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:360
+msgid "Setting"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:307
+msgid "Shortcode"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:35
+msgid "Shortcode & Block"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:315
+msgid "Shortcode Attributes"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:565
+msgid "Shortcode [pickory_product_filter] and Gutenberg block support"
+msgstr ""
+
+#: includes/admin/views/tab-advanced.php:78
+msgid "Show filter as a mobile slide-in drawer."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:223
+msgid "Show or hide this filter section on the frontend. Disabled sections are saved but do not render. Use this to temporarily hide a filter without losing its settings."
+msgstr ""
+
+#: includes/rest/class-ppfx-fragment-renderer.php:99
+msgid "Showing %1$d&ndash;%2$d of %3$d results"
+msgstr ""
+
+#: includes/rest/class-ppfx-fragment-renderer.php:88
+msgid "Showing %d result"
+msgid_plural "Showing all %d results"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/admin/views/tab-documentation.php:290
+msgid "Shows 1–5 star options. Selecting a rating shows products rated at or above that value."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:283
+msgid "Slider (Price)"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:492
+msgid "Sort direction: ASC or DESC"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:487
+msgid "Sort field: menu_order, price, date, popularity, rating"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:135
+msgid "Source"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:242
+msgid "Standard checkbox list. Most versatile and familiar to shoppers."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:289
+msgid "Star Rating"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:554
+msgid "Star rating filter"
+msgstr ""
+
+#: includes/admin/views/tab-filter-sections.php:112
+msgid "Step:"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:538
+msgid "Stripped UTF-8 BOM markers and normalized line endings across codebase."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:635
+msgid "Submit a Ticket"
+msgstr ""
+
+#: includes/admin/class-ppfx-term-meta.php:70 includes/admin/class-ppfx-term-meta.php:107
+msgid "Swatch Color"
+msgstr ""
+
+#: includes/admin/class-ppfx-term-meta.php:76 includes/admin/class-ppfx-term-meta.php:116
+msgid "Swatch Image"
+msgstr ""
+
+#: includes/admin/views/tab-filter-sections.php:100
+msgid "Swatch filter types only work for product attributes. This will fall back to Button Grid."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:271
+msgid "Swatches — Color"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:277
+msgid "Swatches — Image"
+msgstr ""
+
+#: includes/class-ppfx-section-registry.php:227
+msgid "Tags"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:219
+msgid "Taxonomy sections (not fixed built-in types)"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:608
+msgid "Tech Stack"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:566
+msgid "Template override system — copy templates to yourtheme/pickory-product-filter/"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:127
+msgid "The Filter Sections tab (Pickory Product Filter → Filter Sections) lists every filter that can appear on the frontend. Each row is a section you can configure independently. Drag rows to reorder, toggle sections on or off, and configure how each one is displayed."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:416
+msgid "The plugin calls stopImmediatePropagation() on the ordering form to own sort interactions. If sorting stops working, check your browser console for conflicting scripts.[send feedback]"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:380
+msgid "The plugin maintains two custom database tables (wp_ppfx_product_index and wp_ppfx_product_terms) that power fast filtering. These sync automatically on product save, delete, or status change. Manual rebuilding is needed after:"
+msgstr ""
+
+#: includes/admin/views/tab-advanced.php:24
+msgid "The product index powers the fast filter queries. Use this tool to rebuild it manually — for example, after a bulk CSV import or if filters are returning no results."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:352
+msgid "The shortcode and block are interchangeable — they produce identical markup. Use whichever fits your page-building workflow."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:404
+msgid "Theme Compatibility"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:415
+msgid "Themes or plugins that intercept the WooCommerce ordering form submit event may conflict with the plugin\'s sort handling."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:405
+msgid "Themes that replace the default WooCommerce product loop with a custom markup may not have a .ppfx-products-wrapper or .products container, which the plugin uses to inject AJAX results."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:124
+msgid "To enable filtering by a WooCommerce product attribute (e.g. Color, Size), you must go to WooCommerce &rarr; Products &rarr; Attributes &rarr; Edit &rarr; check the \"Enable Archives\" option for that attribute."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:387
+msgid "To rebuild: go to Pickory Product Filter → Settings → Advanced → click \"Rebuild Product Index\". Do not close the tab while the rebuild is running. On stores with 50,000+ products this may take a few minutes."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:295
+msgid "Toggle"
+msgstr ""
+
+#: templates/filter-layout.php:53
+msgid "Toggle filters"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:218
+msgid "Toggle whether the number of matching products is shown next to each term label (e.g. “Red (12)”). Disable to keep the UI cleaner."
+msgstr ""
+
+#: includes/rest/class-ppfx-products-controller.php:152
+msgid "Too many requests. Please try again shortly."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:136 includes/admin/views/tab-documentation.php:434
+msgid "Type"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:558
+msgid "URL-addressable filters with browser history (back/forward) support"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:329
+msgid "Unique identifier for this filter instance. Required when placing multiple filters on the same page (e.g. sidebar + top of shop page). If omitted, the plugin automatically generates a safe, unique fallback identifier."
+msgstr ""
+
+#: includes/admin/class-ppfx-term-meta.php:87 includes/admin/class-ppfx-term-meta.php:130
+msgid "Upload an image/pattern for the swatch. This takes priority over the color field in \"Image Swatch\" mode."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:90
+msgid "Upload the plugin ZIP and activate it from Plugins → Installed Plugins."
+msgstr ""
+
+#: includes/admin/class-ppfx-term-meta.php:83 includes/admin/class-ppfx-term-meta.php:126
+msgid "Upload/Select Image"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:548
+msgid "Version 1.0.0"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:543
+msgid "Version 1.0.1"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:535
+msgid "Version 1.0.2"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:662
+msgid "Visit Support Forum →"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:393
+msgid "Warning / Limitation"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:40
+msgid "Warnings & Known Limitations"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:191
+msgid "What it controls"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:361
+msgid "What it does"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:368
+msgid "When enabled, the product grid refreshes instantly via AJAX on every filter interaction. When disabled, an \"Apply Filters\" button appears and results update only on click."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:82
+msgid "WooCommerce 7.0+ (8.0+ recommended)"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:598
+msgid "WooCommerce Compatibility"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:173
+msgid "WooCommerce product attributes (e.g. pa_color, pa_size)"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:161 includes/admin/views/tab-documentation.php:167
+msgid "WooCommerce taxonomy"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:81
+msgid "WordPress 6.0+"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:505
+msgid "WordPress Hooks"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:537
+msgid "WordPress.org repository readiness and strict coding standards compliance."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:243 includes/admin/views/tab-documentation.php:255 includes/admin/views/tab-documentation.php:267 includes/admin/views/tab-documentation.php:273 includes/admin/views/tab-documentation.php:279
+msgid "Yes"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:105
+msgid "You can add custom CSS classes to the shortcode to apply different styling (e.g. [pickory_product_filter instance_id=\"xxx\" class=\"xxx\"] for a custom layout)."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:117
+msgid "You can place multiple filter instances on the same page (e.g. a sidebar filter and a mobile drawer filter) using the instance_id attribute. If omitted, the plugin automatically generates a safe, unique fallback identifier:"
+msgstr ""
+
+#: includes/admin/class-ppfx-admin.php:64
+msgid "You do not have permission to perform this action."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:327
+msgid "auto-generated (wp_unique_id)"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:461 includes/admin/views/tab-documentation.php:466 includes/admin/views/tab-documentation.php:471
+msgid "float"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:441 includes/admin/views/tab-documentation.php:446
+msgid "int"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:451 includes/admin/views/tab-documentation.php:456 includes/admin/views/tab-documentation.php:476 includes/admin/views/tab-documentation.php:481 includes/admin/views/tab-documentation.php:486 includes/admin/views/tab-documentation.php:491 includes/admin/views/tab-documentation.php:496
+msgid "string"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:178
+msgid "taxonomy slug"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:603
+msgid "~12.03 KB · May vary slightly in future updates"
+msgstr ""
+
+#: includes/admin/views/tab-advanced.php:27
+msgid "⚠️ For large catalogues (>1,000 products) this may take several seconds. Do not navigate away while the sync is running."
+msgstr ""
+
+#: src/js/admin/block-editor.js:26
+msgid "🔍 Pickory Product Filter (renders on frontend)"
+msgstr ""
+
+#: includes/admin/views/tab-advanced.php:21
+msgid "🗄️ Product Index"
+msgstr ""
+

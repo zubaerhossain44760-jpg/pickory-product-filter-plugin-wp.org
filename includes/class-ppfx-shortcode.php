@@ -22,34 +22,18 @@ class PPFX_Shortcode {
 	 */
 	public function init() {
 		add_shortcode( 'pickory_product_filter', array( $this, 'render_shortcode' ) );
+		add_shortcode( 'ppfx_filter', array( $this, 'render_shortcode' ) );
 	}
 
 	/**
-	 * Helper to determine input name based on section key
+	 * Helper to determine input name based on section key.
 	 *
+	 * @deprecated Use PPFX_Utility::get_input_name() instead.
 	 * @param string $key The section key.
 	 * @return string
 	 */
 	public static function get_input_name( $key ) {
-		if ( 'category' === $key ) {
-			return 'category';
-		}
-		if ( 'product_tag' === $key ) {
-			return 'product_tag';
-		}
-		if ( 'price' === $key ) {
-			return 'price';
-		}
-		if ( 'rating' === $key ) {
-			return 'rating';
-		}
-		if ( 'sale' === $key ) {
-			return 'on_sale';
-		}
-		if ( str_starts_with( $key, 'pa_' ) ) {
-			return 'filter_' . substr( $key, 3 );
-		}
-		return $key;
+		return PPFX_Utility::get_input_name( (string) $key );
 	}
 
 
@@ -70,6 +54,9 @@ class PPFX_Shortcode {
 			'pickory_product_filter'
 		);
 
+		// Ensure frontend assets (scripts and styles) are enqueued in wp_footer if rendering via shortcode on non-standard pages.
+		PPFX_Assets::enqueue_frontend_assets();
+
 		ob_start();
 
 		$template_path = locate_template( 'pickory-product-filter/filter-layout.php' );
@@ -78,14 +65,26 @@ class PPFX_Shortcode {
 		}
 
 		if ( file_exists( $template_path ) ) {
-			$extra_class        = ! empty( $atts['class'] ) ? ' ' . sanitize_html_class( $atts['class'] ) : '';
-			$unique_id          = empty( $atts['instance_id'] ) ? wp_unique_id( 'ppfx-filter-' ) : $atts['instance_id'];
+			$extra_class = '';
+			if ( ! empty( $atts['class'] ) ) {
+				$classes     = array_filter( array_map( 'sanitize_html_class', explode( ' ', (string) $atts['class'] ) ) );
+				$extra_class = $classes ? ' ' . implode( ' ', $classes ) : '';
+			}
+
+			$unique_id = empty( $atts['instance_id'] ) ? wp_unique_id( 'ppfx-filter-' ) : sanitize_key( $atts['instance_id'] );
+			if ( empty( $unique_id ) ) {
+				$unique_id = wp_unique_id( 'ppfx-filter-' );
+			}
+
 			$requested_sections = ! empty( $atts['sections'] ) ? array_map( 'trim', explode( ',', $atts['sections'] ) ) : array();
 			// Push the instance ID to a stack so class-ppfx-assets.php knows which ID to use.
 			PPFX_Assets::push_instance_id( $unique_id );
-			include $template_path;
-			// Pop the instance ID after rendering.
-			PPFX_Assets::pop_instance_id();
+			try {
+				include $template_path;
+			} finally {
+				// Pop the instance ID after rendering, guaranteed even if an exception occurs.
+				PPFX_Assets::pop_instance_id();
+			}
 		} else {
 			echo '<!-- Filter Template Missing -->';
 		}

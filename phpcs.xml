@@ -4,7 +4,9 @@
 
     <!-- Scan these paths -->
     <file>includes/</file>
+    <file>templates/</file>
     <file>pickory-product-filter.php</file>
+    <file>uninstall.php</file>
 
     <!-- Show colors, show sniff names, and progress -->
     <arg name="colors"/>
@@ -20,11 +22,14 @@
     <rule ref="WordPress.DB.PreparedSQL"/>
 
     <!-- Exclude specific rules for product query builder file -->
-    <!-- SQL identifiers (table names, aliases) cannot be parameterized -->
+    <!-- SQL identifiers (table names, aliases) cannot be parameterized, and query builder explicitly handles tax/meta queries -->
     <rule ref="WordPress.DB.PreparedSQL.InterpolatedNotPrepared">
         <exclude-pattern>*/class-ppfx-product-query-builder\.php</exclude-pattern>
     </rule>
     <rule ref="WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare">
+        <exclude-pattern>*/class-ppfx-product-query-builder\.php</exclude-pattern>
+    </rule>
+    <rule ref="WordPress.DB.SlowDBQuery">
         <exclude-pattern>*/class-ppfx-product-query-builder\.php</exclude-pattern>
     </rule>
 </ruleset>

@@ -39,6 +39,8 @@ build_err.txt
 vulnerability01.txt
 final audit
 checklist
+md
+*.md
 wp-org-readiness-report.md
 audit report.md
 qodana.sarif.json

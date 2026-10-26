@@ -15,6 +15,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 class PPFX_Server_Filter {
 
 	/**
+	 * Memoized result of get_request_filter_vars() for the current request.
+	 *
+	 * @var array<string>|null
+	 */
+	private $cached_filter_vars = null;
+
+	/**
 	 * Register hooks.
 	 *
 	 * @return void
@@ -22,9 +29,11 @@ class PPFX_Server_Filter {
 	public function init() {
 		add_filter( 'request', array( $this, 'normalize_shop_request_query_vars' ), 1 );
 		add_filter( 'pre_handle_404', array( $this, 'prevent_filtered_shop_404' ), 10, 2 );
-		add_action( 'woocommerce_product_query', array( $this, 'modify_main_query' ) );
+		add_action( 'woocommerce_product_query', array( $this, 'modify_main_query' ), 20 );
+		add_filter( 'woocommerce_shortcode_products_query', array( $this, 'modify_shortcode_query' ), 20, 3 );
 		add_filter( 'query_vars', array( $this, 'register_query_vars' ) );
-		add_filter( 'redirect_canonical', array( $this, 'prevent_canonical_redirect' ), 10, 1 );
+		add_filter( 'redirect_canonical', array( $this, 'prevent_canonical_redirect' ) );
+		add_filter( 'woocommerce_default_catalog_orderby', array( $this, 'override_default_orderby' ) );
 	}
 
 	/**
@@ -85,25 +94,18 @@ class PPFX_Server_Filter {
 	 * back to /shop/, losing the filter params. This method disables the redirect when
 	 * PPFX params are present in the URL.
 	 *
-	 * @param string $redirect_url  The computed redirect URL.
-	 * @param string $requested_url The original requested URL.
+	 * @param string $redirect_url The computed redirect URL.
 	 * @return string|false The redirect URL, or false to prevent redirect.
 	 */
-	public function prevent_canonical_redirect( $redirect_url, $requested_url = '' ) {
+	public function prevent_canonical_redirect( $redirect_url ) {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only URL params.
 		if ( empty( $_GET ) ) {
 			return $redirect_url;
 		}
 
-		$ppfx_params = $this->get_request_filter_vars();
-
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only URL params.
 		foreach ( $_GET as $key => $value ) {
-			if (
-				in_array( $key, $ppfx_params, true ) ||
-				str_starts_with( $key, 'ppfx_filter_' ) ||
-				str_starts_with( $key, 'ppfx_' )
-			) {
+			if ( str_starts_with( (string) $key, 'ppfx_' ) ) {
 				return false;
 			}
 		}
@@ -122,18 +124,38 @@ class PPFX_Server_Filter {
 			return;
 		}
 
-		if ( ! ( is_shop() || is_product_category() || is_product_tag() ) ) {
+		// Directive 2: Guard against secondary loop pollution — only intercept the primary query.
+		if ( ! ( $query instanceof WP_Query ) || ! $query->is_main_query() ) {
+			return;
+		}
+
+		// Directive 5: Detect custom product taxonomy archives (e.g. /brand/nike/).
+		$is_custom_tax_archive = false;
+		$custom_tax_term       = null;
+		if ( is_tax() ) {
+			$queried_object = get_queried_object();
+			if ( $queried_object instanceof WP_Term ) {
+				$product_taxonomies = get_object_taxonomies( 'product' );
+				if ( in_array( $queried_object->taxonomy, $product_taxonomies, true ) ) {
+					$is_custom_tax_archive = true;
+					$custom_tax_term       = $queried_object;
+				}
+			}
+		}
+
+		if ( ! ( is_shop() || is_product_category() || is_product_tag() || $is_custom_tax_archive ) ) {
 			return;
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only URL filter params.
 		$raw_params = PPFX_Utility::normalize_public_filter_params( wp_unslash( $_GET ) );
 
-		$excluded = array( 'post_type', 'paged', 'page', 's', 'orderby', 'order' );
+		$excluded = array( 'post_type', 'paged', 'page', 's' );
 		foreach ( $excluded as $key ) {
 			unset( $raw_params[ $key ] );
 		}
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only URL filter param.
 		$ppfx_page = isset( $_GET['ppfx_page'] ) ? absint( $_GET['ppfx_page'] ) : 1;
 		if ( $ppfx_page > 1 ) {
 			$query->set( 'paged', $ppfx_page );
@@ -153,25 +175,54 @@ class PPFX_Server_Filter {
 			if ( $term instanceof WP_Term ) {
 				$raw_params['product_tag'] = $term->slug;
 			}
+		} elseif ( $is_custom_tax_archive && null !== $custom_tax_term ) {
+			// Directive 5: Inject taxonomy slug so the query builder targets the correct archive.
+			$tax_key = $custom_tax_term->taxonomy;
+			if ( empty( $raw_params[ $tax_key ] ) ) {
+				$raw_params[ $tax_key ] = $custom_tax_term->slug;
+			}
 		}
 
-		$raw_params['per_page'] = -1;
-		$raw_params['page']     = 1;
+		// Apply filter conditions directly to WooCommerce's main query. This preserves
+		// native pagination and ordering without first materialising every matching ID.
+		$query->set( 'ppfx_is_filter_query', true );
 
 		$builder = new PPFX_Product_Query_Builder( $raw_params );
-		$result  = $builder->get_query( true );
-		$ids     = ! empty( $result->posts ) ? array_map( 'intval', $result->posts ) : array();
+		$builder->apply_to_query( $query );
+	}
 
-		if ( empty( $ids ) ) {
-			$query->set( 'post__in', array( 0 ) );
-			return;
+	/**
+	 * Apply PPFX filters to WooCommerce shortcode product queries (e.g. [products]).
+	 *
+	 * Intersects or appends URL parameters with native shortcode attributes safely
+	 * without blind overwriting.
+	 *
+	 * @param array  $query_args Query arguments for WP_Query.
+	 * @param array  $attributes Shortcode attributes.
+	 * @param string $type       Shortcode type.
+	 * @return array Modified query arguments.
+	 */
+	public function modify_shortcode_query( $query_args, $attributes = array(), $type = 'products' ) {
+		unset( $attributes, $type );
+
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only frontend URL filter params.
+		if ( is_admin() || empty( $_GET ) ) {
+			return $query_args;
 		}
 
-		$query->set( 'post__in', $ids );
+		$raw_params = PPFX_Utility::normalize_public_filter_params( wp_unslash( $_GET ) );
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
-		if ( empty( $raw_params['orderby'] ) ) {
-			$query->set( 'orderby', 'post__in' );
+		$excluded = array( 'post_type', 'paged', 'page', 's' );
+		foreach ( $excluded as $key ) {
+			unset( $raw_params[ $key ] );
 		}
+
+		if ( empty( $raw_params ) ) {
+			return $query_args;
+		}
+
+		return PPFX_Product_Query_Builder::merge_query_args_with_params( $query_args, $raw_params );
 	}
 
 	/**
@@ -196,7 +247,7 @@ class PPFX_Server_Filter {
 
 		// Check for category filter.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only URL param presence check.
-		$has_category = isset( $_GET['category'] ) || isset( $query_vars['category'] ) || isset( $query_vars['category_name'] ) || isset( $query_vars['cat'] );
+		$has_category = isset( $_GET['category'] ) || isset( $_GET['ppfx_category'] ) || isset( $query_vars['category'] ) || isset( $query_vars['category_name'] ) || isset( $query_vars['cat'] );
 
 		// Check for other filter params.
 		$has_other_filters = false;
@@ -204,7 +255,7 @@ class PPFX_Server_Filter {
 		// Build a set of keys to check: ppfx_ prefixed names + direct taxonomy names.
 		$check_keys = array();
 		foreach ( $this->get_request_filter_vars() as $var ) {
-			if ( 'category' !== $var && 'product_tag' !== $var ) {
+			if ( ! in_array( $var, array( 'ppfx_category', 'ppfx_product_tag' ), true ) ) {
 				$check_keys[] = $var;
 				// Also check the non-prefixed name so direct ?product_brand= URLs are detected.
 				if ( str_starts_with( $var, 'ppfx_' ) ) {
@@ -320,11 +371,7 @@ class PPFX_Server_Filter {
 	private function has_request_filter_params(): bool {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only URL filter params.
 		foreach ( $_GET as $key => $value ) {
-			$key = (string) $key;
-			if (
-				in_array( $key, $this->get_request_filter_vars(), true ) ||
-				0 === strpos( $key, 'ppfx_filter_' )
-			) {
+			if ( str_starts_with( (string) $key, 'ppfx_' ) ) {
 				return true;
 			}
 		}
@@ -337,6 +384,11 @@ class PPFX_Server_Filter {
 	 * @return array<string>
 	 */
 	private function get_request_filter_vars(): array {
+		// Directive 6: Return memoized result to avoid redundant taxonomy lookups per request.
+		if ( null !== $this->cached_filter_vars ) {
+			return $this->cached_filter_vars;
+		}
+
 		$vars = array(
 			'ppfx_category',
 			'ppfx_product_tag',
@@ -366,6 +418,30 @@ class PPFX_Server_Filter {
 			}
 		}
 
-		return array_values( array_unique( $vars ) );
+		$this->cached_filter_vars = array_values( array_unique( $vars ) );
+
+		return $this->cached_filter_vars;
+	}
+
+	/**
+	 * Override default catalog orderby when ppfx_orderby is present in the request.
+	 *
+	 * Allows WooCommerce's catalog ordering template to render the correct selected option
+	 * without mutating the superglobal $_GET array.
+	 *
+	 * @param string $default_orderby Default orderby setting.
+	 * @return string Filtered orderby value.
+	 */
+	public function override_default_orderby( $default_orderby ) {
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- read-only URL param.
+		if ( ! empty( $_GET['ppfx_orderby'] ) ) {
+			$orderby = sanitize_key( wp_unslash( $_GET['ppfx_orderby'] ) );
+			$allowed = array( 'menu_order', 'popularity', 'rating', 'date', 'price', 'price-desc', 'rand', 'title', 'id' );
+			if ( in_array( $orderby, $allowed, true ) ) {
+				return $orderby;
+			}
+		}
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+		return $default_orderby;
 	}
 }

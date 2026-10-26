@@ -24,6 +24,7 @@ $sections = PPFX_Settings_Page::get_resolved_sections();
 	</p>
 	<form method="post" action="options.php" id="ppfx-sections-form">
 		<?php settings_fields( 'ppfx_option_group' ); ?>
+		<input type="hidden" name="ppfx_settings[_sub_tab]" value="sections">
 		<table class="widefat ppfx-sections-table" style="border-collapse: collapse;">
 			<thead>
 				<tr>
@@ -45,7 +46,6 @@ $sections = PPFX_Settings_Page::get_resolved_sections();
 					<?php
 					$enabled        = ! empty( $config['enabled'] );
 					$filter_type    = $config['type'] ?? 'checkbox';
-					$label_val      = $config['label'] ?? '';
 					$max_height_val = $config['max_height'] ?? '';
 					$row_class      = $enabled ? '' : 'ppfx-row-disabled';
 					$default_label  = PPFX_Settings_Page::get_default_label( $key );
@@ -75,7 +75,7 @@ $sections = PPFX_Settings_Page::get_resolved_sections();
 					?>
 					<tr class="ppfx-section-row <?php echo esc_attr( $row_class ); ?>" data-key="<?php echo esc_attr( $key ); ?>" data-is-pa="<?php echo $is_pa_taxonomy ? '1' : '0'; ?>">
 						<td class="ppfx-drag-handle" title="<?php esc_attr_e( 'Drag to reorder', 'pickory-product-filter' ); ?>">
-							<span class="ppfx-drag-dots">⢿</span>
+							<span class="ppfx-drag-dots">⣿</span>
 						</td>
 						<td>
 							<strong><?php echo esc_html( $default_label ); ?></strong>
@@ -103,11 +103,17 @@ $sections = PPFX_Settings_Page::get_resolved_sections();
 							<?php endif; ?>
 						</td>
 						<td>
-							<input type="text" name="ppfx_settings[sections][<?php echo esc_attr( $key ); ?>][label]" value="<?php echo esc_attr( $label_val ); ?>" placeholder="<?php echo esc_attr( $default_label ); ?>" style="width: 100%;">
+							<input type="text" name="ppfx_settings[sections][<?php echo esc_attr( $key ); ?>][label]" value="<?php echo esc_attr( $config['label'] ?? $default_label ); ?>" placeholder="<?php echo esc_attr( $default_label ); ?>" style="width: 100%;">
 						</td>
 						<td>
-							<?php if ( ! $fixed_type ) : ?>
-								<input type="number" name="ppfx_settings[sections][<?php echo esc_attr( $key ); ?>][max_height]" value="<?php echo esc_attr( $max_height_val ); ?>" placeholder="px — leave empty for no limit" style="width: 100%;" min="1">
+							<?php if ( 'price' === $key ) : ?>
+								<?php $step_val = $config['step'] ?? 1; ?>
+								<div style="position: relative; display: inline-flex; align-items: center;">
+									<label style="position: absolute; left: 6px; font-size: 11px; color: #888; pointer-events: none; z-index: 2; white-space: nowrap;"><?php esc_html_e( 'Step:', 'pickory-product-filter' ); ?></label>
+									<input type="number" name="ppfx_settings[sections][price][step]" value="<?php echo esc_attr( $step_val ); ?>" min="1" step="1" style="width: 90px; padding-left: 35px; box-sizing: border-box; position: relative; z-index: 1;">
+								</div>
+							<?php elseif ( ! $fixed_type || 'rating' === $key ) : ?>
+								<input type="number" name="ppfx_settings[sections][<?php echo esc_attr( $key ); ?>][max_height]" class="ppfx-max-height-input" value="<?php echo esc_attr( $max_height_val ); ?>" placeholder="px — leave empty for no limit" style="width: 100%;" min="1">
 							<?php else : ?>
 								<span style="color: #999;">—</span>
 							<?php endif; ?>

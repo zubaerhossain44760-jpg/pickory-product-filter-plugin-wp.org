@@ -1,115 +1,131 @@
 /**
  * Type: Color & Image Swatches
  */
-@use 'variables' as *;
+@use "variables" as *;
 
 .ppfx-swatch-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-block: 6px; // Space so top-right badges aren't clipped by container edge
 
-    // -- Positioning context for corner count badge ---------------------------
-    // Badge styles are defined once globally in _filters.scss .ppfx-count-badge
-    .ppfx-swatch-wrap,
-    .ppfx-btn-wrap {
-        position: relative;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
+  // Positioning context for the inner .ppfx-count-badge is now on the buttons
+  // themselves (.ppfx-swatch-item, .ppfx-grid-btn) via position:relative.
+  // The old .ppfx-swatch-wrap / .ppfx-btn-wrap wrapper spans have been removed.
+
+  .ppfx-swatch-item {
+    position: relative; // Positioning context for inner .ppfx-count-badge
+    cursor: pointer;
+    transition:
+      transform $transition-speed,
+      border-color $transition-speed;
+    border: 2px solid transparent;
+    outline: none;
+
+    // Reset default button styles
+    appearance: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+    font: inherit;
+
+    &:hover {
+      transform: scale(1.03);
     }
 
-    .ppfx-swatch-item {
-        position: relative;
-        cursor: pointer;
-        transition: transform $transition-speed, border-color $transition-speed;
-        border: 2px solid transparent;
-        outline: none;
-
-        // Reset default button styles
-        appearance: none;
-        background: none;
-        padding: 0;
-        margin: 0;
-        box-shadow: none;
-        font: inherit;
-
-        &:hover {
-            transform: scale(1.03);
-        }
-
-        &:focus-visible {
-            outline: 2px solid $primary-color;
-            outline-offset: 2px;
-        }
-
-        &.is-active {
-            border-color: $primary-color;
-            transform: scale(1.05);
-            box-shadow: none;
-        }
-
-        /* Color Swatch (Circular) */
-        &.ppfx-color-swatch {
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            padding: 0;
-
-            .ppfx-swatch-inner {
-                display: block;
-                width: 100%;
-                height: 100%;
-                border-radius: 50%;
-            }
-
-            .ppfx-swatch-tooltip {
-                display: none;
-            }
-        }
-
-        /* Image Swatch (Rounded Square) */
-        &.ppfx-image-swatch {
-            border-radius: 6px;
-            width: 44px;
-            height: 44px;
-            overflow: hidden; // Intentional — clips image; badge is outside this element
-
-            img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                border-radius: 4px;
-            }
-        }
+    &:focus-visible {
+      outline: 2px solid v("primary-color", $primary-color);
+      outline-offset: 2px;
     }
 
-    /* Fallback Buttons (Button Grid Style) */
-    .ppfx-grid-btn {
-        font-size: 0.85rem;
-        font-weight: 500;
-        padding: 6px 8px;
-        border: 1px solid $border-color;
-        border-radius: $border-radius-md;
-        background: #fff;
-        color: $text-color-sec;
-        cursor: pointer;
-        transition: background $transition-speed, color $transition-speed, filter $transition-speed, border-color $transition-speed;
-        outline: none;
-
-        &:hover {
-            border-color: $border-color;
-            filter: brightness(0.85);
-        }
-
-        &:focus-visible {
-            outline: 2px solid $primary-color;
-            outline-offset: 2px;
-        }
-
-        &.is-active {
-            border-color: $primary-color;
-            background: $secondary-color;
-            color: $primary-color;
-        }
+    &.is-active {
+      border-color: v("primary-color", $primary-color);
+      transform: scale(1.05);
+      box-shadow: none;
     }
+
+    /* Color Swatch (Circular) */
+    &.ppfx-color-swatch {
+      border-radius: v(
+        "color-swatch-border-radius",
+        $color-swatch-border-radius
+      );
+      width: v("color-swatch-size", $color-swatch-size);
+      height: v("color-swatch-size", $color-swatch-size);
+      padding: 0;
+
+      .ppfx-swatch-inner {
+        display: block;
+        width: 100%;
+        height: 100%;
+        border-radius: inherit;
+      }
+
+      /* Tooltip handling if needed */
+      .ppfx-swatch-tooltip {
+        display: none;
+      }
+    }
+
+    /* Image Swatch (Rounded Square) */
+    // overflow:hidden has been moved from the button to the img element so
+    // the absolutely-positioned .ppfx-count-badge is not clipped.
+    &.ppfx-image-swatch {
+      border-radius: v(
+        "image-swatch-border-radius",
+        $image-swatch-border-radius
+      );
+      width: v("image-swatch-size", $image-swatch-size);
+      height: v("image-swatch-size", $image-swatch-size);
+
+      img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: inherit; // Perfectly inherits parent's border-radius
+      }
+    }
+  }
+
+  /* Fallback Buttons (Button Grid Style) */
+  .ppfx-grid-btn {
+    position: relative; // Positioning context for inner .ppfx-count-badge
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 6px 8px;
+    border: 1px solid v("border-color", $border-color);
+    border-radius: v(
+      "btn-grid-border-radius",
+      $btn-grid-border-radius
+    ); // Synced with PHP appearance setting
+
+    background: v("btn-grid-bg", $btn-grid-bg);
+    color: v("text-color", $text-color);
+    cursor: pointer;
+    transition:
+      background $transition-speed,
+      color $transition-speed,
+      filter $transition-speed,
+      border-color $transition-speed;
+    outline: none;
+
+    &:hover {
+      border-color: v("hover-color", $hover-color);
+      background: v("hover-bg-color", $hover-bg-color);
+      color: v("hover-color", $hover-color);
+    }
+
+    &:focus-visible {
+      outline: 2px solid v("primary-color", $primary-color);
+      outline-offset: 2px;
+    }
+
+    &.is-active {
+      border-color: v("primary-color", $primary-color);
+      background: v("active-bg-color", $active-bg-color);
+      color: v("active-color", $active-color);
+    }
+  }
 }

@@ -3,7 +3,7 @@
  * Type: Slider
  * Dual thumb range slider for Price.
  *
- * @package pickory-product-filter
+ * @package Pickory_Product_Filter
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -23,14 +23,14 @@ if ( false === $range ) {
 	// Try the custom index table first.
 	if ( PPFX_Index::index_tables_available() ) {
 		$index_table = PPFX_Index::get_table_name();
-        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is from PPFX_Index::get_table_name() (trusted, no user input).
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Table name is trusted, result cached via transient.
 		$range = $wpdb->get_row( "SELECT MIN(min_price) as min_price, MAX(max_price) as max_price FROM {$index_table}" );
 	}
 
 	// Fallback to WooCommerce product meta lookup table if index is unavailable or empty.
 	if ( ! $range || null === $range->min_price || null === $range->max_price ) {
 		$lookup_table = $wpdb->prefix . 'wc_product_meta_lookup';
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Result cached via transient.
 		$range = $wpdb->get_row(
 			"SELECT MIN(pm.min_price) as min_price,
                     MAX(pm.max_price) as max_price
@@ -39,7 +39,7 @@ if ( false === $range ) {
              WHERE p.post_type = 'product'
                AND p.post_status = 'publish'"
 		);
-		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 	}
 
 	set_transient( $cache_key, $range, HOUR_IN_SECONDS );
@@ -53,28 +53,35 @@ if ( null !== $min && null !== $max && $min < $max ) :
 	$min      = wc_format_decimal( (float) $min, $decimals );
 	$max      = wc_format_decimal( (float) $max, $decimals );
 
-	// Get currently active min/max prices from URL if they exist
-	// Support both public params (ppfx_min_price) and legacy params (min_price)
+	// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only frontend URL filter params, no state change.
 	$requested_min = isset( $_GET['ppfx_min_price'] )
-		? wp_unslash( $_GET['ppfx_min_price'] )
-		: ( $_GET['min_price'] ?? null );
+		? (float) sanitize_text_field( wp_unslash( $_GET['ppfx_min_price'] ) )
+		: ( isset( $_GET['min_price'] ) ? (float) sanitize_text_field( wp_unslash( $_GET['min_price'] ) ) : null );
 
 	$requested_max = isset( $_GET['ppfx_max_price'] )
-		? wp_unslash( $_GET['ppfx_max_price'] )
-		: ( $_GET['max_price'] ?? null );
+		? (float) sanitize_text_field( wp_unslash( $_GET['ppfx_max_price'] ) )
+		: ( isset( $_GET['max_price'] ) ? (float) sanitize_text_field( wp_unslash( $_GET['max_price'] ) ) : null );
+	// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 	$current_min = $min;
 	$current_max = $max;
 
 	if ( null !== $requested_min ) {
 		$val         = wc_format_decimal( (float) $requested_min, $decimals );
-		$current_min = max( $min, min( $val, $max ) ); // Clamp between min and max
+		$current_min = max( $min, min( $val, $max ) ); // Clamp between min and max.
 	}
 
 	if ( null !== $requested_max ) {
 		$val         = wc_format_decimal( (float) $requested_max, $decimals );
-		$current_max = max( $min, min( $val, $max ) ); // Clamp between min and max
+		$current_max = max( $min, min( $val, $max ) ); // Clamp between min and max.
 	}
+
+	if ( (float) $current_min > (float) $current_max ) {
+		$temp        = $current_min;
+		$current_min = $current_max;
+		$current_max = $temp;
+	}
+
 	$default_step = $decimals > 0 ? 1 / ( 10 ** $decimals ) : 1;
 	$step         = isset( $config['step'] ) ? (float) $config['step'] : $default_step;
 	$step         = $step > 0 ? wc_format_decimal( $step, $decimals ) : wc_format_decimal( $default_step, $decimals );
@@ -112,8 +119,8 @@ if ( null !== $min && null !== $max && $min < $max ) :
 		<input type="range" name="max_price" min="<?php echo esc_attr( $min ); ?>" max="<?php echo esc_attr( $max ); ?>" value="<?php echo esc_attr( $current_max ); ?>" step="<?php echo esc_attr( $step ); ?>" aria-label="<?php esc_attr_e( 'Maximum price', 'pickory-product-filter' ); ?>" />
 	</div>
 	<div class="ppfx-price-labels">
-		<span><?php esc_html_e( 'Min', 'pickory-product-filter' ); ?> <b class="ppfx-price-min-label"><?php echo wp_kses_post( $min_display ); ?></b></span>
-		<span><?php esc_html_e( 'Max', 'pickory-product-filter' ); ?> <b class="ppfx-price-max-label"><?php echo wp_kses_post( $max_display ); ?></b></span>
+		<span><?php esc_html_e( 'Min', 'pickory-product-filter' ); ?> <b class="ppfx-price-min-label"><?php echo $min_display; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wc_price() returns sanitized core HTML. ?></b></span>
+		<span><?php esc_html_e( 'Max', 'pickory-product-filter' ); ?> <b class="ppfx-price-max-label"><?php echo $max_display; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wc_price() returns sanitized core HTML. ?></b></span>
 	</div>
 </div>
 <?php endif; ?>

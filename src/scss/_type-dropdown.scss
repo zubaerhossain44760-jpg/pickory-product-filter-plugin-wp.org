@@ -1,28 +1,65 @@
 /**
  * Type: Dropdown
  */
-@use 'variables' as *;
+@use "variables" as *;
 
 .ppfx-type-dropdown {
-    .ppfx-dropdown-wrap {
-        width: 100%;
+  .ppfx-dropdown-wrap {
+    position: relative;
+    width: 100%;
+  }
+
+  .ppfx-dropdown-input {
+    width: 100%;
+    padding: 8px 36px 8px 12px; // Right padding added so text doesn't overlap arrow
+    border: 1px solid v("dropdown-border-color", $dropdown-border-color);
+    border-radius: v("dropdown-border-radius", $dropdown-border-radius);
+    font-size: v("dropdown-font-size", $dropdown-font-size);
+    color: v("text-color", $text-color);
+    background-color: v("dropdown-bg", $dropdown-bg);
+    cursor: pointer;
+    outline: none;
+    transition:
+      border-color $transition-speed,
+      box-shadow $transition-speed;
+
+    // Custom clean SVG dropdown arrow
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234b5563'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+
+    &:hover {
+      border-color: v("primary-color", $primary-color);
     }
 
-    .ppfx-dropdown-input {
-        width: 100%;
-        padding: 10px 12px;
-        border: 1px solid $border-color;
-        border-radius: $border-radius-md;
-        font-size: 14px;
-        color: $text-color;
-        background-color: #fff;
-        cursor: pointer;
-        outline: none;
-        transition: border-color $transition-speed;
+    &:focus-visible {
+      border-color: v("primary-color", $primary-color);
+      color: v("text-color", $text-color);
+      background-color: v("dropdown-bg", $dropdown-bg);
 
-        &:focus-visible {
-            border-color: $primary-color;
-            box-shadow: 0 0 0 2px rgba(var(--ppfx-primary-rgb), 0.1);
-        }
+      // Fixed: Added $raw-primary-rgb fallback so box-shadow never breaks
+      box-shadow: 0 0 0 3px
+        rgba(var(--ppfx-primary-rgb, #{$raw-primary-rgb}), 0.18);
     }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      background-color: #f3f4f6;
+    }
+
+    // ── Option Styling (Fixed: Prevents dark mode/contrast issues) ──
+    option {
+      background-color: v("dropdown-bg", $dropdown-bg);
+      color: v("text-color", $text-color);
+      padding: 8px 10px;
+
+      &:disabled {
+        color: v("label-color", $label-color);
+        opacity: 0.5;
+      }
+    }
+  }
 }

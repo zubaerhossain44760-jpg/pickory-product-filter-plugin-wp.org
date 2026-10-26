@@ -2,9 +2,9 @@
 Contributors: zubaerhossain
 Tags: woocommerce filter, ajax filter, product filter, faceted search, product search
 Requires at least: 6.0
-Tested up to: 7.0
+Tested up to: 6.7
 Requires PHP: 8.0
-Stable tag: 1.0.0
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -159,6 +159,16 @@ Uninstalling deletes custom tables, plugin options, transients, and scheduled cr
 
 == Changelog ==
 
+= 1.0.2 =
+* WordPress.org repository readiness and strict coding standards compliance.
+* Stripped UTF-8 BOM markers and normalized line endings across codebase.
+* Complete translation catalog (.pot) generation containing all 317 strings.
+* Sanitized URL filter parameters and isolated template loop variable scopes.
+* Fixed deprecated CSS properties and updated production build pipeline.
+
+= 1.0.1 =
+* Maintenance release.
+
 = 1.0.0 =
 * Initial release
 * Flat product index for fast filtering
@@ -177,6 +187,12 @@ Uninstalling deletes custom tables, plugin options, transients, and scheduled cr
 * Template override system
 
 == Upgrade Notice ==
+
+= 1.0.2 =
+WordPress.org standards compliance, security sanitization, and full translation catalog update.
+
+= 1.0.1 =
+Maintenance release.
 
 = 1.0.0 =
 Initial release.

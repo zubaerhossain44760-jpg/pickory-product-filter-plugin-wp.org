@@ -1,11 +1,9 @@
-import { applyFilterState, applySortState, toInternalParams, FILTER_KEYS } from "../utils/url";
+import { applyFilterState, applySortState, PPFX_URL_State } from "../utils/url";
 
 /**
  * Global registry of all active filter form instances on the page.
  *
- * Enables coordinated event delegation (pagination clicks, sort changes,
- * popstate) across multiple filter widgets without each instance adding
- * its own top-level listeners.
+ * Enables coordinated event delegation across multiple filter widgets.
  *
  * @type {Set<object>}
  */
@@ -17,10 +15,14 @@ export const filterFormInstances = new Set();
  *
  * @type {Set<string>}
  */
-export const RESERVED_FILTER_KEYS = new Set(["orderby", "order", "page", "paged"]);
+export const RESERVED_FILTER_KEYS = new Set([
+  "orderby",
+  "order",
+  "page",
+  "paged",
+]);
 
-/** @type {boolean} */
-let popstateRegistered = false;
+let urlListenerRegistered = false;
 
 // ---------------------------------------------------------------------------
 // Global event handlers — delegated once for all instances
@@ -43,10 +45,30 @@ const handleGlobalSortChange = (event) => {
 };
 
 /**
+ * Handle unified URL changes (both synthetic and popstate).
+ *
+ * @param {CustomEvent} event
+ */
+const handleUnifiedUrlChange = (event) => {
+  const { params, source } = event.detail || {};
+  syncAllUIs(params);
+
+  // Dedup: Trigger data update on a single coordinator instance to avoid duplicate AJAX calls
+  const instances = Array.from(filterFormInstances);
+  const fetcherInstance =
+    instances.find((inst) => inst.isPrimary) || instances[0];
+  if (
+    fetcherInstance &&
+    typeof fetcherInstance.onUrlStateChange === "function"
+  ) {
+    fetcherInstance.onUrlStateChange(params, source);
+  }
+};
+
+/**
  * Register a filter form instance into the global registry.
  *
- * Attaches document-level event listeners on first registration and the
- * popstate listener once, regardless of how many instances exist.
+ * Attaches document-level event listeners on first registration.
  *
  * @param {object} instance
  */
@@ -56,9 +78,9 @@ export const registerGlobalInstance = (instance) => {
     document.addEventListener("change", handleGlobalSortChange, true);
   }
 
-  if (!popstateRegistered) {
-    window.addEventListener("popstate", handleGlobalPopState);
-    popstateRegistered = true;
+  if (!urlListenerRegistered) {
+    window.addEventListener("ppfx:url-change", handleUnifiedUrlChange);
+    urlListenerRegistered = true;
   }
 
   filterFormInstances.add(instance);
@@ -66,8 +88,6 @@ export const registerGlobalInstance = (instance) => {
 
 /**
  * Remove a filter form instance from the global registry.
- *
- * Removes document-level listeners when the last instance is destroyed.
  *
  * @param {object} instance
  */
@@ -78,75 +98,65 @@ export const unregisterGlobalInstance = (instance) => {
     document.removeEventListener("click", handleGlobalPaginationClick);
     document.removeEventListener("change", handleGlobalSortChange, true);
 
-    if (popstateRegistered) {
-      window.removeEventListener("popstate", handleGlobalPopState);
-      popstateRegistered = false;
+    if (urlListenerRegistered) {
+      window.removeEventListener("ppfx:url-change", handleUnifiedUrlChange);
+      urlListenerRegistered = false;
     }
   }
 };
 
 // ---------------------------------------------------------------------------
-// Global state sync
+// Global state sync — driven by URL as Single Source of Truth
 // ---------------------------------------------------------------------------
 
 /**
- * Push the current global filter/sort state back into every registered
- * instance's UI controls. Called after any shared state mutation
- * (filter change, reset, popstate).
- */
-export const syncAllUIs = () => {
-  for (const instance of filterFormInstances) {
-    applyFilterState(instance.formElement, window.ppfxGlobalState.filters);
-    applySortState(instance.root, window.ppfxGlobalState.sort);
-  }
-};
-
-/**
- * Read the current URL search params and hydrate window.ppfxGlobalState.
+ * Push the canonical URL filter/sort state into every registered instance's UI controls.
  *
- * Merges any taxonomy archive context (e.g. on a /product-category/ page)
- * so that the implicit category constraint is preserved in state even when
- * not present as an explicit URL param.
+ * @param {Record<string, any>} [providedState] Optional pre-parsed canonical state
  */
-export const syncStateFromUrl = () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const internalParams = toInternalParams(urlParams);
-  const filters = {};
+export const syncAllUIs = (providedState = null) => {
+  const canonical = providedState || PPFX_URL_State.getCanonicalState();
 
-  const rawFilterKeys = window.ppfxFilterData?.filterKeys || FILTER_KEYS;
-  // Convert public filterKeys to internal keys for comparison
-  const internalFilterKeys = new Set(
-    rawFilterKeys.map(key => {
-      const converted = toInternalParams(new URLSearchParams([[key, '']]));
-      return Object.keys(converted)[0] || key;
-    })
-  );
+  for (const instance of filterFormInstances) {
+    applyFilterState(instance.formElement, canonical);
+  }
 
-  Object.entries(internalParams).forEach(([key, value]) => {
-    if (key === '__proto__' || key === 'constructor' || key === 'prototype') return;
-    if (key.startsWith('filter_') || internalFilterKeys.has(key)) {
-      if (key !== 'page' && key !== 'orderby' && key !== 'order') {
-        filters[key] = value;
-      }
-    }
-  });
-
-  // Merge current taxonomy context (category/tag archive pages) if not overridden
-  if (window.ppfxFilterData && window.ppfxFilterData.currentContext) {
-    Object.entries(window.ppfxFilterData.currentContext).forEach(([key, val]) => {
-      if (key === '__proto__' || key === 'constructor' || key === 'prototype') return;
-      if (!filters[key]) {
-        filters[key] = val;
-      }
+  // Also sync document-level sort selects (such as WooCommerce loop toolbar)
+  if (typeof document !== "undefined") {
+    applySortState(document, {
+      orderby: canonical.orderby || "",
+      order: canonical.order || "",
     });
   }
 
-  window.ppfxGlobalState.filters = filters;
-  window.ppfxGlobalState.sort = {
-    orderby: internalParams.orderby || '',
-    order: internalParams.order || '',
-  };
-  window.ppfxGlobalState.paged = parseInt(internalParams.page || '1', 10);
+  document.dispatchEvent(
+    new CustomEvent("ppfx-filters-updated", { detail: { state: canonical } }),
+  );
+};
+
+/**
+ * Read the current URL search params and return canonical state.
+ *
+ * @returns {Record<string, any>}
+ */
+export const syncStateFromUrl = () => {
+  const canonical = PPFX_URL_State.getCanonicalState();
+
+  // Merge current taxonomy archive context if present and not overridden
+  if (window.ppfxFilterData && window.ppfxFilterData.currentContext) {
+    Object.entries(window.ppfxFilterData.currentContext).forEach(
+      ([key, val]) => {
+        if (key === "__proto__" || key === "constructor" || key === "prototype")
+          return;
+        if (!canonical[key]) {
+          canonical[key] = val;
+        }
+      },
+    );
+  }
+
+  syncAllUIs(canonical);
+  return canonical;
 };
 
 /**
@@ -161,23 +171,4 @@ export const triggerWooCommerceEvents = () => {
   const $body = window.jQuery(document.body);
   $body.trigger("wc_fragments_refreshed");
   $body.trigger("yith_infs_added_elem");
-};
-
-// ---------------------------------------------------------------------------
-// Popstate handler — defined after syncStateFromUrl & syncAllUIs
-// ---------------------------------------------------------------------------
-
-/**
- * Handle browser back/forward navigation.
- *
- * CRITICAL: State and controls must be synced BEFORE triggering the AJAX
- * fetch so the UI never shows stale selections while the request is in flight.
- */
-const handleGlobalPopState = () => {
-  syncStateFromUrl();
-  syncAllUIs();
-
-  for (const instance of Array.from(filterFormInstances)) {
-    instance.handleFilterChange(false, "popstate");
-  }
 };

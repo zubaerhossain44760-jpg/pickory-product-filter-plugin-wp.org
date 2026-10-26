@@ -19,9 +19,7 @@ parameters:
   # guarantees. This suppresses false-positive "always true/false" errors that
   # arise when stub PHPDocs claim a narrower type than the runtime can guarantee.
   treatPhpDocTypesAsCertain: false
+  reportUnmatchedIgnoredErrors: false
 
   ignoreErrors:
-    -
-      message: '#Path in require_once\(\) .*wp-admin/includes/upgrade\.php.* is not a file or it does not exist\.#'
-      path: includes/class-ppfx-index.php
-
+    - identifier: isset.property

@@ -1,8 +1,9 @@
 <?php
-
 /**
  * Type: Star Rating
  * Five star rows for filtering products by review score.
+ *
+ * @package Pickory_Product_Filter
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -24,6 +25,7 @@ $ratings = array( 5, 4, 3, 2, 1 );
 			data-rating="<?php echo esc_attr( $rating ); ?>" 
 			data-label="<?php echo esc_attr( $label_text ); ?>"
 			aria-label="<?php echo esc_attr( $label_text ); ?>"
+			aria-pressed="false"
 		>
 			<span class="ppfx-stars" aria-hidden="true">
 				<?php echo esc_html( str_repeat( '★', (int) max( 0, min( 5, $rating ) ) ) ); ?>

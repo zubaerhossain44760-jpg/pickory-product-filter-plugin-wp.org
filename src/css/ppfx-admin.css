@@ -1,338 +1,363 @@
 /**
- * Pickory Product Filter — Admin CSS
- * Layout and styling for the sortable filter sections table.
+ * Pickory Product Filter — Admin CSS (Unified)
+ * Layout and styling for settings, filter sections table, appearance, and documentation.
+ *
+ * @package pickory-product-filter
  */
 
+@import "./ppfx-term-meta.css";
+
+/* ──────────────────────────────────────────
+   Design Tokens
+────────────────────────────────────────── */
+:root,
+.ppfx-admin-wrap {
+  --ppfx-admin-primary: var(--ppfx-primary-color, #378add);
+  --ppfx-admin-primary-dark: #2271b1;
+  --ppfx-admin-border: var(--ppfx-border-color, #e5e7eb);
+  --ppfx-admin-border-subtle: #c3c4c7;
+  --ppfx-admin-bg-subtle: #f6f7f7;
+  --ppfx-admin-bg-muted: #f0f0f1;
+  --ppfx-admin-text: #1d2327;
+  --ppfx-admin-text-muted: #646970;
+}
+
+/* ──────────────────────────────────────────
+   Filter Sections Table
+────────────────────────────────────────── */
 .ppfx-sections-table {
-    margin-top: 20px;
-    background: #fff;
+  margin-top: 20px;
+  background: #fff;
 }
 
 .ppfx-section-row {
-    transition:
-        background 0.2s,
-        opacity 0.2s;
+  transition:
+    background 0.2s,
+    opacity 0.2s;
 }
 
 .ppfx-section-row:hover {
-    background: #fdfdfd;
+  background: #fdfdfd;
+}
+
+.ppfx-row-disabled {
+  opacity: 0.5;
+  background: #f8f8f8;
 }
 
 /* Drag Handle */
 .ppfx-drag-handle {
-    cursor: grab;
-    color: #999;
-    font-size: 20px;
-    user-select: none;
+  cursor: grab;
+  color: #999;
+  font-size: 20px;
+  user-select: none;
 }
 
 .ppfx-drag-handle:active {
-    cursor: grabbing;
+  cursor: grabbing;
 }
 
 .ppfx-drag-dots {
-    display: inline-block;
-    transform: translateY(2px);
+  display: inline-block;
+  transform: translateY(2px);
 }
 
 /* UI Sortable Placeholder */
 .ui-sortable-placeholder {
-    background: #f0f0f1 !important;
-    visibility: visible !important;
-    border: 1px dashed #ccc !important;
+  background: var(--ppfx-admin-bg-muted) !important;
+  visibility: visible !important;
+  border: 1px dashed #ccc !important;
 }
 
-/* Disabled State */
-.ppfx-row-disabled {
-    opacity: 0.5;
-    background: #f8f8f8;
-}
-
-/* Toggle Switch */
+/* ──────────────────────────────────────────
+   Toggle Switches
+────────────────────────────────────────── */
 .ppfx-toggle-switch {
-    position: relative;
-    display: inline-block;
-    width: 36px;
-    height: 20px;
-    background-color: #ccc;
-    border-radius: 20px;
-    transition: background-color 0.2s;
-    cursor: pointer;
-    vertical-align: middle;
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 20px;
+  transition: background-color 0.2s;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.ppfx-toggle-switch:focus-visible {
+  outline: 2px solid var(--ppfx-admin-primary);
+  outline-offset: 2px;
 }
 
 .ppfx-toggle-knob {
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 16px;
-    height: 16px;
-    background-color: #fff;
-    border-radius: 50%;
-    transition: transform 0.2s;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
 }
 
 .ppfx-toggle-on {
-    background-color: #378add;
+  background-color: var(--ppfx-admin-primary);
 }
 
 .ppfx-toggle-on .ppfx-toggle-knob {
-    transform: translateX(16px);
+  transform: translateX(16px);
 }
 
-/* Badge for fixed types */
+/* ──────────────────────────────────────────
+   Badges (DRY Pattern)
+────────────────────────────────────────── */
+.ppfx-fixed-type-badge,
+.ppfx-doc-version-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  background: var(--ppfx-admin-bg-muted);
+  color: var(--ppfx-admin-text-muted);
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
 .ppfx-fixed-type-badge {
-    display: inline-block;
-    padding: 2px 8px;
-    background: #f0f0f1;
-    color: #646970;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
+  text-transform: uppercase;
 }
 
 .ppfx-type-select {
-    min-width: 180px;
+  min-width: 180px;
 }
 
-/* Product Index Card */
+.ppfx-section-key {
+  color: #888;
+}
+
+/* ──────────────────────────────────────────
+   Cards (DRY Base Pattern)
+────────────────────────────────────────── */
+.ppfx-index-card,
+.ppfx-doc-header-card {
+  background: #fff;
+  border: 1px solid var(--ppfx-admin-border-subtle);
+  border-radius: 6px;
+  box-shadow:
+    0 2px 2px 0 rgb(0 0 0 / 4%),
+    0 3px 1px -2px rgb(0 0 0 / 3%),
+    0 1px 5px 0 rgb(0 0 0 / 5%);
+  padding: 20px 24px;
+  margin-bottom: 20px;
+}
+
 .ppfx-index-card {
-    background: #fff;
-    border: 1px solid #c3c4c7;
-    border-left: 4px solid #2271b1;
-    padding: 20px 24px;
-    max-width: 700px;
-    margin-bottom: 20px;
+  border-left: 4px solid var(--ppfx-admin-primary-dark);
+  max-width: 700px;
 }
 
-.ppfx-index-card h2 {
-    margin-top: 0;
+.ppfx-index-card h2,
+.ppfx-doc-header-card h2 {
+  margin-top: 0;
 }
 
 .ppfx-index-card p {
-    margin-bottom: 12px;
+  margin-bottom: 12px;
 }
 
 .ppfx-index-card .description {
-    color: #646970;
-    font-size: 12px;
-    margin-bottom: 16px;
+  color: var(--ppfx-admin-text-muted);
+  font-size: 12px;
+  margin-bottom: 16px;
 }
 
-/* Section Key */
-.ppfx-section-key {
-    color: #888;
-}
-
-/* ============================================================
-   TAB NAVIGATION
-   ============================================================ */
-
+/* ──────────────────────────────────────────
+   Tab Navigation
+────────────────────────────────────────── */
 .ppfx-admin-wrap .ppfx-tab-nav {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
-
-/* ============================================================
-   DOCUMENTATION TAB
-   ============================================================ */
-
+/* ──────────────────────────────────────────
+   Documentation Tab
+────────────────────────────────────────── */
 .ppfx-doc-wrap {
-    display: flex;
-    gap: 20px;
-    align-items: flex-start;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
 }
 
 .ppfx-doc-main {
-    flex: 3;
-    min-width: 0;
+  flex: 3;
+  min-width: 0;
 }
 
 .ppfx-doc-sidebar {
-    flex: 1;
-    min-width: 0;
+  flex: 1;
+  min-width: 0;
 }
-
 
 .ppfx-doc-sidebar-card h3 {
-    margin: 0 0 12px;
-    font-size: 14px;
-    font-weight: 600;
-}
-
-
-/* Support List */
-.pickory-support-list {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 20px;
-}
-
-.pickory-support-list li {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 16px;
-}
-
-.pickory-support-list li:last-child {
-    margin-bottom: 0;
-}
-
-.pickory-support-icon {
-    width: 20px;
-    height: 20px;
-    color: #2271b1;
-
-    flex-shrink: 0;
-    margin-top: 2px;
-}
-
-.pickory-support-text h4 {
-    margin: 0 0 2px;
-}
-
-.pickory-support-text p {
-    margin: 0;
-    font-size: 12px;
-    color: #646970;
-}
-
-.pickory-support-text a {
-    text-decoration: none;
-    color: inherit;
-}
-
-.pickory-support-text a:hover h4 {
-    color: #2271b1;
-}
-
-.ppfx-btn-block {
-    display: block;
-    text-align: center;
-}
-
-@media (max-width: 960px) {
-    .ppfx-doc-wrap {
-        flex-direction: column;
-    }
-
-    .ppfx-doc-sidebar {
-        width: 100%;
-    }
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .ppfx-doc-header-card {
-    background: #fff;
-    border: 1px solid #c3c4c7;
-    border-left: 4px solid #6C63FF;
-    padding: 20px 24px;
-    margin-block: 20px;
+  border-left: 4px solid #6c63ff;
+  margin-block: 20px;
 }
 
 .ppfx-doc-header-card h2 {
-    margin-top: 0;
-    margin-bottom: 8px;
-}
-
-.ppfx-doc-version-badge {
-    display: inline-block;
-    padding: 2px 8px;
-    background: #f0f0f1;
-    color: #646970;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 600;
+  margin-bottom: 8px;
 }
 
 .ppfx-doc-section-card,
 .ppfx-doc-sidebar-card.card {
-    background: #fff;
-    border: 1px solid #c3c4c7;
-    margin-bottom: 4px;
-    border-radius: 4px;
+  background: #fff;
+  border: 1px solid var(--ppfx-admin-border-subtle);
+  margin-bottom: 4px;
+  border-radius: 4px;
 }
 
 .ppfx-doc-section-card summary {
-    font-weight: 600;
-    cursor: pointer;
-    padding: 12px 16px;
-    list-style: none;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 12px 16px;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .ppfx-doc-section-card summary::-webkit-details-marker {
-    display: none;
+  display: none;
 }
 
 .ppfx-doc-section-card summary::before {
-    content: '\25B6';
-    display: inline-block;
-    transition: transform 0.2s;
-    font-size: 12px;
-    color: #646970;
+  content: "\25B6";
+  display: inline-block;
+  transition: transform 0.2s;
+  font-size: 12px;
+  color: var(--ppfx-admin-text-muted);
 }
 
 .ppfx-doc-section-card[open] summary::before {
-    transform: rotate(90deg);
+  transform: rotate(90deg);
 }
 
 .ppfx-doc-content {
-    padding: 12px 16px 16px;
-    border-top: 1px solid #c3c4c7;
+  padding: 12px 16px 16px;
+  border-top: 1px solid var(--ppfx-admin-border-subtle);
 }
 
 .ppfx-doc-placeholder {
-    color: #646970;
-    font-style: italic;
-    margin: 0;
+  color: var(--ppfx-admin-text-muted);
+  font-style: italic;
+  margin: 0;
 }
 
 .ppfx-doc-note {
-    color: #646970;
-    font-size: 12px;
-    margin-top: 12px;
-    padding: 10px 14px;
-    background: #f6f7f7;
-    border-left: 3px solid #c3c4c7;
+  color: var(--ppfx-admin-text-muted);
+  font-size: 12px;
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: var(--ppfx-admin-bg-subtle);
+  border-left: 3px solid var(--ppfx-admin-border-subtle);
 }
 
 .ppfx-doc-code {
-    display: inline-block;
-    background: #f0f0f1;
-    color: #1d2327;
-    font-family: monospace;
-    font-size: 13px;
-    padding: 2px 8px;
-    border-radius: 3px;
-    border: 1px solid #dcdcde;
+  display: inline-block;
+  background: var(--ppfx-admin-bg-muted);
+  color: var(--ppfx-admin-text);
+  font-family: monospace;
+  font-size: 13px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  border: 1px solid #dcdcde;
 }
 
 .ppfx-doc-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-    margin: 12px 0;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin: 12px 0;
 }
 
 .ppfx-doc-table th {
-    text-align: left;
-    padding: 8px 12px;
-    background: #f6f7f7;
-    border-bottom: 2px solid #dcdcde;
-    font-weight: 600;
+  text-align: left;
+  padding: 8px 12px;
+  background: var(--ppfx-admin-bg-subtle);
+  border-bottom: 2px solid #dcdcde;
+  font-weight: 600;
 }
 
 .ppfx-doc-table td {
-    padding: 8px 12px;
-    border-bottom: 1px solid #f0f0f1;
-    vertical-align: top;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--ppfx-admin-bg-muted);
+  vertical-align: top;
 }
 
 .ppfx-doc-table tr:last-child td {
-    border-bottom: none;
+  border-bottom: none;
+}
+
+/* Support List */
+.pickory-support-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+}
+
+.pickory-support-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.pickory-support-list li:last-child {
+  margin-bottom: 0;
+}
+
+.pickory-support-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--ppfx-admin-primary-dark);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.pickory-support-text h4 {
+  margin: 0 0 2px;
+}
+
+.pickory-support-text p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--ppfx-admin-text-muted);
+}
+
+.pickory-support-text a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.pickory-support-text a:hover h4 {
+  color: var(--ppfx-admin-primary-dark);
+}
+
+.ppfx-btn-block {
+  display: block;
+  text-align: center;
+}
+
+@media (width <= 960px) {
+  .ppfx-doc-wrap {
+    flex-direction: column;
+  }
+
+  .ppfx-doc-sidebar {
+    width: 100%;
+  }
 }
