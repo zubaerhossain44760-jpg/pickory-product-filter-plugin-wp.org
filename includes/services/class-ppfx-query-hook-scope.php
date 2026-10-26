@@ -117,7 +117,7 @@ class PPFX_Query_Hook_Scope {
 				$clauses['groupby'] = call_user_func( $this->groupby_callback, $clauses['groupby'], $wp_query );
 			}
 			if ( $this->having_callback ) {
-				$clauses['having'] = call_user_func( $this->having_callback, $clauses['having'], $wp_query );
+				$clauses['having'] = call_user_func( $this->having_callback, $clauses['having'] ?? '', $wp_query );
 			}
 			if ( $this->orderby_callback ) {
 				$clauses['orderby'] = call_user_func( $this->orderby_callback, $clauses['orderby'], $wp_query );
