@@ -532,6 +532,12 @@ $sections = array(
 				</ul>
 
 			<?php elseif ( 'changelog' === $section['id'] ) : ?>
+				<h4><?php esc_html_e( 'Version 1.0.3', 'pickory-product-filter' ); ?> &mdash; <?php esc_html_e( 'Compatibility & Maintenance Release', 'pickory-product-filter' ); ?></h4>
+				<ul>
+					<li><?php esc_html_e( 'Verified compatibility with WordPress 7.1 and WooCommerce 11.2.', 'pickory-product-filter' ); ?></li>
+					<li><?php esc_html_e( 'Updated plugin headers and WooCommerce compatibility declarations.', 'pickory-product-filter' ); ?></li>
+				</ul>
+
 				<h4><?php esc_html_e( 'Version 1.0.2', 'pickory-product-filter' ); ?> &mdash; <?php esc_html_e( 'Maintenance & Standards Release', 'pickory-product-filter' ); ?></h4>
 				<ul>
 					<li><?php esc_html_e( 'WordPress.org repository readiness and strict coding standards compliance.', 'pickory-product-filter' ); ?></li>
@@ -596,7 +602,7 @@ $sections = array(
 						</tr>
 						<tr>
 							<td><strong><?php esc_html_e( 'WooCommerce Compatibility', 'pickory-product-filter' ); ?></strong></td>
-							<td><?php esc_html_e( 'HPOS compatible · Tested up to WooCommerce 9.8', 'pickory-product-filter' ); ?></td>
+							<td><?php esc_html_e( 'HPOS compatible · Tested up to WooCommerce 11.2', 'pickory-product-filter' ); ?></td>
 						</tr>
 						<tr>
 							<td><strong><?php esc_html_e( 'Frontend Asset Size', 'pickory-product-filter' ); ?></strong></td>

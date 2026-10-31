@@ -4,7 +4,9 @@ Tags: woocommerce filter, ajax filter, product filter, faceted search, product s
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.0.2
+WC requires at least: 7.0
+WC tested up to: 11.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -159,6 +161,11 @@ Uninstalling deletes custom tables, plugin options, transients, and scheduled cr
 
 == Changelog ==
 
+= 1.0.3 =
+* Compatibility: Tested and verified compatibility with WordPress 7.1.
+* Compatibility: Tested and verified compatibility with WooCommerce 11.2.
+* Updated WooCommerce compatibility headers and declarations.
+
 = 1.0.2 =
 * WordPress.org repository readiness and strict coding standards compliance.
 * Stripped UTF-8 BOM markers and normalized line endings across codebase.
@@ -187,6 +194,9 @@ Uninstalling deletes custom tables, plugin options, transients, and scheduled cr
 * Template override system
 
 == Upgrade Notice ==
+
+= 1.0.3 =
+WordPress 7.1 and WooCommerce 11.2 compatibility update.
 
 = 1.0.2 =
 WordPress.org standards compliance, security sanitization, and full translation catalog update.

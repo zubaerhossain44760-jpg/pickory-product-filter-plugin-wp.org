@@ -188,11 +188,20 @@ foreach ( $files as $file_path ) {
 
 echo "Extracted " . count( $extracted ) . " unique translation strings.\n";
 
+$plugin_file = dirname( __DIR__ ) . '/pickory-product-filter.php';
+$plugin_version = '1.0.3';
+if ( file_exists( $plugin_file ) ) {
+	$header_content = file_get_contents( $plugin_file );
+	if ( preg_match( '/\*\s*Version:\s*([^\r\n]+)/i', $header_content, $m ) ) {
+		$plugin_version = trim( $m[1] );
+	}
+}
+
 $pot = '# Copyright (C) ' . date( 'Y' ) . ' Pickory' . "\n";
 $pot .= '# This file is distributed under the GPL-2.0-or-later.' . "\n";
 $pot .= 'msgid ""' . "\n";
 $pot .= 'msgstr ""' . "\n";
-$pot .= '"Project-Id-Version: Pickory Product Filter 1.0.2\n"' . "\n";
+$pot .= '"Project-Id-Version: Pickory Product Filter ' . $plugin_version . '\n"' . "\n";
 $pot .= '"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pickory-product-filter\n"' . "\n";
 $pot .= '"POT-Creation-Date: ' . gmdate( 'Y-m-d H:i:s+00:00' ) . '\n"' . "\n";
 $pot .= '"MIME-Version: 1.0\n"' . "\n";

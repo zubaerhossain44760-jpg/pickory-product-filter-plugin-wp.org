@@ -2,9 +2,9 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Pickory Product Filter 1.0.2\n"
+"Project-Id-Version: Pickory Product Filter 1.0.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pickory-product-filter\n"
-"POT-Creation-Date: 2026-10-26 09:12:11+00:00\n"
+"POT-Creation-Date: 2026-10-31 15:52:11+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -50,7 +50,7 @@ msgstr ""
 msgid "About"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:571
+#: includes/admin/views/tab-documentation.php:577
 msgid "About the Plugin"
 msgstr ""
 
@@ -74,7 +74,7 @@ msgstr ""
 msgid "Active filter chips container"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:559
+#: includes/admin/views/tab-documentation.php:565
 msgid "Active filter chips with one-click removal"
 msgstr ""
 
@@ -158,7 +158,7 @@ msgstr ""
 msgid "Area"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:646
+#: includes/admin/views/tab-documentation.php:652
 msgid "Ask questions and share tips."
 msgstr ""
 
@@ -166,7 +166,7 @@ msgstr ""
 msgid "Attribute"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:586
+#: includes/admin/views/tab-documentation.php:592
 msgid "Author / Brand"
 msgstr ""
 
@@ -190,7 +190,7 @@ msgstr ""
 msgid "Available for"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:610
+#: includes/admin/views/tab-documentation.php:616
 msgid "Backend: PHP 8.0+, WordPress REST API, custom flat DB index (wp_ppfx_product_index, wp_ppfx_product_terms)"
 msgstr ""
 
@@ -210,7 +210,7 @@ msgstr ""
 msgid "Breakpoint"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:612
+#: includes/admin/views/tab-documentation.php:618
 msgid "Build tooling: Vite"
 msgstr ""
 
@@ -218,7 +218,7 @@ msgstr ""
 msgid "Built-in"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:564
+#: includes/admin/views/tab-documentation.php:570
 msgid "Built-in rate limiting (default: 80 requests/min per IP)"
 msgstr ""
 
@@ -230,11 +230,11 @@ msgstr ""
 msgid "Button / Pill Grid"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:613
+#: includes/admin/views/tab-documentation.php:619
 msgid "Caching: WordPress object cache integration with 5-minute query TTL for logged-out users"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:628
+#: includes/admin/views/tab-documentation.php:634
 msgid "Can't find the answer in the docs? Our engineering team and community are ready to help."
 msgstr ""
 
@@ -250,7 +250,7 @@ msgstr ""
 msgid "Category"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:556
+#: includes/admin/views/tab-documentation.php:562
 msgid "Category, product tag, and WooCommerce attribute filters"
 msgstr ""
 
@@ -298,7 +298,7 @@ msgstr ""
 msgid "Comma-separated tag slugs"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:645
+#: includes/admin/views/tab-documentation.php:651
 msgid "Community Forum"
 msgstr ""
 
@@ -306,7 +306,11 @@ msgstr ""
 msgid "Compact native select element. Saves vertical space when the taxonomy has many terms."
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:539
+#: includes/admin/views/tab-documentation.php:535
+msgid "Compatibility & Maintenance Release"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:545
 msgid "Complete translation catalog (.pot) generation containing all 317 strings."
 msgstr ""
 
@@ -366,11 +370,11 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:582
+#: includes/admin/views/tab-documentation.php:588
 msgid "Developer"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:567
+#: includes/admin/views/tab-documentation.php:573
 msgid "Developer hooks (filters & actions) for customization"
 msgstr ""
 
@@ -502,11 +506,11 @@ msgstr ""
 msgid "Fixed — Toggle"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:550
+#: includes/admin/views/tab-documentation.php:556
 msgid "Flat product index for fast filtering (no expensive postmeta scans)"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:617
+#: includes/admin/views/tab-documentation.php:623
 msgid "For bug reports or feature requests, please contact support at <a href=\"mailto:pickory143@gmail.com\">pickory143@gmail.com</a>."
 msgstr ""
 
@@ -514,19 +518,19 @@ msgstr ""
 msgid "Force rate limiting even without object cache (default: false)"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:602
+#: includes/admin/views/tab-documentation.php:608
 msgid "Frontend Asset Size"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:611
+#: includes/admin/views/tab-documentation.php:617
 msgid "Frontend: Vanilla JavaScript (ES6 modules), no jQuery dependency"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:593
+#: includes/admin/views/tab-documentation.php:599
 msgid "GPL-2.0-or-later"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:636
+#: includes/admin/views/tab-documentation.php:642
 msgid "Get priority technical support."
 msgstr ""
 
@@ -542,19 +546,19 @@ msgstr ""
 msgid "Gutenberg Block"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:562
+#: includes/admin/views/tab-documentation.php:568
 msgid "HPOS (High-Performance Order Storage) compatibility"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:599
-msgid "HPOS compatible · Tested up to WooCommerce 9.8"
+#: includes/admin/views/tab-documentation.php:605
+msgid "HPOS compatible · Tested up to WooCommerce 11.2"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:656
+#: includes/admin/views/tab-documentation.php:662
 msgid "Help us improve Pickory."
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:557
+#: includes/admin/views/tab-documentation.php:563
 msgid "Hierarchical category support (selecting a parent includes child categories)"
 msgstr ""
 
@@ -586,7 +590,7 @@ msgstr ""
 msgid "Index rebuild has been queued and will complete in the background. Your frontend filters will update automatically."
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:548
+#: includes/admin/views/tab-documentation.php:554
 msgid "Initial Release"
 msgstr ""
 
@@ -614,7 +618,7 @@ msgstr ""
 msgid "Label Override"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:590
+#: includes/admin/views/tab-documentation.php:596
 msgid "License"
 msgstr ""
 
@@ -626,15 +630,15 @@ msgstr ""
 msgid "Main filter wrapper"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:535
+#: includes/admin/views/tab-documentation.php:541
 msgid "Maintenance & Standards Release"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:543
+#: includes/admin/views/tab-documentation.php:549
 msgid "Maintenance Release"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:545
+#: includes/admin/views/tab-documentation.php:551
 msgid "Maintenance release."
 msgstr ""
 
@@ -658,7 +662,7 @@ msgstr ""
 msgid "Maximum products per REST request (default: 100)"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:583
+#: includes/admin/views/tab-documentation.php:589
 msgid "Md Zubaer Hossain"
 msgstr ""
 
@@ -682,11 +686,11 @@ msgstr ""
 msgid "Mobile drawer toggle button"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:560
+#: includes/admin/views/tab-documentation.php:566
 msgid "Mobile-responsive off-canvas drawer with smooth animations"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:561
+#: includes/admin/views/tab-documentation.php:567
 msgid "Multi-currency support — price slider automatically adjusts to the active currency"
 msgstr ""
 
@@ -698,7 +702,7 @@ msgstr ""
 msgid "Multiple Filter Instances"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:552
+#: includes/admin/views/tab-documentation.php:558
 msgid "Multiple filter display types: checkbox, radio, dropdown, swatch (color/image), button grid, toggle, search list, slider"
 msgstr ""
 
@@ -710,7 +714,7 @@ msgstr ""
 msgid "N/A"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:627
+#: includes/admin/views/tab-documentation.php:633
 msgid "Need Human Assistance?"
 msgstr ""
 
@@ -726,7 +730,7 @@ msgstr ""
 msgid "No products found"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:563
+#: includes/admin/views/tab-documentation.php:569
 msgid "Object cache integration for faster repeat queries on logged-out users"
 msgstr ""
 
@@ -738,7 +742,7 @@ msgstr ""
 msgid "On Sale only (fixed)"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:555
+#: includes/admin/views/tab-documentation.php:561
 msgid "On Sale toggle filter"
 msgstr ""
 
@@ -786,11 +790,11 @@ msgstr ""
 msgid "Per-section type class, e.g. .ppfx-type-slider"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:587
+#: includes/admin/views/tab-documentation.php:593
 msgid "Pickory"
 msgstr ""
 
-#: includes/admin/class-ppfx-admin.php:38 includes/admin/views/tab-documentation.php:579
+#: includes/admin/class-ppfx-admin.php:38 includes/admin/views/tab-documentation.php:585
 msgid "Pickory Product Filter"
 msgstr ""
 
@@ -802,7 +806,7 @@ msgstr ""
 msgid "Pickory Product Filter is a fast, AJAX-powered WooCommerce product filter. Before installing, make sure your server meets the following requirements."
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:572
+#: includes/admin/views/tab-documentation.php:578
 msgid "Pickory Product Filter is an enterprise-grade,Lightweight AJAX-powered WooCommerce product filter built for speed, scalability, and developer flexibility. It replaces slow postmeta queries with a flat, denormalized product index — delivering filter responses nearly +-100–300 ms even on stores with 50,000+ products."
 msgstr ""
 
@@ -810,11 +814,11 @@ msgstr ""
 msgid "Pickory Product Filter requires WooCommerce to be installed and activated."
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:574
+#: includes/admin/views/tab-documentation.php:580
 msgid "Plugin Details"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:578
+#: includes/admin/views/tab-documentation.php:584
 msgid "Plugin Name"
 msgstr ""
 
@@ -834,7 +838,7 @@ msgstr ""
 msgid "Price or stock updates via external tools"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:553
+#: includes/admin/views/tab-documentation.php:559
 msgid "Price range slider with dual thumbs"
 msgstr ""
 
@@ -890,7 +894,7 @@ msgstr ""
 msgid "REST API"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:551
+#: includes/admin/views/tab-documentation.php:557
 msgid "REST API-based AJAX filtering with abortable requests"
 msgstr ""
 
@@ -934,7 +938,7 @@ msgstr ""
 msgid "Renders each term as a clickable pill button. Good for short labels (sizes, colours)."
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:655
+#: includes/admin/views/tab-documentation.php:661
 msgid "Report a Bug"
 msgstr ""
 
@@ -950,7 +954,7 @@ msgstr ""
 msgid "Sample Response"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:540
+#: includes/admin/views/tab-documentation.php:546
 msgid "Sanitized URL filter parameters and isolated template loop variable scopes."
 msgstr ""
 
@@ -1010,7 +1014,7 @@ msgstr ""
 msgid "Shortcode Attributes"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:565
+#: includes/admin/views/tab-documentation.php:571
 msgid "Shortcode [pickory_product_filter] and Gutenberg block support"
 msgstr ""
 
@@ -1060,7 +1064,7 @@ msgstr ""
 msgid "Star Rating"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:554
+#: includes/admin/views/tab-documentation.php:560
 msgid "Star rating filter"
 msgstr ""
 
@@ -1068,11 +1072,11 @@ msgstr ""
 msgid "Step:"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:538
+#: includes/admin/views/tab-documentation.php:544
 msgid "Stripped UTF-8 BOM markers and normalized line endings across codebase."
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:635
+#: includes/admin/views/tab-documentation.php:641
 msgid "Submit a Ticket"
 msgstr ""
 
@@ -1104,11 +1108,11 @@ msgstr ""
 msgid "Taxonomy sections (not fixed built-in types)"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:608
+#: includes/admin/views/tab-documentation.php:614
 msgid "Tech Stack"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:566
+#: includes/admin/views/tab-documentation.php:572
 msgid "Template override system — copy templates to yourtheme/pickory-product-filter/"
 msgstr ""
 
@@ -1172,12 +1176,16 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:558
+#: includes/admin/views/tab-documentation.php:564
 msgid "URL-addressable filters with browser history (back/forward) support"
 msgstr ""
 
 #: includes/admin/views/tab-documentation.php:329
 msgid "Unique identifier for this filter instance. Required when placing multiple filters on the same page (e.g. sidebar + top of shop page). If omitted, the plugin automatically generates a safe, unique fallback identifier."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:538
+msgid "Updated plugin headers and WooCommerce compatibility declarations."
 msgstr ""
 
 #: includes/admin/class-ppfx-term-meta.php:87 includes/admin/class-ppfx-term-meta.php:130
@@ -1192,19 +1200,27 @@ msgstr ""
 msgid "Upload/Select Image"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:548
+#: includes/admin/views/tab-documentation.php:537
+msgid "Verified compatibility with WordPress 7.1 and WooCommerce 11.2."
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:554
 msgid "Version 1.0.0"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:543
+#: includes/admin/views/tab-documentation.php:549
 msgid "Version 1.0.1"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:535
+#: includes/admin/views/tab-documentation.php:541
 msgid "Version 1.0.2"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:662
+#: includes/admin/views/tab-documentation.php:535
+msgid "Version 1.0.3"
+msgstr ""
+
+#: includes/admin/views/tab-documentation.php:668
 msgid "Visit Support Forum →"
 msgstr ""
 
@@ -1232,7 +1248,7 @@ msgstr ""
 msgid "WooCommerce 7.0+ (8.0+ recommended)"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:598
+#: includes/admin/views/tab-documentation.php:604
 msgid "WooCommerce Compatibility"
 msgstr ""
 
@@ -1252,7 +1268,7 @@ msgstr ""
 msgid "WordPress Hooks"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:537
+#: includes/admin/views/tab-documentation.php:543
 msgid "WordPress.org repository readiness and strict coding standards compliance."
 msgstr ""
 
@@ -1292,7 +1308,7 @@ msgstr ""
 msgid "taxonomy slug"
 msgstr ""
 
-#: includes/admin/views/tab-documentation.php:603
+#: includes/admin/views/tab-documentation.php:609
 msgid "~12.03 KB · May vary slightly in future updates"
 msgstr ""
 

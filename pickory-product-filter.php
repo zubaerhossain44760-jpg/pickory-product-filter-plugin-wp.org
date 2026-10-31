@@ -2,12 +2,12 @@
 /**
  * Plugin Name:       Pickory Product Filter
  * Description:       A fast, AJAX-powered WooCommerce product filter with flexible display types and a flat product index.
- * Version:           1.0.2
+ * Version:           1.0.3
  * Requires at least: 6.0
  * Requires PHP:      8.0
  * Tested up to:      7.1
  * WC requires at least: 7.0
- * WC tested up to:   9.8
+ * WC tested up to:   11.2
  * Author:            Zubaer Hossain
  * Text Domain:       pickory-product-filter
  * Domain Path:       /languages
@@ -34,7 +34,7 @@ add_action(
 );
 
 // 3. Constants.
-define( 'PPFX_VERSION', '1.0.2' );
+define( 'PPFX_VERSION', '1.0.3' );
 define( 'PPFX_INDEX_VERSION', '1.2' );
 define( 'PPFX_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'PPFX_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
