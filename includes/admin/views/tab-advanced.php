@@ -24,7 +24,7 @@ $options = PPFX_Settings_Page::get_settings();
 			<?php esc_html_e( 'The product index powers the fast filter queries. Use this tool to rebuild it manually — for example, after a bulk CSV import or if filters are returning no results.', 'pickory-product-filter' ); ?>
 		</p>
 		<p class="description">
-			<?php esc_html_e( '⚠️ For large catalogues (>1,000 products) this may take several seconds. Do not navigate away while the sync is running.', 'pickory-product-filter' ); ?>
+			<?php esc_html_e( 'The rebuild process is queued in the background via Action Scheduler (or WP-Cron fallback) so your site stays fast and responsive.', 'pickory-product-filter' ); ?>
 		</p>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="ppfx_rebuild_index">

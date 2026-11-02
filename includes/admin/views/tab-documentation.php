@@ -17,17 +17,12 @@ $sections = array(
 	),
 	array(
 		'id'    => 'filter-sections-reference',
-		'title' => __( 'Filter Sections Reference', 'pickory-product-filter' ),
+		'title' => __( 'Filter Sections Settings', 'pickory-product-filter' ),
 		'open'  => false,
 	),
 	array(
 		'id'    => 'advanced-settings',
 		'title' => __( 'Advanced Settings', 'pickory-product-filter' ),
-		'open'  => false,
-	),
-	array(
-		'id'    => 'how-to-use',
-		'title' => __( 'How to Use', 'pickory-product-filter' ),
 		'open'  => false,
 	),
 	array(
@@ -42,7 +37,7 @@ $sections = array(
 	),
 	array(
 		'id'    => 'rest-api',
-		'title' => __( 'REST API', 'pickory-product-filter' ),
+		'title' => __( 'REST API & Developer Reference', 'pickory-product-filter' ),
 		'open'  => false,
 	),
 	array(
@@ -96,221 +91,157 @@ $sections = array(
 					<p class="ppfx-doc-note">
 						<?php esc_html_e( 'After first activation, the plugin automatically builds the product index. If filters return no results, visit the Advanced tab and click "Rebuild Product Index" to sync the index manually.', 'pickory-product-filter' ); ?>
 					</p>
-				<?php elseif ( 'how-to-use' === $section['id'] ) : ?>
-					<h4><?php esc_html_e( 'Block Editor (Gutenberg)', 'pickory-product-filter' ); ?></h4>
-					<ol>
-						<li><?php esc_html_e( 'Open your shop or any page in the block editor.', 'pickory-product-filter' ); ?></li>
-						<li><?php esc_html_e( 'Click the + button and search for "Pickory Filter", then add the block.', 'pickory-product-filter' ); ?></li>
-						<li><?php esc_html_e( 'Alternatively, add a Shortcode block and paste [pickory_product_filter] to use the shortcode directly in your page content.', 'pickory-product-filter' ); ?></li>
-						<li><?php esc_html_e( 'You can add custom CSS classes to the shortcode to apply different styling (e.g. [pickory_product_filter instance_id="xxx" class="xxx"] for a custom layout).', 'pickory-product-filter' ); ?></li>
-						<li><?php esc_html_e( 'All filter configuration is controlled from the Filter Settings tab in the plugin settings — the block has no per-block settings.', 'pickory-product-filter' ); ?></li>
-						<li><?php esc_html_e( 'Publish or update the page.', 'pickory-product-filter' ); ?></li>
-					</ol>
 
-					<h4><?php esc_html_e( 'How Filters Work', 'pickory-product-filter' ); ?></h4>
-					<p><?php esc_html_e( 'Every filter selection updates the page URL with query parameters (e.g. ?ppfx_category=shirts&min_price=20). This means filtered views are shareable, bookmarkable, and supported by the browser back/forward buttons — no page reload required.', 'pickory-product-filter' ); ?></p>
-
-					<h4><?php esc_html_e( 'Active Filter Chips', 'pickory-product-filter' ); ?></h4>
-					<p><?php esc_html_e( 'Above the filter instance, active selections are shown as dismissible chips. Clicking a chip removes that filter instantly. A "Clear All" chip resets the entire filter state. Chips render automatically — no extra configuration is needed.', 'pickory-product-filter' ); ?></p>
-
-					<h4><?php esc_html_e( 'Multiple Filter Instances', 'pickory-product-filter' ); ?></h4>
-					<p><?php esc_html_e( 'You can place multiple filter instances on the same page (e.g. a sidebar filter and a mobile drawer filter) using the instance_id attribute. If omitted, the plugin automatically generates a safe, unique fallback identifier:', 'pickory-product-filter' ); ?></p>
-					<code class="ppfx-doc-code"><?php echo '[pickory_product_filter instance_id="sidebar"]'; ?></code>
-					<code class="ppfx-doc-code"><?php echo '[pickory_product_filter instance_id="mobile-drawer"]'; ?></code>
-					<p class="ppfx-doc-note"><?php esc_html_e( 'Both instances stay in sync — selecting a filter in one automatically reflects in the other.', 'pickory-product-filter' ); ?></p>
-
-					<h4><?php esc_html_e( 'Important Note on Product Attributes', 'pickory-product-filter' ); ?></h4>
-					<p class="ppfx-doc-note">
-						<?php esc_html_e( 'To enable filtering by a WooCommerce product attribute (e.g. Color, Size), you must go to WooCommerce &rarr; Products &rarr; Attributes &rarr; Edit &rarr; check the "Enable Archives" option for that attribute.', 'pickory-product-filter' ); ?>
-					</p>
 				<?php elseif ( 'filter-sections-reference' === $section['id'] ) : ?>
-				<p><?php esc_html_e( 'The Filter Sections tab (Pickory Product Filter → Filter Sections) lists every filter that can appear on the frontend. Each row is a section you can configure independently. Drag rows to reorder, toggle sections on or off, and configure how each one is displayed.', 'pickory-product-filter' ); ?></p>
-
-				<h4><?php esc_html_e( 'Available Filter Sections', 'pickory-product-filter' ); ?></h4>
-				<table class="ppfx-doc-table">
-					<thead>
-						<tr>
-							<th><?php esc_html_e( 'Section', 'pickory-product-filter' ); ?></th>
-							<th><?php esc_html_e( 'Key', 'pickory-product-filter' ); ?></th>
-							<th><?php esc_html_e( 'Source', 'pickory-product-filter' ); ?></th>
-							<th><?php esc_html_e( 'Type', 'pickory-product-filter' ); ?></th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td><strong><?php esc_html_e( 'Price', 'pickory-product-filter' ); ?></strong></td>
-							<td><code>price</code></td>
-							<td><?php esc_html_e( 'Built-in', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'Fixed — Slider', 'pickory-product-filter' ); ?></td>
-						</tr>
-						<tr>
-							<td><strong><?php esc_html_e( 'Rating', 'pickory-product-filter' ); ?></strong></td>
-							<td><code>rating</code></td>
-							<td><?php esc_html_e( 'Built-in', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'Fixed — Star Rating', 'pickory-product-filter' ); ?></td>
-						</tr>
-						<tr>
-							<td><strong><?php esc_html_e( 'On Sale', 'pickory-product-filter' ); ?></strong></td>
-							<td><code>on_sale</code></td>
-							<td><?php esc_html_e( 'Built-in', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'Fixed — Toggle', 'pickory-product-filter' ); ?></td>
-						</tr>
-						<tr>
-							<td><strong><?php esc_html_e( 'Category', 'pickory-product-filter' ); ?></strong></td>
-							<td><code>category</code></td>
-							<td><?php esc_html_e( 'WooCommerce taxonomy', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'Configurable (see Category Types below)', 'pickory-product-filter' ); ?></td>
-						</tr>
-						<tr>
-							<td><strong><?php esc_html_e( 'Product Tag', 'pickory-product-filter' ); ?></strong></td>
-							<td><code>product_tag</code></td>
-							<td><?php esc_html_e( 'WooCommerce taxonomy', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'Configurable (no swatches)', 'pickory-product-filter' ); ?></td>
-						</tr>
-						<tr>
-							<td><strong><?php esc_html_e( 'Product Attributes', 'pickory-product-filter' ); ?></strong></td>
-							<td><code>pa_*</code></td>
-							<td><?php esc_html_e( 'WooCommerce product attributes (e.g. pa_color, pa_size)', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'Configurable (all types including swatches)', 'pickory-product-filter' ); ?></td>
-						</tr>
-						<tr>
-							<td><strong><?php esc_html_e( 'Custom Taxonomies', 'pickory-product-filter' ); ?></strong></td>
-							<td><?php esc_html_e( 'taxonomy slug', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'Any custom taxonomy registered for products', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'Configurable (no swatches)', 'pickory-product-filter' ); ?></td>
-						</tr>
-					</tbody>
-				</table>
-
-				<h4><?php esc_html_e( 'Per-Section Settings', 'pickory-product-filter' ); ?></h4>
-				<p><?php esc_html_e( 'Every row in the Filter Sections tab has the following configurable columns:', 'pickory-product-filter' ); ?></p>
-				<table class="ppfx-doc-table">
-					<thead>
-						<tr>
-							<th><?php esc_html_e( 'Column', 'pickory-product-filter' ); ?></th>
-							<th><?php esc_html_e( 'What it controls', 'pickory-product-filter' ); ?></th>
-							<th><?php esc_html_e( 'Applies to', 'pickory-product-filter' ); ?></th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td><strong><?php esc_html_e( 'Drag Handle', 'pickory-product-filter' ); ?></strong></td>
-							<td><?php esc_html_e( 'Drag the ⣿ icon to reorder sections. The order here is the exact order they appear in the frontend filter widget.', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'All sections', 'pickory-product-filter' ); ?></td>
-						</tr>
-						<tr>
-							<td><strong><?php esc_html_e( 'Display Type', 'pickory-product-filter' ); ?></strong></td>
-							<td><?php esc_html_e( 'Controls how the filter options are rendered on the frontend. Fixed sections show a badge and cannot be changed. Configurable sections show a dropdown.', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'Configurable sections only', 'pickory-product-filter' ); ?></td>
-						</tr>
-						<tr>
-							<td><strong><?php esc_html_e( 'Label Override', 'pickory-product-filter' ); ?></strong></td>
-							<td><?php esc_html_e( 'Custom heading text shown above the filter on the frontend. Leave blank to use the default label (taxonomy name or built-in name).', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'All sections', 'pickory-product-filter' ); ?></td>
-						</tr>
-						<tr>
-							<td><strong><?php esc_html_e( 'Max Height (px)', 'pickory-product-filter' ); ?></strong></td>
-							<td><?php esc_html_e( 'Limits the visible height of the option list and adds a scrollbar when the list exceeds that height. Leave empty for no height limit. Useful for taxonomies with many terms.', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'Configurable sections (not fixed types)', 'pickory-product-filter' ); ?></td>
-						</tr>
-						<tr>
-							<td><strong><?php esc_html_e( 'Count', 'pickory-product-filter' ); ?></strong></td>
-							<td><?php esc_html_e( 'Toggle whether the number of matching products is shown next to each term label (e.g. “Red (12)”). Disable to keep the UI cleaner.', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'Taxonomy sections (not fixed built-in types)', 'pickory-product-filter' ); ?></td>
-						</tr>
-						<tr>
-							<td><strong><?php esc_html_e( 'Enabled', 'pickory-product-filter' ); ?></strong></td>
-							<td><?php esc_html_e( 'Show or hide this filter section on the frontend. Disabled sections are saved but do not render. Use this to temporarily hide a filter without losing its settings.', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'All sections', 'pickory-product-filter' ); ?></td>
-						</tr>
-					</tbody>
-				</table>
+				<p><?php esc_html_e( 'The Filter Sections tab lets you customize which filters appear on your store, choose their display formats, and configure their behavior.', 'pickory-product-filter' ); ?></p>
 
 				<h4><?php esc_html_e( 'Display Types Reference', 'pickory-product-filter' ); ?></h4>
+				<p><?php esc_html_e( 'Pickory offers dedicated display types tailored for different product attributes and taxonomy sizes:', 'pickory-product-filter' ); ?></p>
 				<table class="ppfx-doc-table">
 					<thead>
 						<tr>
 							<th><?php esc_html_e( 'Display Type', 'pickory-product-filter' ); ?></th>
-							<th><?php esc_html_e( 'Behaviour', 'pickory-product-filter' ); ?></th>
+							<th><?php esc_html_e( 'Behavior & Best Use', 'pickory-product-filter' ); ?></th>
 							<th><?php esc_html_e( 'Multi-select', 'pickory-product-filter' ); ?></th>
-							<th><?php esc_html_e( 'Available for', 'pickory-product-filter' ); ?></th>
+							<th><?php esc_html_e( 'Available For', 'pickory-product-filter' ); ?></th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
 							<td><strong><?php esc_html_e( 'Checkboxes', 'pickory-product-filter' ); ?></strong></td>
-							<td><?php esc_html_e( 'Standard checkbox list. Most versatile and familiar to shoppers.', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'Yes', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'All configurable', 'pickory-product-filter' ); ?></td>
+							<td><?php esc_html_e( 'Vertical multi-select list. The most versatile and familiar format for shoppers.', 'pickory-product-filter' ); ?></td>
+							<td><code><?php esc_html_e( 'Yes', 'pickory-product-filter' ); ?></code></td>
+							<td><?php esc_html_e( 'All configurable taxonomies & attributes', 'pickory-product-filter' ); ?></td>
 						</tr>
 						<tr>
 							<td><strong><?php esc_html_e( 'Radio Buttons', 'pickory-product-filter' ); ?></strong></td>
-							<td><?php esc_html_e( 'Allows one selection at a time. Selecting a new option deselects the previous.', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'No', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'All configurable', 'pickory-product-filter' ); ?></td>
+							<td><?php esc_html_e( 'Single-select list where selecting one option immediately deselects any previously selected option.', 'pickory-product-filter' ); ?></td>
+							<td><code><?php esc_html_e( 'No', 'pickory-product-filter' ); ?></code></td>
+							<td><?php esc_html_e( 'All configurable taxonomies & attributes', 'pickory-product-filter' ); ?></td>
 						</tr>
 						<tr>
-							<td><strong><?php esc_html_e( 'Button / Pill Grid', 'pickory-product-filter' ); ?></strong></td>
-							<td><?php esc_html_e( 'Renders each term as a clickable pill button. Good for short labels (sizes, colours).', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'Yes', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'All configurable', 'pickory-product-filter' ); ?></td>
+							<td><strong><?php esc_html_e( 'Button Grid', 'pickory-product-filter' ); ?></strong></td>
+							<td><?php esc_html_e( 'Compact clickable pill buttons. Ideal for short labels like sizes (S, M, L, XL) or dimensions.', 'pickory-product-filter' ); ?></td>
+							<td><code><?php esc_html_e( 'Yes', 'pickory-product-filter' ); ?></code></td>
+							<td><?php esc_html_e( 'All configurable taxonomies & attributes', 'pickory-product-filter' ); ?></td>
 						</tr>
 						<tr>
-							<td><strong><?php esc_html_e( 'Dropdown (Single Select)', 'pickory-product-filter' ); ?></strong></td>
-							<td><?php esc_html_e( 'Compact native select element. Saves vertical space when the taxonomy has many terms.', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'No', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'All configurable', 'pickory-product-filter' ); ?></td>
+							<td><strong><?php esc_html_e( 'Dropdown', 'pickory-product-filter' ); ?></strong></td>
+							<td><?php esc_html_e( 'Single-select native select dropdown. Conserves vertical sidebar space when a category has many terms.', 'pickory-product-filter' ); ?></td>
+							<td><code><?php esc_html_e( 'No', 'pickory-product-filter' ); ?></code></td>
+							<td><?php esc_html_e( 'All configurable taxonomies & attributes', 'pickory-product-filter' ); ?></td>
 						</tr>
 						<tr>
 							<td><strong><?php esc_html_e( 'Search List', 'pickory-product-filter' ); ?></strong></td>
-							<td><?php esc_html_e( 'Checkbox list with a live search input. Ideal for taxonomies with 20+ terms where scrolling is impractical.', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'Yes', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'All configurable', 'pickory-product-filter' ); ?></td>
+							<td><?php esc_html_e( 'Checkbox list with an integrated live search bar. Perfect for taxonomies with 20+ terms (e.g. brands, authors, manufacturers).', 'pickory-product-filter' ); ?></td>
+							<td><code><?php esc_html_e( 'Yes', 'pickory-product-filter' ); ?></code></td>
+							<td><?php esc_html_e( 'All configurable taxonomies & attributes', 'pickory-product-filter' ); ?></td>
 						</tr>
 						<tr>
-							<td><strong><?php esc_html_e( 'Swatches — Color', 'pickory-product-filter' ); ?></strong></td>
-							<td><?php esc_html_e( 'Circular color-dot swatches. Color is set per-term from the attribute term edit screen in WooCommerce.', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'Yes', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'Product attributes (pa_*) only', 'pickory-product-filter' ); ?></td>
+							<td><strong><?php esc_html_e( 'Color Swatch', 'pickory-product-filter' ); ?></strong></td>
+							<td><?php esc_html_e( 'Visual circular color dots. Colors are configured per term under Products → Attributes → Configure terms.', 'pickory-product-filter' ); ?></td>
+							<td><code><?php esc_html_e( 'Yes', 'pickory-product-filter' ); ?></code></td>
+							<td><?php esc_html_e( 'Product Attributes (pa_*) only', 'pickory-product-filter' ); ?></td>
 						</tr>
 						<tr>
-							<td><strong><?php esc_html_e( 'Swatches — Image', 'pickory-product-filter' ); ?></strong></td>
-							<td><?php esc_html_e( 'Image thumbnail swatches. Image is set per-term from the attribute term edit screen in WooCommerce.', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'Yes', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'Product attributes (pa_*) only', 'pickory-product-filter' ); ?></td>
+							<td><strong><?php esc_html_e( 'Image Swatch', 'pickory-product-filter' ); ?></strong></td>
+							<td><?php esc_html_e( 'Thumbnail image swatches. Ideal for patterns, materials, fabrics, and textures configured under Products → Attributes.', 'pickory-product-filter' ); ?></td>
+							<td><code><?php esc_html_e( 'Yes', 'pickory-product-filter' ); ?></code></td>
+							<td><?php esc_html_e( 'Product Attributes (pa_*) only', 'pickory-product-filter' ); ?></td>
 						</tr>
 						<tr>
-							<td><strong><?php esc_html_e( 'Slider (Price)', 'pickory-product-filter' ); ?></strong></td>
-							<td><?php esc_html_e( 'Dual-thumb range slider. Min/max bounds are calculated automatically from catalog prices. Currency-aware.', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'Range', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'Price only (fixed)', 'pickory-product-filter' ); ?></td>
+							<td><strong><?php esc_html_e( 'Price Slider (Fixed)', 'pickory-product-filter' ); ?></strong></td>
+							<td><?php esc_html_e( 'Dual-thumb interactive price slider for filtering products within a minimum and maximum price range.', 'pickory-product-filter' ); ?></td>
+							<td><code><?php esc_html_e( 'Range', 'pickory-product-filter' ); ?></code></td>
+							<td><?php esc_html_e( 'Price (price)', 'pickory-product-filter' ); ?></td>
 						</tr>
 						<tr>
-							<td><strong><?php esc_html_e( 'Star Rating', 'pickory-product-filter' ); ?></strong></td>
-							<td><?php esc_html_e( 'Shows 1–5 star options. Selecting a rating shows products rated at or above that value.', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'No', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'Rating only (fixed)', 'pickory-product-filter' ); ?></td>
+							<td><strong><?php esc_html_e( 'Star Rating (Fixed)', 'pickory-product-filter' ); ?></strong></td>
+							<td><?php esc_html_e( 'Interactive 1 to 5 star rating list. Filters catalog by minimum average review rating.', 'pickory-product-filter' ); ?></td>
+							<td><code><?php esc_html_e( 'No', 'pickory-product-filter' ); ?></code></td>
+							<td><?php esc_html_e( 'Rating (rating)', 'pickory-product-filter' ); ?></td>
 						</tr>
 						<tr>
-							<td><strong><?php esc_html_e( 'Toggle', 'pickory-product-filter' ); ?></strong></td>
-							<td><?php esc_html_e( 'A single on/off switch. When on, only products currently on sale are shown.', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'N/A', 'pickory-product-filter' ); ?></td>
-							<td><?php esc_html_e( 'On Sale only (fixed)', 'pickory-product-filter' ); ?></td>
+							<td><strong><?php esc_html_e( 'On Sale Toggle (Fixed)', 'pickory-product-filter' ); ?></strong></td>
+							<td><?php esc_html_e( 'Toggle switch that instantly filters products to show only items currently on sale.', 'pickory-product-filter' ); ?></td>
+							<td><code><?php esc_html_e( 'No', 'pickory-product-filter' ); ?></code></td>
+							<td><?php esc_html_e( 'On Sale (sale)', 'pickory-product-filter' ); ?></td>
 						</tr>
 					</tbody>
 				</table>
 
-				<p class="ppfx-doc-note">
-					<?php esc_html_e( 'Price, Rating, and On Sale sections have fixed display types that cannot be changed. Swatch types (Color and Image) are only available for WooCommerce product attributes (pa_*). Applying them to categories or custom taxonomies will silently fall back to Button Grid.', 'pickory-product-filter' ); ?>
-				</p>
+				<h4><?php esc_html_e( 'Filter Section Settings & Columns', 'pickory-product-filter' ); ?></h4>
+				<p><?php esc_html_e( 'Each row in the Filter Sections table represents a distinct filter. The table offers the following settings for each section:', 'pickory-product-filter' ); ?></p>
+				<table class="ppfx-doc-table">
+					<thead>
+						<tr>
+							<th><?php esc_html_e( 'Setting / Column', 'pickory-product-filter' ); ?></th>
+							<th><?php esc_html_e( 'What it does', 'pickory-product-filter' ); ?></th>
+							<th><?php esc_html_e( 'Applies to', 'pickory-product-filter' ); ?></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td><strong><?php esc_html_e( 'Drag Handle (⣿)', 'pickory-product-filter' ); ?></strong></td>
+							<td><?php esc_html_e( 'Click and drag rows to change their visual order. The order here matches the top-to-bottom order shoppers see on the frontend.', 'pickory-product-filter' ); ?></td>
+							<td><?php esc_html_e( 'All sections', 'pickory-product-filter' ); ?></td>
+						</tr>
+						<tr>
+							<td><strong><?php esc_html_e( 'Section (Key)', 'pickory-product-filter' ); ?></strong></td>
+							<td><?php esc_html_e( 'Displays the section name and underlying taxonomy key (e.g. category, product_tag, price, rating, sale, pa_color). Use these keys when filtering specific sections in shortcodes.', 'pickory-product-filter' ); ?></td>
+							<td><?php esc_html_e( 'All sections', 'pickory-product-filter' ); ?></td>
+						</tr>
+						<tr>
+							<td><strong><?php esc_html_e( 'Display Type', 'pickory-product-filter' ); ?></strong></td>
+							<td><?php esc_html_e( 'Selects how filter terms are presented (Checkboxes, Radio, Button Grid, Dropdown, Search List, Swatches). Fixed sections display a locked badge.', 'pickory-product-filter' ); ?></td>
+							<td><?php esc_html_e( 'All configurable sections', 'pickory-product-filter' ); ?></td>
+						</tr>
+						<tr>
+							<td><strong><?php esc_html_e( 'Label Override', 'pickory-product-filter' ); ?></strong></td>
+							<td><?php esc_html_e( 'Custom title displayed above the filter on the frontend. Leave blank to display the default taxonomy or attribute name.', 'pickory-product-filter' ); ?></td>
+							<td><?php esc_html_e( 'All sections', 'pickory-product-filter' ); ?></td>
+						</tr>
+						<tr>
+							<td><strong><?php esc_html_e( 'Max Height (px)', 'pickory-product-filter' ); ?></strong></td>
+							<td><?php esc_html_e( 'Limits the visible height of the term list in pixels and adds an internal scrollbar if options exceed that height. Leave empty for no limit.', 'pickory-product-filter' ); ?></td>
+							<td><?php esc_html_e( 'Configurable sections & Rating', 'pickory-product-filter' ); ?></td>
+						</tr>
+						<tr>
+							<td><strong><?php esc_html_e( 'Step (Price only)', 'pickory-product-filter' ); ?></strong></td>
+							<td><?php esc_html_e( 'Defines the slider snap step (default: 1). For stores with higher-priced products, increase to 5 or 10 to allow smooth, sensible price range selection.', 'pickory-product-filter' ); ?></td>
+							<td><?php esc_html_e( 'Price section only', 'pickory-product-filter' ); ?></td>
+						</tr>
+						<tr>
+							<td><strong><?php esc_html_e( 'Count', 'pickory-product-filter' ); ?></strong></td>
+							<td><?php esc_html_e( 'Toggle to display product count badges next to each term (e.g. "Hoodies (8)"). Turn off for a cleaner, minimalist layout.', 'pickory-product-filter' ); ?></td>
+							<td><?php esc_html_e( 'Taxonomy & attribute sections', 'pickory-product-filter' ); ?></td>
+						</tr>
+						<tr>
+							<td><strong><?php esc_html_e( 'Truncate (Pro)', 'pickory-product-filter' ); ?></strong></td>
+							<td><?php esc_html_e( 'Adds a "See more / See less" expander link to expand and collapse long term lists. Requires Max Height to be set first to activate.', 'pickory-product-filter' ); ?></td>
+							<td><?php esc_html_e( 'Configurable sections & Rating (with Max Height)', 'pickory-product-filter' ); ?></td>
+						</tr>
+						<tr>
+							<td><strong><?php esc_html_e( 'On / Off', 'pickory-product-filter' ); ?></strong></td>
+							<td><?php esc_html_e( 'Toggle to show or hide the section on the frontend. Disabled sections remain saved and can be re-enabled at any time.', 'pickory-product-filter' ); ?></td>
+							<td><?php esc_html_e( 'All sections', 'pickory-product-filter' ); ?></td>
+						</tr>
+					</tbody>
+				</table>
+
+				<div class="ppfx-doc-note">
+					<strong><?php esc_html_e( 'Configuring Color & Image Swatches:', 'pickory-product-filter' ); ?></strong>
+					<ul style="margin: 6px 0 0 18px; list-style-type: disc;">
+						<li><strong><?php esc_html_e( 'Where to configure:', 'pickory-product-filter' ); ?></strong> <?php esc_html_e( 'Go to WooCommerce → Products → Attributes, then click "Configure terms" next to your attribute (e.g. Color, Size).', 'pickory-product-filter' ); ?></li>
+						<li><strong><?php esc_html_e( 'Assign Color or Image:', 'pickory-product-filter' ); ?></strong> <?php esc_html_e( 'Edit each term and set the "Swatch Color" (color picker) or "Swatch Image" (Upload/Select Image). If no color or image is set, it will fallback to button grid.', 'pickory-product-filter' ); ?></li>
+				</div>
 				<?php elseif ( 'shortcode-block' === $section['id'] ) : ?>
-					<h4><?php esc_html_e( 'Shortcode', 'pickory-product-filter' ); ?></h4>
-					<p><?php esc_html_e( 'Add the filter to any page, widget, or PHP template using the shortcode:', 'pickory-product-filter' ); ?></p>
-					<code class="ppfx-doc-code"><?php echo '[pickory_product_filter]'; ?></code>
+					<h4><?php esc_html_e( 'Shortcode & Block', 'pickory-product-filter' ); ?></h4>
+					<p><?php esc_html_e( 'Place the filter anywhere on your site using the shortcode, its alias, or the block editor. All filter configuration comes from the Filter Sections tab.', 'pickory-product-filter' ); ?></p>
 
-					<p><?php esc_html_e( 'Add a horizontal filter using the shortcode in a text widget, page content, shortcode block, or hook it to anywhere you want eg. the shop loop start and other locations via your theme functions.php file or a 3rd party snippet plugin.', 'pickory-product-filter' ); ?></p>
-					<code class="ppfx-doc-code"><?php echo '[pickory_product_filter instance_id="top" class="ppfx-horizontal"]'; ?></code>
-
+					<p><strong><?php esc_html_e( 'Shortcodes:', 'pickory-product-filter' ); ?></strong></p>
+					<code class="ppfx-doc-code">[pickory_product_filter]</code>
+					<code class="ppfx-doc-code">[ppfx_filter]</code>
 
 					<h4><?php esc_html_e( 'Shortcode Attributes', 'pickory-product-filter' ); ?></h4>
 					<table class="ppfx-doc-table">
@@ -318,73 +249,114 @@ $sections = array(
 							<tr>
 								<th><?php esc_html_e( 'Attribute', 'pickory-product-filter' ); ?></th>
 								<th><?php esc_html_e( 'Default', 'pickory-product-filter' ); ?></th>
-								<th><?php esc_html_e( 'Description', 'pickory-product-filter' ); ?></th>
+								<th><?php esc_html_e( 'Description & Examples', 'pickory-product-filter' ); ?></th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr>
 								<td><code>instance_id</code></td>
-								<td><code><?php esc_html_e( 'auto-generated (wp_unique_id)', 'pickory-product-filter' ); ?></code></td>
+								<td><code>auto-generated</code></td>
 								<td>
-									<?php esc_html_e( 'Unique identifier for this filter instance. Required when placing multiple filters on the same page (e.g. sidebar + top of shop page). If omitted, the plugin automatically generates a safe, unique fallback identifier.', 'pickory-product-filter' ); ?>
+									<?php esc_html_e( 'Unique ID for the filter widget. Use different IDs when placing multiple filters on the same page (e.g. sidebar and top bar). All instances stay in sync automatically.', 'pickory-product-filter' ); ?>
 									<br><br>
-									<code class="ppfx-doc-code"><?php echo '[pickory_product_filter instance_id="sidebar"]'; ?></code>
+									<code class="ppfx-doc-code">[pickory_product_filter instance_id="sidebar"]</code>
+									<code class="ppfx-doc-code">[pickory_product_filter instance_id="top-bar"]</code>
 								</td>
 							</tr>
 							<tr>
 								<td><code>class</code></td>
-								<td><?php esc_html_e( '(empty)', 'pickory-product-filter' ); ?></td>
+								<td><code>(empty)</code></td>
 								<td>
-									<?php esc_html_e( 'Additional CSS class(es) appended to the filter container element for custom styling.', 'pickory-product-filter' ); ?>
+									<?php esc_html_e( 'Adds custom CSS classes to the container. Use "ppfx-horizontal" for a built in horizontal layout.', 'pickory-product-filter' ); ?>
 									<br><br>
-									<code class="ppfx-doc-code"><?php echo '[pickory_product_filter class="ppfx-horizontal"]'; ?></code>
+									<code class="ppfx-doc-code">[pickory_product_filter class="ppfx-horizontal"]</code>
+								</td>
+							</tr>
+							<tr>
+								<td><code>sections</code></td>
+								<td><code>(Enabled)</code></td>
+								<td>
+									<?php esc_html_e( 'Shows only the listed filter sections: category, product_tag, price, rating, sale, or attribute names like color.', 'pickory-product-filter' ); ?>
+									<br><br>
+									<code class="ppfx-doc-code">[pickory_product_filter sections="color"]</code>
 								</td>
 							</tr>
 						</tbody>
 					</table>
 
+					<div class="ppfx-doc-note">
+						<strong><?php esc_html_e( 'Notes:', 'pickory-product-filter' ); ?></strong>
+						<ul style="margin: 6px 0 0 18px; list-style-type: disc;">
+							<li><strong><?php esc_html_e( 'sections:', 'pickory-product-filter' ); ?></strong> <?php esc_html_e( 'Hides the title, chips, and Clear all button for a compact, modular look.', 'pickory-product-filter' ); ?></li>
+							<li><strong><?php esc_html_e( 'Mobile drawer:', 'pickory-product-filter' ); ?></strong> <?php esc_html_e( 'The mobile toggle button only appears on the main filter without custom classes or sections.', 'pickory-product-filter' ); ?></li>
+						</ul>
+					</div>
 
-
-					<h4><?php esc_html_e( 'Gutenberg Block', 'pickory-product-filter' ); ?></h4>
-					<p><?php esc_html_e( 'Search for "Pickory Filter" in the block inserter (+) and add it to your shop or archive page. The block outputs the same HTML as the shortcode. All display configuration is managed from the Filter Sections tab in the plugin admin — the block itself has no extra options.', 'pickory-product-filter' ); ?></p>
-
-					<p class="ppfx-doc-note">
-						<?php esc_html_e( 'The shortcode and block are interchangeable — they produce identical markup. Use whichever fits your page-building workflow.', 'pickory-product-filter' ); ?>
-					</p>
+					<h4><?php esc_html_e( 'Gutenberg Block ("Pickory Filter")', 'pickory-product-filter' ); ?></h4>
+					<p><?php esc_html_e( 'In the block editor, click (+) and search for "Pickory Filter". It outputs the same markup as the shortcode and needs no extra setup.', 'pickory-product-filter' ); ?></p>
 				<?php elseif ( 'advanced-settings' === $section['id'] ) : ?>
-					<p><?php esc_html_e( 'Advanced settings are located under Pickory Product Filter → Settings → Advanced tab.', 'pickory-product-filter' ); ?></p>
+					<p><?php esc_html_e( 'Manage global filter behavior, mobile responsiveness, performance, and product index synchronization under Pickory Product Filter → Advanced.', 'pickory-product-filter' ); ?></p>
 
+					<h4><?php esc_html_e( 'Settings Reference', 'pickory-product-filter' ); ?></h4>
 					<table class="ppfx-doc-table">
 						<thead>
 							<tr>
 								<th><?php esc_html_e( 'Setting', 'pickory-product-filter' ); ?></th>
-								<th><?php esc_html_e( 'What it does', 'pickory-product-filter' ); ?></th>
 								<th><?php esc_html_e( 'Default', 'pickory-product-filter' ); ?></th>
+								<th><?php esc_html_e( 'What it does & Options', 'pickory-product-filter' ); ?></th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr>
-								<td><strong><?php esc_html_e( 'Auto Filter', 'pickory-product-filter' ); ?></strong></td>
-								<td><?php esc_html_e( 'When enabled, the product grid refreshes instantly via AJAX on every filter interaction. When disabled, an "Apply Filters" button appears and results update only on click.', 'pickory-product-filter' ); ?></td>
-								<td><?php esc_html_e( 'Enabled', 'pickory-product-filter' ); ?></td>
+								<td><strong><?php esc_html_e( 'Auto Filter on Change', 'pickory-product-filter' ); ?></strong></td>
+								<td><code><?php esc_html_e( 'Enabled', 'pickory-product-filter' ); ?></code></td>
+								<td><?php esc_html_e( 'Updates products instantly via AJAX when a filter is changed. When disabled, a "Filter" button appears so shoppers can select multiple terms before updating.', 'pickory-product-filter' ); ?></td>
 							</tr>
 							<tr>
-								<td><strong><?php esc_html_e( 'Rate Limiting', 'pickory-product-filter' ); ?></strong></td>
-								<td><?php esc_html_e( 'Caps filter AJAX requests at 80 per minute per IP address to protect the server from abuse or bot traffic. Logged-in users with object cache disabled bypass the limit automatically.', 'pickory-product-filter' ); ?></td>
-								<td><?php esc_html_e( 'Enabled', 'pickory-product-filter' ); ?></td>
+								<td><strong><?php esc_html_e( 'Active Filter Chips', 'pickory-product-filter' ); ?></strong></td>
+								<td><code><?php esc_html_e( 'Disabled', 'pickory-product-filter' ); ?></code></td>
+								<td><?php esc_html_e( 'Displays active filter selections as dismissible badges above the product catalog with an instant "Clear all" button.', 'pickory-product-filter' ); ?></td>
+							</tr>
+							<tr>
+								<td><strong><?php esc_html_e( 'Mobile Filter Drawer', 'pickory-product-filter' ); ?></strong></td>
+								<td><code><?php esc_html_e( 'Disabled', 'pickory-product-filter' ); ?></code></td>
+								<td>
+									<?php esc_html_e( 'Turns the filter into a slide-in off-canvas drawer on mobile screens with a toggle button placed above the products.', 'pickory-product-filter' ); ?>
+									<ul style="margin: 6px 0 0 16px; list-style-type: disc;">
+										<li><strong><?php esc_html_e( 'Breakpoint:', 'pickory-product-filter' ); ?></strong> <?php esc_html_e( 'Screen width in pixels where the mobile drawer activates (default: 768px).', 'pickory-product-filter' ); ?></li>
+										<li><strong><?php esc_html_e( 'DOM Inject (Recommended):', 'pickory-product-filter' ); ?></strong> <?php esc_html_e( 'Moves the toggle button into the shop toolbar and attaches the drawer to <body> so it is never clipped by parent sidebar overflow.', 'pickory-product-filter' ); ?></li>
+										<li><strong><?php esc_html_e( 'Simple Toggle:', 'pickory-product-filter' ); ?></strong> <?php esc_html_e( 'Keeps the toggle button and drawer in their original DOM location without re-parenting elements.', 'pickory-product-filter' ); ?></li>
+									</ul>
+								</td>
+							</tr>
+
+							<tr>
+								<td><strong><?php esc_html_e( 'Debounce Delay', 'pickory-product-filter' ); ?></strong></td>
+								<td><code>300ms</code></td>
+								<td><?php esc_html_e( 'Time to wait before firing an AJAX request after user input. Applies to the price slider and text search inputs only.', 'pickory-product-filter' ); ?></td>
+							</tr>
+							<tr>
+								<td><strong><?php esc_html_e( 'API Rate Limiting', 'pickory-product-filter' ); ?></strong></td>
+								<td><code><?php esc_html_e( 'Enabled', 'pickory-product-filter' ); ?></code></td>
+								<td><?php esc_html_e( 'Limits requests to 80 per minute per IP address on the products REST endpoint to protect against bots and scrapers.', 'pickory-product-filter' ); ?></td>
 							</tr>
 						</tbody>
 					</table>
 
-					<h4><?php esc_html_e( 'Rebuilding the Product Index', 'pickory-product-filter' ); ?></h4>
-					<p><?php esc_html_e( 'The plugin maintains two custom database tables (wp_ppfx_product_index and wp_ppfx_product_terms) that power fast filtering. These sync automatically on product save, delete, or status change. Manual rebuilding is needed after:', 'pickory-product-filter' ); ?></p>
-					<ul>
-						<li><?php esc_html_e( 'Bulk product imports via CSV or XML', 'pickory-product-filter' ); ?></li>
-						<li><?php esc_html_e( 'Price or stock updates via external tools', 'pickory-product-filter' ); ?></li>
-						<li><?php esc_html_e( 'Database migrations or server transfers', 'pickory-product-filter' ); ?></li>
-						<li><?php esc_html_e( 'Plugin updates that change the index schema', 'pickory-product-filter' ); ?></li>
-					</ul>
-					<p><?php esc_html_e( 'To rebuild: go to Pickory Product Filter → Settings → Advanced → click "Rebuild Product Index". Do not close the tab while the rebuild is running. On stores with 50,000+ products this may take a few minutes.', 'pickory-product-filter' ); ?></p>
+					<h4><?php esc_html_e( 'Product Index', 'pickory-product-filter' ); ?></h4>
+					<p><?php esc_html_e( 'Pickory uses high-speed indexed database tables (wp_ppfx_product_index and wp_ppfx_product_terms) to deliver lightning-fast filtering. Products sync automatically on create, update, or delete.', 'pickory-product-filter' ); ?></p>
+					
+					<div class="ppfx-doc-note">
+						<strong><?php esc_html_e( 'When to click "Rebuild Product Index":', 'pickory-product-filter' ); ?></strong>
+						<ul style="margin: 6px 0 0 16px; list-style-type: disc;">
+							<li><?php esc_html_e( 'After bulk product imports (CSV, XML, WP All Import).', 'pickory-product-filter' ); ?></li>
+							<li><?php esc_html_e( 'After price or stock updates from external tools (ERP, POS, direct DB queries).', 'pickory-product-filter' ); ?></li>
+							<li><?php esc_html_e( 'After database migration or restoring a site backup.', 'pickory-product-filter' ); ?></li>
+						</ul>
+						<p style="margin-top: 8px;">
+							<?php esc_html_e( 'Rebuilding runs via Action Scheduler (or WP-Cron fallback) and is queued immediately after clicking the button.', 'pickory-product-filter' ); ?>
+						</p>
+					</div>
 				<?php elseif ( 'warnings-limitations' === $section['id'] ) : ?>
 					<table class="ppfx-doc-table">
 						<thead>
@@ -403,17 +375,18 @@ $sections = array(
 							<tr>
 								<td><strong><?php esc_html_e( 'Theme Compatibility', 'pickory-product-filter' ); ?></strong></td>
 								<td><?php esc_html_e( 'Themes that replace the default WooCommerce product loop with a custom markup may not have a .ppfx-products-wrapper or .products container, which the plugin uses to inject AJAX results.', 'pickory-product-filter' ); ?></td>
-								<td><?php esc_html_e( 'Add the data-ppfx-target attribute to your shortcode pointing to your theme\'s product grid selector, e.g. [pickory_product_filter] and ensure your theme renders a standard WooCommerce product loop.', 'pickory-product-filter' ); ?></td>
+								<td><?php esc_html_e( 'Ensure your theme uses standard WooCommerce product loop hooks (woocommerce_product_loop_start/end), or wrap your custom product grid in a container with class .ppfx-products-wrapper.', 'pickory-product-filter' ); ?></td>
+
 							</tr>
 							<tr>
 								<td><strong><?php esc_html_e( 'Index Rebuild on Large Stores', 'pickory-product-filter' ); ?></strong></td>
 								<td><?php esc_html_e( 'On stores with 50,000+ products, rebuilding the product index can take several minutes and consumes elevated server resources during the process.', 'pickory-product-filter' ); ?></td>
-								<td><?php esc_html_e( 'Run the rebuild during low-traffic hours. Do not close the browser tab until the process completes.', 'pickory-product-filter' ); ?></td>
+								<td><?php esc_html_e( 'Run the rebuild during low-traffic hours. The rebuild is queued in the background — you can navigate away after clicking.', 'pickory-product-filter' ); ?></td>
 							</tr>
 							<tr>
 								<td><strong><?php esc_html_e( 'JavaScript Conflicts', 'pickory-product-filter' ); ?></strong></td>
 								<td><?php esc_html_e( 'Themes or plugins that intercept the WooCommerce ordering form submit event may conflict with the plugin\'s sort handling.', 'pickory-product-filter' ); ?></td>
-								<td><?php esc_html_e( 'The plugin calls stopImmediatePropagation() on the ordering form to own sort interactions. If sorting stops working, check your browser console for conflicting scripts.[send feedback]', 'pickory-product-filter' ); ?></td>
+								<td><?php esc_html_e( 'The plugin calls stopImmediatePropagation() on the ordering form to own sort interactions. If sorting stops working, check your browser console for conflicting scripts.', 'pickory-product-filter' ); ?></td>
 							</tr>
 							<tr>
 								<td><strong><?php esc_html_e( 'Out-of-Stock Products', 'pickory-product-filter' ); ?></strong></td>
@@ -427,6 +400,7 @@ $sections = array(
 				<code class="ppfx-doc-code">GET /wp-json/pickory-filter/v1/products</code>
 
 				<h4><?php esc_html_e( 'Query Parameters', 'pickory-product-filter' ); ?></h4>
+				<p><?php esc_html_e( 'Parameters can be passed using clean parameter names or with the "ppfx_" prefix (e.g. ppfx_category, ppfx_min_price) matching the frontend URL.', 'pickory-product-filter' ); ?></p>
 				<table class="ppfx-doc-table">
 					<thead>
 						<tr>
@@ -500,25 +474,28 @@ $sections = array(
 				</table>
 
 				<h4><?php esc_html_e( 'Sample Response', 'pickory-product-filter' ); ?></h4>
-				<pre class="ppfx-doc-code ppfx-doc-pre"><?php echo esc_html( "{\n  \"success\": true,\n  \"fragments\": {\n    \".ppfx-products-wrapper\": \"<div>...product HTML...</div>\",\n    \".woocommerce-result-count\": \"Showing 1–12 of 48 results\",\n    \".woocommerce-ordering\": \"<select>...</select>\",\n    \".woocommerce-pagination\": \"<nav>...</nav>\"\n  }\n}" ); ?></pre>
+				<pre class="ppfx-doc-code ppfx-doc-pre"><?php echo esc_html( "{\n  \"success\": true,\n  \"loop\": {\n    \"has_results\": true\n  },\n  \"fragments\": {\n    \".ppfx-products-wrapper\": \"<div>...product HTML...</div>\",\n    \".woocommerce-result-count\": \"Showing 1–12 of 48 results\",\n    \".woocommerce-ordering\": \"<select>...</select>\",\n    \".woocommerce-pagination\": \"<nav>...</nav>\"\n  }\n}" ); ?></pre>
 
 				<h4><?php esc_html_e( 'WordPress Hooks', 'pickory-product-filter' ); ?></h4>
 				<p><strong><?php esc_html_e( 'Filters:', 'pickory-product-filter' ); ?></strong></p>
 				<ul>
 					<li><code>ppfx_rest_max_per_page</code> — <?php esc_html_e( 'Maximum products per REST request (default: 100)', 'pickory-product-filter' ); ?></li>
-					<li><code>ppfx_force_db_rate_limiting</code> — <?php esc_html_e( 'Force rate limiting even without object cache (default: false)', 'pickory-product-filter' ); ?></li>
+					<li><code>ppfx_force_db_rate_limiting</code> — <?php esc_html_e( 'Force rate limiting via database even without external object cache (default: false)', 'pickory-product-filter' ); ?></li>
+					<li><code>ppfx_cache_key_context</code> — <?php esc_html_e( 'Filter contextual array passed when generating query cache keys (e.g. active currency or tax location)', 'pickory-product-filter' ); ?></li>
+					<li><code>ppfx_price_cache_currencies</code> — <?php esc_html_e( 'Filter the list of currency codes indexed for price filtering', 'pickory-product-filter' ); ?></li>
 				</ul>
 				<p><strong><?php esc_html_e( 'Actions:', 'pickory-product-filter' ); ?></strong></p>
 				<ul>
-					<li><code>ppfx_before_query_build</code> — <?php esc_html_e( 'Fired before building WP_Query args; use to modify request params', 'pickory-product-filter' ); ?></li>
-					<li><code>ppfx_after_query_build</code> — <?php esc_html_e( 'Fired after building WP_Query args; use to modify the query object', 'pickory-product-filter' ); ?></li>
-					<li><code>ppfx_index_sync_product</code> — <?php esc_html_e( 'Fired when syncing a product to the index; use to modify index row data', 'pickory-product-filter' ); ?></li>
+					<li><code>ppfx_rebuild_index_action</code> — <?php esc_html_e( 'Action Scheduler hook executed to rebuild the flat product index in the background', 'pickory-product-filter' ); ?></li>
 				</ul>
 
 				<h4><?php esc_html_e( 'JavaScript Events', 'pickory-product-filter' ); ?></h4>
 				<ul>
-					<li><code>ppfx:filters-updated</code> — <?php esc_html_e( 'Fired after filter results are updated in the DOM', 'pickory-product-filter' ); ?></li>
-					<li><code>ppfx:destroy</code> — <?php esc_html_e( 'Fired before a filter instance is destroyed (cleanup event)', 'pickory-product-filter' ); ?></li>
+					<li><code>ppfx_products_rendered</code> — <?php esc_html_e( 'Fired on document with { detail: { instanceId, data } } after filter HTML fragments are updated in the DOM', 'pickory-product-filter' ); ?></li>
+					<li><code>ppfx:ajax_loaded</code> — <?php esc_html_e( 'Fired on document with { detail: { instanceId, data } } when a filter AJAX request finishes', 'pickory-product-filter' ); ?></li>
+					<li><code>ppfx:filter_error</code> — <?php esc_html_e( 'Fired on document with { detail: { error, instanceId } } if an AJAX filter request fails', 'pickory-product-filter' ); ?></li>
+					<li><code>ppfx-filters-updated</code> — <?php esc_html_e( 'Fired on window with { detail: { state } } when active filter parameters update across instances', 'pickory-product-filter' ); ?></li>
+					<li><code>ppfx:destroy</code> — <?php esc_html_e( 'Custom event you can dispatch on window to programmatically destroy and clean up the mobile drawer instance', 'pickory-product-filter' ); ?></li>
 				</ul>
 
 				<h4><?php esc_html_e( 'Key CSS Classes', 'pickory-product-filter' ); ?></h4>
@@ -536,6 +513,8 @@ $sections = array(
 				<ul>
 					<li><?php esc_html_e( 'Verified compatibility with WordPress 7.1 and WooCommerce 11.2.', 'pickory-product-filter' ); ?></li>
 					<li><?php esc_html_e( 'Updated plugin headers and WooCommerce compatibility declarations.', 'pickory-product-filter' ); ?></li>
+					<li><?php esc_html_e( 'Updated REST API and Developer Reference with verified hooks, events, and response models.', 'pickory-product-filter' ); ?></li>
+					<li><?php esc_html_e( 'Cleaned up documentation references and aligned admin index sync behavior with Action Scheduler.', 'pickory-product-filter' ); ?></li>
 				</ul>
 
 				<h4><?php esc_html_e( 'Version 1.0.2', 'pickory-product-filter' ); ?> &mdash; <?php esc_html_e( 'Maintenance & Standards Release', 'pickory-product-filter' ); ?></h4>
@@ -606,7 +585,7 @@ $sections = array(
 						</tr>
 						<tr>
 							<td><strong><?php esc_html_e( 'Frontend Asset Size', 'pickory-product-filter' ); ?></strong></td>
-							<td><?php esc_html_e( '~12.03 KB · May vary slightly in future updates', 'pickory-product-filter' ); ?></td>
+							<td><?php esc_html_e( 'Less than 14 KB - May vary slightly in future updates', 'pickory-product-filter' ); ?></td>
 						</tr>
 					</tbody>
 				</table>
@@ -620,7 +599,7 @@ $sections = array(
 				</ul>
 
 				<p class="ppfx-doc-note">
-					<?php esc_html_e( 'For bug reports or feature requests, please contact support at <a href="mailto:pickory143@gmail.com">pickory143@gmail.com</a>.', 'pickory-product-filter' ); ?>
+					<?php esc_html_e( 'For bug reports or feature requests, please contact support at pickory.com.', 'pickory-product-filter' ); ?>
 				</p>
 				<?php endif; ?>
 			</div>
@@ -630,7 +609,7 @@ $sections = array(
 
 	<div class="ppfx-doc-sidebar">
 		<div class="card ppfx-doc-sidebar-card">
-			<h3>🤝 <?php esc_html_e( 'Need Human Assistance?', 'pickory-product-filter' ); ?></h3>
+			<h3>🤝 <?php esc_html_e( 'Need Human Assistance?', 'pickory-product-filter' ); ?></h3>
 			<p class="description"><?php esc_html_e( "Can't find the answer in the docs? Our engineering team and community are ready to help.", 'pickory-product-filter' ); ?></p>
 			
 			<ul class="pickory-support-list">

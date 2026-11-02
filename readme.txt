@@ -165,6 +165,8 @@ Uninstalling deletes custom tables, plugin options, transients, and scheduled cr
 * Compatibility: Tested and verified compatibility with WordPress 7.1.
 * Compatibility: Tested and verified compatibility with WooCommerce 11.2.
 * Updated WooCommerce compatibility headers and declarations.
+* Updated REST API and Developer Reference with verified hooks and event models.
+* Cleaned up documentation references and aligned admin index sync behavior with Action Scheduler.
 
 = 1.0.2 =
 * WordPress.org repository readiness and strict coding standards compliance.
@@ -236,12 +238,12 @@ Parameters:
 
 **Filters:**
 - `ppfx_rest_max_per_page` — Maximum products per REST request (default: 100)
-- `ppfx_force_db_rate_limiting` — Force rate limiting without object cache
+- `ppfx_force_db_rate_limiting` — Force rate limiting via database even without external object cache
+- `ppfx_cache_key_context` — Filter contextual array passed when generating query cache keys
+- `ppfx_price_cache_currencies` — Filter the list of currency codes indexed for price filtering
 
 **Actions:**
-- `ppfx_before_query_build` — Before building WP_Query args
-- `ppfx_after_query_build` — After building WP_Query args
-- `ppfx_index_sync_product` — When syncing product to index
+- `ppfx_rebuild_index_action` — Action Scheduler hook executed to rebuild the flat product index in the background
 
 = Template Override =
 
