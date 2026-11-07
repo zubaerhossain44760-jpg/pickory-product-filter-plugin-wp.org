@@ -11,7 +11,8 @@
 
   .ppfx-dropdown-input {
     width: 100%;
-    padding: 8px 36px 8px 12px; // Right padding added so text doesn't overlap arrow
+    padding-block: 8px;
+    padding-inline: 12px 36px; // End padding so text doesn't overlap arrow
     border: 1px solid v("dropdown-border-color", $dropdown-border-color);
     border-radius: v("dropdown-border-radius", $dropdown-border-radius);
     font-size: v("dropdown-font-size", $dropdown-font-size);
@@ -29,6 +30,10 @@
     background-repeat: no-repeat;
     background-position: right 12px center;
     background-size: 16px;
+
+    [dir="rtl"] & {
+      background-position: left 12px center;
+    }
 
     &:hover {
       border-color: v("primary-color", $primary-color);

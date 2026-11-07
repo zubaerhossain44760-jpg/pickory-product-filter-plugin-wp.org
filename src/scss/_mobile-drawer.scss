@@ -1,52 +1,42 @@
 /**
  * Pickory Product Filter - Mobile Drawer
  *
- * The 768px breakpoint is applied by JS via window.matchMedia(). JS adds/removes:
- *
+ * Controlled classes (handled via JS / matchMedia):
  *   .ppfx-mobile-drawer-view on <html>                 (shows toggle button)
- *   .ppfx-drawer-mode  on .ppfx-filter-container  (enables drawer layout)
- *   .ppfx-open         on .ppfx-filter-container  (slides the drawer in)
- *   .ppfx-visible      on .ppfx-filter-backdrop   (shows the overlay)
- *   .ppfx-drawer-open  on <body>                 (locks page scroll)
- *
- * All visibility is controlled via CSS classes - NO inline styles.
+ *   .ppfx-drawer-mode        on .ppfx-filter-container  (enables drawer layout)
+ *   .ppfx-open               on .ppfx-filter-container  (slides the drawer in)
+ *   .ppfx-visible            on .ppfx-filter-backdrop   (shows the overlay)
+ *   .ppfx-drawer-open        on <body>                 (locks page scroll)
  */
+
 @use "variables" as *;
 
 // ============================================================
-// Toggle button
-// Default: hidden. Shown via .ppfx-mobile-drawer-view class on <html>
+// Toggle Button
 // ============================================================
 
 .ppfx-mobile-toggle-slot {
   display: none;
 }
 
-html.ppfx-mobile-drawer-view .ppfx-mobile-toggle-slot {
-  display: flex;
-  align-items: center;
-  min-height: 36px;
-}
-
-html.ppfx-mobile-drawer-view .ppfx-mobile-toggle {
-  display: inline-flex;
-}
-
 .ppfx-mobile-toggle {
   display: none;
   align-items: center;
   gap: 6px;
+  min-height: 44px; // WCAG 2.5.5 / Apple HIG minimum touch target
+  padding: 8px 14px;
   border-style: solid;
   border-color: v("drawer-toggle-border-color", $drawer-toggle-border-color);
   border-width: v("drawer-toggle-border-width", $drawer-toggle-border-width);
   border-radius: v("drawer-toggle-border-radius", $drawer-toggle-border-radius);
-  padding: 6px 12px; // Better touch target for mobile screens
   background: transparent;
   cursor: pointer;
   font-size: v("drawer-toggle-size", $drawer-toggle-size);
   font-weight: 500;
   color: v("drawer-toggle-color", $drawer-toggle-color);
   white-space: nowrap;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
   transition:
     background $transition-speed,
     border-color $transition-speed,
@@ -56,12 +46,15 @@ html.ppfx-mobile-drawer-view .ppfx-mobile-toggle {
     flex-shrink: 0;
     width: 1.1em;
     height: 1.1em;
-    color: v("drawer-toggle-color", $drawer-toggle-color);
+    color: currentcolor;
   }
 
-  &:hover {
-    border-color: v("primary-color", $primary-color);
-    box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
+  // Prevent sticky hover states on touch screens
+  @media (hover: hover) {
+    &:hover {
+      border-color: v("primary-color", $primary-color);
+      box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
+    }
   }
 
   &:focus-visible {
@@ -70,35 +63,47 @@ html.ppfx-mobile-drawer-view .ppfx-mobile-toggle {
   }
 }
 
+// Display toggle when active breakpoint class is on <html>
+html.ppfx-mobile-drawer-view {
+  .ppfx-mobile-toggle-slot {
+    display: flex;
+    align-items: center;
+  }
+
+  .ppfx-mobile-toggle {
+    display: inline-flex;
+  }
+}
+
 // ============================================================
-// Backdrop - fixed overlay behind the open drawer.
-// Always in the DOM when drawer is enabled; JS toggles .ppfx-visible.
+// Backdrop
 // ============================================================
 
 .ppfx-filter-backdrop {
   position: fixed;
   inset: 0;
-  backdrop-filter: blur(2px);
-  background: rgb(0 0 0 / 24.7%);
   z-index: 99998;
-  visibility: hidden;
+  background: rgb(0 0 0 / 25%);
+  /* stylelint-disable-next-line property-no-vendor-prefix */
+  -webkit-backdrop-filter: blur(2px); // Safari prefix support
+  backdrop-filter: blur(2px);
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
-  touch-action: none; // Fix: Prevents iOS Safari background scroll bleeding
+  touch-action: none; // Mitigates underlying scroll bleeding
   transition:
     opacity v("drawer-transition-duration", $drawer-transition-duration) ease,
     visibility v("drawer-transition-duration", $drawer-transition-duration) ease;
 
   &.ppfx-visible {
-    visibility: visible;
     opacity: 1;
+    visibility: visible;
     pointer-events: auto;
   }
 }
 
 // ============================================================
-// Filter container - drawer layout.
-// Only applied when JS adds .ppfx-drawer-mode.
+// Drawer Layout
 // ============================================================
 
 .ppfx-filter-container.ppfx-primary-filter {
@@ -110,30 +115,40 @@ html.ppfx-mobile-drawer-view .ppfx-mobile-toggle {
     bottom: 0;
     z-index: 99999;
     width: v("drawer-width", $drawer-width);
-    max-width: calc(100vw - 40px); // Fix: Never overflows small phone screens
-    background-color: v(
-      "container-bg",
-      $container-bg
-    ); // Fix: Never see-through
-
+    max-width: calc(100vw - 40px);
+    background-color: v("container-bg", $container-bg);
     overflow-y: auto;
     overscroll-behavior: contain;
-    transform: translateX(-100%);
-    will-change: transform; // Fix: Hardware GPU acceleration for smooth 60fps sliding
-    transition: transform
-      v("drawer-transition-duration", $drawer-transition-duration)
-      cubic-bezier(0.25, 1, 0.5, 1);
-    box-shadow: 4px 0 24px rgb(0 0 0 / 15%);
 
-    // Safe area padding for modern iPhones (Notch/Home bar)
+    // Accessibility fix: keep out of focus order when closed
+    visibility: hidden;
+    transform: translateX(-100%);
+
+    // Prevent shadow from leaking onto the screen when closed
+    box-shadow: none;
+
+    // Safe area spacing for modern notched devices
+    padding-top: max(1rem, env(safe-area-inset-top));
     padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    transition:
+      transform v("drawer-transition-duration", $drawer-transition-duration) cubic-bezier(0.25, 1, 0.5, 1),
+      visibility 0s linear v("drawer-transition-duration", $drawer-transition-duration),
+      box-shadow v("drawer-transition-duration", $drawer-transition-duration) ease;
 
     &.ppfx-open {
+      visibility: visible;
       transform: translateX(0);
+      box-shadow: 4px 0 24px rgb(0 0 0 / 15%);
+      transition-delay: 0s; // Apply visibility immediately when opening
     }
   }
 }
 
+// ============================================================
+// Body Scroll Lock
+// ============================================================
+
 body.ppfx-drawer-open {
   overflow: hidden;
+  overscroll-behavior: none; // Prevents pull-to-refresh & rubber-banding
 }

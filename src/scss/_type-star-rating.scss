@@ -36,7 +36,7 @@
     background: none;
     box-shadow: none;
     font: inherit;
-    text-align: left;
+    text-align: start;
 
     &:hover {
       color: v("hover-color", $hover-color);
@@ -72,7 +72,7 @@
     color: v("text-color", $text-color);
     letter-spacing: 1px;
     font-size: 14px;
-    margin-left: -4px;
+    margin-inline-start: -4px;
     transition: color $transition-speed;
 
     &:hover {
@@ -82,7 +82,7 @@
 
   .ppfx-rating-text {
     font-size: 13px;
-    margin-left: auto;
+    margin-inline-start: auto;
     color: inherit;
     transition: color $transition-speed;
   }

@@ -181,6 +181,10 @@ class PPFX_Section_Registry {
 
 				$saved[ $key ]          = $config;
 				$saved[ $key ]['order'] = $max_order + 1;
+			} else {
+				// Backfill any default keys missing from pre-existing saved sections
+				// (e.g. 'collapsible' added after user already saved settings).
+				$saved[ $key ] = array_merge( $config, $saved[ $key ] );
 			}
 		}
 

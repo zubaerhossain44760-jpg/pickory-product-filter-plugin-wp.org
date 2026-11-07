@@ -73,7 +73,7 @@ $mobile_drawer       = ! empty( $options['mobile_drawer_enabled'] );
 			<?php esc_html_e( 'Filters', 'pickory-product-filter' ); ?>
 			<button type="button" class="ppfx-reset-btn" data-ppfx-reset-btn="" id="ppfx-clear-all-btn-<?php echo esc_attr( $unique_id ); ?>"><?php esc_html_e( 'Clear all', 'pickory-product-filter' ); ?></button>
 		</div>
-		<span id="ppfx-clear-all-desc-<?php echo esc_attr( $unique_id ); ?>" class="sr-only"><?php esc_html_e( 'Remove all active filters and reset to default view', 'pickory-product-filter' ); ?></span>
+		<span id="ppfx-clear-all-desc-<?php echo esc_attr( $unique_id ); ?>" class="ppfx-sr-only"><?php esc_html_e( 'Remove all active filters and reset to default view', 'pickory-product-filter' ); ?></span>
 
 		<div class="ppfx-active-filters-wrap">
 			<?php if ( empty( $options['chips_before_loop'] ) ) : ?>

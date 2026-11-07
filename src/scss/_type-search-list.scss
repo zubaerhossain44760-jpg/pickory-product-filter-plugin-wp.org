@@ -11,7 +11,7 @@
   }
 
   .ppfx-inner-scroll-area {
-    padding-right: 4px;
+    padding-inline-end: 4px;
   }
 
   .ppfx-search-box-wrap {
@@ -19,7 +19,8 @@
 
     .ppfx-search-box-input {
       width: 100%;
-      padding: 8px 36px 8px 12px;
+      padding-block: 8px;
+      padding-inline: 12px 36px;
       margin-block: 5px;
       border: 1px solid v("search-list-border-color", $search-list-border-color);
       border-radius: v("search-list-border-radius", $search-list-border-radius);
@@ -37,7 +38,7 @@
 
     .ppfx-search-icon {
       position: absolute;
-      right: 12px;
+      inset-inline-end: 12px;
       line-height: 1;
       top: 50%;
       transform: translateY(-50%);
@@ -48,7 +49,7 @@
   }
 
   .ppfx-items-list {
-    padding-right: 4px;
+    padding-inline-end: 4px;
     flex-direction: v("search-list-layout", $search-list-layout);
   }
 
