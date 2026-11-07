@@ -240,4 +240,89 @@ class PPFX_Section_Registry {
 		}
 		return ucwords( str_replace( array( 'pa_', '_' ), array( '', ' ' ), $key ) );
 	}
+
+	/**
+	 * Get the valid filter types for a given section key.
+	 *
+	 * Centralizes the logic for determining which display types are available
+	 * for each section type (category, fixed sections, attributes, etc.).
+	 *
+	 * @param string $key Section key.
+	 * @return array Array of valid type keys with their labels.
+	 */
+	public static function get_valid_types_for_section( string $key ): array {
+		$is_pa_taxonomy = str_starts_with( $key, 'pa_' );
+
+		if ( 'category' === $key ) {
+			return self::CATEGORY_TYPES;
+		}
+
+		if ( isset( self::FIXED_SECTIONS[ $key ] ) ) {
+			// Fixed sections have only one valid type.
+			$fixed_type = self::FIXED_SECTIONS[ $key ]['type'];
+			return array( $fixed_type => self::FIXED_SECTIONS[ $key ]['label'] );
+		}
+
+		// For product attributes (pa_*), all configurable types are valid including swatches.
+		if ( $is_pa_taxonomy ) {
+			return self::CONFIGURABLE_TYPES;
+		}
+
+		// For other taxonomies, exclude swatch types (only work for product attributes).
+		return array_diff_key(
+			self::CONFIGURABLE_TYPES,
+			array_flip( array( 'swatch', 'image-swatch' ) )
+		);
+	}
+
+	/**
+	 * Check if a section has a fixed (non-configurable) type.
+	 *
+	 * @param string $key Section key.
+	 * @return bool True if the section has a fixed type, false otherwise.
+	 */
+	public static function is_fixed_section( string $key ): bool {
+		return isset( self::FIXED_SECTIONS[ $key ] );
+	}
+
+	/**
+	 * Check if a section supports the "show count" feature.
+	 *
+	 * Fixed sections (price, rating, sale) do not support count display.
+	 *
+	 * @param string $key Section key.
+	 * @return bool True if the section supports count display, false otherwise.
+	 */
+	public static function section_supports_count( string $key ): bool {
+		return ! self::is_fixed_section( $key );
+	}
+
+	/**
+	 * Check if a section supports the collapsible (See More) feature.
+	 *
+	 * Collapsible requires the section to have terms (not fixed except rating)
+	 * and is not available for price or sale sections.
+	 *
+	 * @param string $key Section key.
+	 * @return bool True if the section supports collapsible, false otherwise.
+	 */
+	public static function section_supports_collapsible( string $key ): bool {
+		// Price and sale never support collapsible.
+		if ( 'price' === $key || 'sale' === $key ) {
+			return false;
+		}
+
+		// Rating is a fixed section but supports collapsible.
+		if ( 'rating' === $key ) {
+			return true;
+		}
+
+		// Fixed sections other than rating don't support collapsible.
+		if ( self::is_fixed_section( $key ) ) {
+			return false;
+		}
+
+		// All other sections (taxonomies with terms) support collapsible.
+		return true;
+	}
 }

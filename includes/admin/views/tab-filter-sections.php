@@ -51,27 +51,11 @@ $sections = PPFX_Settings_Page::get_resolved_sections();
 					$default_label  = PPFX_Settings_Page::get_default_label( $key );
 					$is_pa_taxonomy = str_starts_with( $key, 'pa_' );
 					$show_count     = isset( $config['show_count'] ) ? (bool) $config['show_count'] : true;
-					$has_terms      = ! array_key_exists( $key, PPFX_Settings_Page::FIXED_SECTIONS );
 
-					if ( 'category' === $key ) {
-						$type_options = PPFX_Settings_Page::CATEGORY_TYPES;
-						$fixed_type   = false;
-					} elseif ( array_key_exists( $key, PPFX_Settings_Page::FIXED_SECTIONS ) ) {
-						$type_options = array();
-						$fixed_type   = true;
-					} else {
-						$type_options = PPFX_Settings_Page::CONFIGURABLE_TYPES;
-						if ( ! $is_pa_taxonomy ) {
-							$type_options = array_diff_key(
-								$type_options,
-								array(
-									'swatch'       => '',
-									'image-swatch' => '',
-								)
-							);
-						}
-						$fixed_type = false;
-					}
+					// Use centralized registry methods for type and feature support.
+					$type_options   = PPFX_Section_Registry::get_valid_types_for_section( $key );
+					$fixed_type     = PPFX_Section_Registry::is_fixed_section( $key );
+					$supports_count = PPFX_Section_Registry::section_supports_count( $key );
 					?>
 					<tr class="ppfx-section-row <?php echo esc_attr( $row_class ); ?>" data-key="<?php echo esc_attr( $key ); ?>" data-is-pa="<?php echo $is_pa_taxonomy ? '1' : '0'; ?>">
 						<td class="ppfx-drag-handle" title="<?php esc_attr_e( 'Drag to reorder', 'pickory-product-filter' ); ?>">
@@ -103,7 +87,11 @@ $sections = PPFX_Settings_Page::get_resolved_sections();
 							<?php endif; ?>
 						</td>
 						<td>
-							<input type="text" name="ppfx_settings[sections][<?php echo esc_attr( $key ); ?>][label]" value="<?php echo esc_attr( $config['label'] ?? $default_label ); ?>" placeholder="<?php echo esc_attr( $default_label ); ?>" style="width: 100%;">
+							<?php
+							$raw_label    = isset( $config['label'] ) ? trim( (string) $config['label'] ) : '';
+							$custom_label = ( '' !== $raw_label && $raw_label !== $default_label ) ? $raw_label : '';
+							?>
+							<input type="text" name="ppfx_settings[sections][<?php echo esc_attr( $key ); ?>][label]" value="<?php echo esc_attr( $custom_label ); ?>" placeholder="<?php echo esc_attr( $default_label ); ?>" style="width: 100%;">
 						</td>
 						<td>
 							<?php if ( 'price' === $key ) : ?>
@@ -119,7 +107,7 @@ $sections = PPFX_Settings_Page::get_resolved_sections();
 							<?php endif; ?>
 						</td>
 						<td style="text-align: center; vertical-align: middle;">
-							<?php if ( $has_terms ) : ?>
+							<?php if ( $supports_count ) : ?>
 								<div class="ppfx-toggle-switch <?php echo $show_count ? 'ppfx-toggle-on' : ''; ?>" data-key="<?php echo esc_attr( $key ); ?>-count" role="switch" aria-checked="<?php echo $show_count ? 'true' : 'false'; ?>">
 									<span class="ppfx-toggle-knob"></span>
 								</div>
@@ -138,6 +126,6 @@ $sections = PPFX_Settings_Page::get_resolved_sections();
 				<?php endforeach; ?>
 			</tbody>
 		</table>
-		<?php submit_button( __( 'Save Settings', 'pickory-product-filter' ) ); ?>
+		<?php submit_button( esc_html__( 'Save Settings', 'pickory-product-filter' ) ); ?>
 	</form>
 </div>

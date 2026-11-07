@@ -244,31 +244,22 @@ class PPFX_Settings_Page {
 				continue;
 			}
 
-			$type           = str_replace(
+			// Get valid types for this section from the centralized registry.
+			$valid_types = array_keys( PPFX_Section_Registry::get_valid_types_for_section( $key ) );
+
+			$type = str_replace(
 				'_',
 				'-',
 				sanitize_text_field( $section['type'] ?? 'checkbox' ),
 			);
-			$is_pa_taxonomy = str_starts_with( $key, 'pa_' );
 
-			if ( 'category' === $key ) {
-				$valid_types = array_keys( self::CATEGORY_TYPES );
-			} elseif ( isset( self::FIXED_SECTIONS[ $key ] ) ) {
-				$valid_types = array( self::FIXED_SECTIONS[ $key ]['type'] );
-				$type        = self::FIXED_SECTIONS[ $key ]['type'];
-			} else {
-				$valid_types = array_keys( self::CONFIGURABLE_TYPES );
-				if ( ! $is_pa_taxonomy ) {
-					$valid_types = array_diff(
-						$valid_types,
-						array(
-							'swatch',
-							'image-swatch',
-						)
-					);
-				}
+			// If this is a fixed section, force the type to the fixed value.
+			if ( PPFX_Section_Registry::is_fixed_section( $key ) ) {
+				$fixed_sections = PPFX_Section_Registry::FIXED_SECTIONS;
+				$type           = $fixed_sections[ $key ]['type'];
 			}
 
+			// Validate the type against the allowed types for this section.
 			if ( ! in_array( $type, $valid_types, true ) ) {
 				$type = $valid_types[0];
 			}
@@ -294,6 +285,16 @@ class PPFX_Settings_Page {
 			$default_label = self::get_default_label( $key );
 			$clean_label   = ( '' === trim( $raw_label ) || $raw_label === $default_label ) ? '' : $raw_label;
 
+			// Use centralized helper methods to determine feature support.
+			$show_count = PPFX_Section_Registry::section_supports_count( $key )
+				&& isset( $section['show_count'] )
+				&& in_array( $section['show_count'], array( '1', 1, true ), true );
+
+			$collapsible = PPFX_Section_Registry::section_supports_collapsible( $key )
+				&& ! empty( $max_height )
+				&& ! empty( $section['collapsible'] )
+				&& in_array( $section['collapsible'], array( '1', 1, true ), true );
+
 			$clean[ $key ] = array(
 				'enabled'     =>
 				! empty( $section['enabled'] ) &&
@@ -303,15 +304,8 @@ class PPFX_Settings_Page {
 				'label'       => $clean_label,
 				'max_height'  => $max_height,
 				'step'        => $step,
-				'show_count'  => ! isset( self::FIXED_SECTIONS[ $key ] ) && isset( $section['show_count'] )
-					&& in_array( $section['show_count'], array( '1', 1, true ), true ),
-				// collapsible: only valid when max_height is also set; disabled for fixed sections except rating.
-				'collapsible' => ( ! isset( self::FIXED_SECTIONS[ $key ] ) || 'rating' === $key ) &&
-					'price' !== $key &&
-					'sale' !== $key &&
-					! empty( $max_height ) &&
-					! empty( $section['collapsible'] ) &&
-					in_array( $section['collapsible'], array( '1', 1, true ), true ),
+				'show_count'  => $show_count,
+				'collapsible' => $collapsible,
 			);
 		}
 

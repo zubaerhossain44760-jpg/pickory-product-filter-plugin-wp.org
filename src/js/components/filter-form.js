@@ -519,6 +519,23 @@ export const initFilterForm = (
     );
   };
 
+  const updateManualMultiSelection = (
+    container,
+    selector,
+    input,
+    target,
+    isActive,
+  ) => {
+    target.classList.toggle("is-active", isActive);
+    target.setAttribute("aria-pressed", String(isActive));
+    input.value = serializeArrayValues(
+      Array.from(container.querySelectorAll(selector))
+        .filter((button) => button.classList.contains("is-active"))
+        .map((button) => button.dataset.value)
+        .filter(Boolean),
+    );
+  };
+
   const updatePriceState = (pushHistory = false) => {
     const minInput = formElement.querySelector('input[name="min_price"]');
     const maxInput = formElement.querySelector('input[name="max_price"]');
@@ -581,7 +598,7 @@ export const initFilterForm = (
         }
       });
 
-    // 3. Hidden inputs (swatches, button grid, star ratings, toggle switches)
+    // 3. Hidden inputs mirror custom controls and provide their form values.
     formElement
       .querySelectorAll(
         ".ppfx-grid-hidden-input, .ppfx-swatch-hidden-input, .ppfx-rating-input, .ppfx-toggle-input",
@@ -644,6 +661,16 @@ export const initFilterForm = (
       const val = btn.dataset.value;
       const isNowActive = !btn.classList.contains("is-active");
 
+      if (!isAutoFilter) {
+        updateManualMultiSelection(
+          grid,
+          ".ppfx-grid-btn",
+          hiddenInput,
+          btn,
+          isNowActive,
+        );
+      }
+
       toggleMultiValue(name, val, isNowActive);
     },
     { signal },
@@ -663,6 +690,13 @@ export const initFilterForm = (
 
       const name = input.name;
       const isNowActive = !toggle.classList.contains("is-active");
+
+      if (!isAutoFilter) {
+        toggle.classList.toggle("is-active", isNowActive);
+        toggle.setAttribute("aria-checked", String(isNowActive));
+        row.classList.toggle("is-active", isNowActive);
+        input.value = isNowActive ? "1" : "";
+      }
 
       setSingleValue(name, isNowActive ? "1" : "");
     },
@@ -699,6 +733,15 @@ export const initFilterForm = (
       const ratingVal = row.dataset.rating;
       const isNowActive = !row.classList.contains("is-active");
 
+      if (!isAutoFilter) {
+        list.querySelectorAll(".ppfx-star-row").forEach((starRow) => {
+          const isActive = starRow === row && isNowActive;
+          starRow.classList.toggle("is-active", isActive);
+          starRow.setAttribute("aria-pressed", String(isActive));
+        });
+        input.value = isNowActive ? ratingVal : "";
+      }
+
       setSingleValue(name, isNowActive ? ratingVal : "");
     },
     { signal },
@@ -721,6 +764,16 @@ export const initFilterForm = (
       const name = hiddenInput.name;
       const val = target.dataset.value;
       const isNowActive = !target.classList.contains("is-active");
+
+      if (!isAutoFilter) {
+        updateManualMultiSelection(
+          list,
+          ".ppfx-swatch-item, .ppfx-grid-btn",
+          hiddenInput,
+          target,
+          isNowActive,
+        );
+      }
 
       toggleMultiValue(name, val, isNowActive);
     },

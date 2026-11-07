@@ -276,7 +276,7 @@ $sections = array(
 								<td><code>sections</code></td>
 								<td><code>(Enabled)</code></td>
 								<td>
-									<?php esc_html_e( 'Shows only the listed filter sections: category, product_tag, price, rating, sale, or attribute names like color.', 'pickory-product-filter' ); ?>
+								<?php esc_html_e( 'Shows only the listed filter sections: category, product_tag, price, rating, sale, or attribute names like color. Section-specific shortcodes work when Auto Filter is enabled.', 'pickory-product-filter' ); ?>
 									<br><br>
 									<code class="ppfx-doc-code">[pickory_product_filter sections="color"]</code>
 								</td>
@@ -368,9 +368,14 @@ $sections = array(
 						</thead>
 						<tbody>
 							<tr>
+								<td><strong><?php esc_html_e( 'Section Shortcodes with Manual Filtering', 'pickory-product-filter' ); ?></strong></td>
+								<td><?php esc_html_e( 'A section-specific shortcode does not display its own Filter button. With Auto Filter disabled, another filter instance\'s button submits only that instance\'s selections.', 'pickory-product-filter' ); ?></td>
+								<td><?php esc_html_e( 'Enable Auto Filter or use a full filter shortcode to apply selections from that form.', 'pickory-product-filter' ); ?></td>
+							</tr>
+							<tr>
 								<td><strong><?php esc_html_e( 'Page Caching', 'pickory-product-filter' ); ?></strong></td>
-								<td><?php esc_html_e( 'Aggressively cached REST API responses will serve stale product results to visitors.', 'pickory-product-filter' ); ?></td>
-								<td><?php esc_html_e( 'Add /wp-json/pickory-filter/v1/* to the exclusion list of your caching plugin.', 'pickory-product-filter' ); ?></td>
+								<td><?php esc_html_e( 'A page cache, proxy, or CDN that ignores the REST response\'s no-store header can serve stale product results.', 'pickory-product-filter' ); ?></td>
+								<td><?php esc_html_e( 'If your cache is configured to cache REST responses or ignores no-store, exclude /wp-json/pickory-filter/v1/ from its cache.', 'pickory-product-filter' ); ?></td>
 							</tr>
 							<tr>
 								<td><strong><?php esc_html_e( 'Theme Compatibility', 'pickory-product-filter' ); ?></strong></td>
@@ -380,13 +385,18 @@ $sections = array(
 							</tr>
 							<tr>
 								<td><strong><?php esc_html_e( 'Index Rebuild on Large Stores', 'pickory-product-filter' ); ?></strong></td>
-								<td><?php esc_html_e( 'On stores with 50,000+ products, rebuilding the product index can take several minutes and consumes elevated server resources during the process.', 'pickory-product-filter' ); ?></td>
-								<td><?php esc_html_e( 'Run the rebuild during low-traffic hours. The rebuild is queued in the background — you can navigate away after clicking.', 'pickory-product-filter' ); ?></td>
+								<td><?php esc_html_e( 'Rebuild time and server load depend on catalog size and available resources. The index is cleared and rebuilt in batches, so filter results may be incomplete until the rebuild finishes.', 'pickory-product-filter' ); ?></td>
+								<td><?php esc_html_e( 'Queue the rebuild during low-traffic hours. It runs in the background via Action Scheduler or WP-Cron, so you can leave this page after submitting.', 'pickory-product-filter' ); ?></td>
 							</tr>
 							<tr>
 								<td><strong><?php esc_html_e( 'JavaScript Conflicts', 'pickory-product-filter' ); ?></strong></td>
-								<td><?php esc_html_e( 'Themes or plugins that intercept the WooCommerce ordering form submit event may conflict with the plugin\'s sort handling.', 'pickory-product-filter' ); ?></td>
-								<td><?php esc_html_e( 'The plugin calls stopImmediatePropagation() on the ordering form to own sort interactions. If sorting stops working, check your browser console for conflicting scripts.', 'pickory-product-filter' ); ?></td>
+								<td><?php esc_html_e( 'Scripts that intercept changes to the WooCommerce ordering select may conflict with AJAX sorting.', 'pickory-product-filter' ); ?></td>
+								<td><?php esc_html_e( 'The plugin handles the ordering select\'s change event and stops further propagation. If sorting fails, check for other handlers on that event and review the browser console.', 'pickory-product-filter' ); ?></td>
+							</tr>
+							<tr>
+								<td><strong><?php esc_html_e( 'Rate Limiting Behind Proxies', 'pickory-product-filter' ); ?></strong></td>
+								<td><?php esc_html_e( 'When API rate limiting is enabled behind a reverse proxy, visitors may share the proxy\'s IP address unless the client IP is detected correctly.', 'pickory-product-filter' ); ?></td>
+								<td><?php esc_html_e( 'Configure the proxy to supply a verified client IP and set PPFX_TRUST_PROXY to true. Cloudflare\'s CF-Connecting-IP header is recognized automatically.', 'pickory-product-filter' ); ?></td>
 							</tr>
 							<tr>
 								<td><strong><?php esc_html_e( 'Out-of-Stock Products', 'pickory-product-filter' ); ?></strong></td>

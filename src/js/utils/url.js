@@ -340,11 +340,11 @@ export const applyFilterState = (formElement, filters = {}) => {
     if (toggle.classList.contains("is-active") !== shouldBeActive) {
       toggle.classList.toggle("is-active", shouldBeActive);
       toggle.setAttribute("aria-checked", String(shouldBeActive));
-      const hidden = toggle
-        .closest(".ppfx-toggle-row")
-        ?.querySelector(".ppfx-toggle-input");
-      if (hidden) hidden.value = shouldBeActive ? "1" : "";
     }
+    const hidden = toggle
+      .closest(".ppfx-toggle-row")
+      ?.querySelector(".ppfx-toggle-input");
+    if (hidden) hidden.value = shouldBeActive ? "1" : "";
   }
 
   // 5. STAR RATING:

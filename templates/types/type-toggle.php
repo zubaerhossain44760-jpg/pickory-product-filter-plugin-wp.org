@@ -28,5 +28,5 @@ $toggle_label = esc_html__( 'On Sale', 'pickory-product-filter' );
 		<span class="ppfx-toggle-knob"></span>
 	</div>
 	
-	<input type="hidden" name="<?php echo esc_attr( $input_name ); ?>" class="ppfx-toggle-input" value="0">
+	<input type="hidden" name="<?php echo esc_attr( $input_name ); ?>" class="ppfx-toggle-input" value="">
 </div>
